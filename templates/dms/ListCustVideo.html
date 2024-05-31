@@ -1,0 +1,117 @@
+{% extends 'templates/main_base.html' %}
+{% load static %}
+
+{% block title %}View Videos List{% endblock %}
+<script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+<script src='https://code.jquery.com/jquery-3.2.1.min.js'></script>
+<script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js'></script>
+{% block content %}
+
+<!-- <div class="row">
+  <div class="col-md-1"></div>
+  <div class="col-md-11">
+   
+      <form method="get"> 
+        &nbsp&nbsp&nbsp  {{ VideoFilter.form}} &nbsp&nbsp&nbsp&nbsp
+      
+     
+        <button class="btn btn-primary" type="submit">  Search </button>
+           
+      </form>
+    
+  </div> -->
+
+
+<div class="container-fluid">
+    
+
+    <div class="row" >
+      <div class="col-md-12 mb-5">
+        
+      </div>
+      <h1>Videos List</h1>
+      <div class="col-md-12 mb-5">
+    
+          <form method="get"> 
+            &nbsp&nbsp&nbsp  {{ VideoFilter.form}} &nbsp&nbsp&nbsp&nbsp
+          
+         
+            <button class="btn btn-primary" type="submit">  Search </button>
+               
+          </form>
+        
+      </div> 
+      <div class="col-md-12">
+        
+        {% if all_Videos  %}
+        <table id="videosTable" class="table table-striped">
+          <thead>
+            <tr>
+              <th>CompanyName</th>
+              <th>ProjectName</th>
+              <th>StationName</th>
+              <th>CameraNo</th>
+              <th>CModel</th>
+              <th>CHeight</th>
+              <th>CPosition</th>
+              <th>VideoTakenDate</th>
+              <th>VideoStartTime</th>
+              <th>VideoEndTime</th>
+              <th>LICate</th>
+              <th>VideoFormat</th>
+              
+              <th>name</th>
+              <th>VideoFile</th>              
+              <th>Remarks</th>
+              <th>RejectedReason</th>
+              <th>VideoFileStatus</th>
+              
+              
+            </tr>
+          </thead>
+          <tbody>
+          
+            {% for video in all_Videos %}
+            
+              <tr id="video-{{video.id}}">
+                
+                <td class="companyName videoData" name="companyName">{{video.CompanyName}}</td>
+                <td class="ProjectName videoData" name="ProjectName">{{video.ProjectName}}</td>
+                <td class="StationName videoData" name="StationName">{{video.StationName}}</td>
+                <td class="CameraNo videoData" name="CameraNo">{{video.CameraNo}}</td>
+                <td class="CModel videoData" name="CModel">{{video.CModel}}</td>
+                <td class="CHeight videoData" name="CPosition">{{video.CHeight}}</td>
+                <td class="CPosition videoData" name="CPosition">{{video.CPosition}}</td>
+                <td class="VideoTakenDate videoData" name="VideoTakenDate">{{video.VideoTakenDate}}</td>
+                <td class="VideoStartTime videoData" name="VideoStartTime">{{video.VideoStartTime}}</td>
+                <td class="VideoEndTime videoData" name="VideoEndTime">{{video.VideoEndTime}}</td>
+                <td class="LICate videoData" name="LICate">{{video.LICate}}</td>
+                <td class="VideoFormat videoData" name="VideoFormat">{{video.VideoFormat}}</td>
+           
+
+                <td class="FileName videoData" name="name">{{video.name}}</td>
+                <!-- Video files-->   
+                <td class="VideoFile videoData" name="existingPath"> 
+                  
+                  <video autoplay="autoplay" controls muted  width:"50px" height="50px"> <source src="{{DRIVE}}{{video.existingPath}}" >  </video>   
+                  <!-- <video src= "{{MEDIA}}{{video.VideoFile}}"  width:"50px" height="50px" controls/>    </video>   -->
+                <td class="Remarks videoData" name="Remarks">{{video.Remarks}}</td>      
+
+                <td class="RejectedReason videoData" name="RejectedReason">{{video.RejectedReason}}</td>
+                
+                <td class="videostatus videoData" name="videostatus">{{video.videostatus}}</td>
+              </tr>
+
+            {% endfor %}
+          </tbody>
+        </table>
+        {% else %}
+          <span> No videos </span> 
+        {% endif %}
+      </div>
+    </div>
+    
+  </div>
+  {%endblock%}
+
+ 

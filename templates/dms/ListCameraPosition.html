@@ -1,0 +1,47 @@
+{% extends 'templates/main_base.html' %}
+{% load static %}
+
+{% block title %}View Camera Position List{% endblock %}
+<script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+<script src='https://code.jquery.com/jquery-3.2.1.min.js'></script>
+<script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js'></script>
+{% block content %}
+<div class="container">
+    <h1>Camera Position List</h1>
+
+    <div class="row" > 
+      <div class="col-md-8">
+        <h3>Existing Camera Positions</h3>
+        {% if all_cpositions  %}
+        <table id="CameraPosTable" class="table table-striped">
+          <thead>
+            <tr>
+              <th>CameraHeight</th>
+              <th>CameraView</th>
+             
+
+            </tr>
+          </thead>
+          <tbody>
+          
+            {% for cPos in all_cpositions %}
+              <tr id="cPos-{{cPos.id}}">
+                <td class="cPosheight cPosData" name="cheight">{{cPos.CHeight}}</td>
+                <td class="cPosview cPosData" name="cviewt">{{cPos.Cview}}</td>
+               
+                
+                
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        {% else %}
+          <span> No Camera Position details available </span> 
+        {% endif %}
+      </div>
+    </div>
+    
+  </div>
+  {%endblock%}
+
+ 

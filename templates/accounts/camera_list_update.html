@@ -1,0 +1,789 @@
+{% load static %}
+<!DOCTYPE html>
+<html
+  lang="en"
+  class="light-style"
+  dir="ltr"
+  data-theme="theme-default"
+  data-assets-path="{% static 'assets/' %}"
+  data-template="horizontal-menu-template-starter"
+>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
+    />
+
+    <title>
+        COS AI - camera models
+    </title>
+        
+    <meta name="description" content="" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{% static 'assets/img/favicon/favicon.ico' %}" />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Rubik:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Icons. Uncomment required icon fonts -->
+    <link rel="stylesheet" href="{% static 'assets/vendor/fonts/boxicons.css' %}" />
+
+    <link rel="stylesheet" href="{% static 'assets/vendor/fonts/fontawesome.css' %}" />
+    <link rel="stylesheet" href="{% static 'assets/vendor/fonts/flag-icons.css' %}" />
+
+    <!-- Core CSS -->
+    <link rel="stylesheet" href="{% static 'assets/vendor/css/rtl/core.css' %}" class="template-customizer-core-css" />
+    <link rel="stylesheet" href="{% static 'assets/vendor/css/rtl/theme-default.css' %}" class="template-customizer-theme-css" />
+    <link rel="stylesheet" href="{% static 'assets/css/demo.css' %}" />
+
+    <!-- Vendors CSS -->
+    <link rel="stylesheet" href="{% static 'assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css' %}" />
+
+    <!-- Page CSS -->
+
+    <!-- Helpers -->
+    <script src="{% static 'assets/vendor/js/helpers.js' %}"></script>
+
+    <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
+    <!--? Template customizer: To hide customizer set displayCustomizer value false in config.js.  -->
+    <script src="{% static 'assets/vendor/js/template-customizer.js' %}"></script>
+    <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
+    <script src="{% static 'assets/js/config.js' %}"></script>
+    
+	<!-- reconnect websocket script -->
+	<script src='https://cdnjs.cloudflare.com/ajax/libs/reconnecting-websocket/1.0.0/reconnecting-websocket.js'></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+	<link rel="stylesheet" href="{% static 'assets/vendor/libs/sweetalert2/sweetalert2.css'%}" />
+  </head>
+
+  <body>
+    <!-- Layout wrapper -->
+    <div class="layout-wrapper layout-navbar-full layout-horizontal layout-without-menu">
+      <div class="layout-container">
+        <!-- Navbar -->
+
+        <nav class="layout-navbar navbar navbar-expand-xl align-items-center bg-navbar-theme" id="layout-navbar">
+          <div class="container-xxl">
+            <div class="navbar-brand app-brand demo d-none d-xl-flex py-0 me-4">
+              <a href="{% url 'dashboard' %}" class="app-brand-link gap-2">
+                <span class="app-brand-logo demo">
+                  <svg version="1.2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 25" width="24" height="25"><defs><image  width="24" height="25" id="img1" href="data:image/png;base64,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"/></defs><style></style><use  href="#img1" x="0" y="0"/></svg>
+                </span>
+                <span class="app-brand-text demo menu-text fw-bold">COS AI</span>
+              </a>
+
+              <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-xl-none">
+                <i class="bx bx-x bx-sm align-middle"></i>
+              </a>
+            </div>
+
+            <div class="navbar-nav align-items-center">
+              <!-- <a class="nav-link style-switcher-toggle hide-arrow" href="javascript:void(0);">
+                <i class="bx bx-sm"></i>
+              </a> -->
+            </div>
+
+            <div class="layout-menu-toggle navbar-nav align-items-xl-center me-3 me-xl-0 d-xl-none">
+              <a class="nav-item nav-link px-0 me-xl-4" href="javascript:void(0)">
+                <i class="bx bx-menu bx-sm"></i>
+              </a>
+            </div>
+            <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
+              <ul class="navbar-nav flex-row align-items-center ms-auto">
+                <!-- Style Switcher -->
+                <li class="nav-item me-2 me-xl-0">
+                  <a class="nav-link style-switcher-toggle hide-arrow" href="javascript:void(0);">
+                    <i class="bx bx-sm"></i>
+                  </a>
+                </li>
+                <!--/ Style Switcher -->
+
+                <!-- User -->
+                <li class="nav-item navbar-dropdown dropdown-user dropdown">
+                  <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
+                    <div class="avatar avatar-online">
+                      <img src="{% static 'assets/img/avatars/1.png' %}" alt class="rounded-circle" />
+                    </div>
+                  </a>
+                  <ul class="dropdown-menu dropdown-menu-end">
+                    <li>
+                      <a class="dropdown-item" href="javascript:void(0);">
+                        <div class="d-flex">
+                          <div class="flex-shrink-0 me-3">
+                            <div class="avatar avatar-online">
+                              <img src="{% static 'assets/img/avatars/1.png' %}" alt class="rounded-circle" />
+                            </div>
+                          </div>
+                          <div class="flex-grow-1">
+                            <span class="fw-semibold d-block lh-1">Cos AI user</span>
+                            <small>hi</small>
+                          </div>
+                        </div>
+                      </a>
+                    </li>
+                    <li>
+                      <div class="dropdown-divider"></div>
+                    </li>
+                    <li>
+                      <a class="dropdown-item" href="{% url 'view_profile' %}">
+                        <i class="bx bx-user me-2"></i>
+                        <span class="align-middle">My Profile</span>
+                      </a>
+                    </li>
+                    <li>
+                      <a class="dropdown-item" href="#">
+                        <i class="bx bx-cog me-2"></i>
+                        <span class="align-middle">Settings</span>
+                      </a>
+                    </li>
+                    <!-- <li>
+                      <a class="dropdown-item" href="pages-account-settings-billing.html">
+                        <span class="d-flex align-items-center align-middle">
+                          <i class="flex-shrink-0 bx bx-credit-card me-2"></i>
+                          <span class="flex-grow-1 align-middle">Billing</span>
+                          <span class="flex-shrink-0 badge badge-center rounded-pill bg-danger w-px-20 h-px-20">4</span>
+                        </span>
+                      </a>
+                    </li> -->
+                    <li>
+                      <div class="dropdown-divider"></div>
+                    </li>
+                    <li>
+                      <a class="dropdown-item" href="#">
+                        <i class="bx bx-support me-2"></i>
+                        <span class="align-middle">Help</span>
+                      </a>
+                    </li>
+                    <li>
+                      <a class="dropdown-item" href="#">
+                        <i class="bx bx-help-circle me-2"></i>
+                        <span class="align-middle">FAQ</span>
+                      </a>
+                    </li>
+                    <!-- <li>
+                      <a class="dropdown-item" href="pages-pricing.html">
+                        <i class="bx bx-dollar me-2"></i>
+                        <span class="align-middle">Pricing</span>
+                      </a>
+                    </li> -->
+                    <li>
+                      <div class="dropdown-divider"></div>
+                    </li>
+                    <li>
+                      <a class="dropdown-item" href="{% url 'logout' %}" >
+                        <i class="bx bx-power-off me-2"></i>
+                        <span class="align-middle">Log Out</span>
+                      </a>
+                    </li>
+                  </ul>
+                </li>
+                <!--/ logout -->
+                <li>
+                  <li class="nav-item me-2 me-xl-0">                  
+                  <a class="nav-link style-switcher-toggle hide-arrow" href="{% url 'logout' %}">
+                    <i class="bx bx-power-off me-2"></i>
+                  </a>
+                </li>               
+              </ul>
+            </div>
+
+            <!-- Search Small Screens -->
+            <div class="navbar-search-wrapper search-input-wrapper container-xxl d-none">
+              <input
+                type="text"
+                class="form-control search-input border-0"
+                placeholder="Search..."
+                aria-label="Search..."
+              />
+              <i class="bx bx-x bx-sm search-toggler cursor-pointer"></i>
+            </div>
+          </div>
+        </nav>
+
+        <!-- / Navbar -->
+
+        <!-- Layout container -->
+        <div class="layout-page">
+          <!-- Content wrapper -->
+          <div class="content-wrapper">
+            <!-- Menu -->
+            <aside id="layout-menu" class="layout-menu-horizontal menu-horizontal menu bg-menu-theme flex-grow-0">
+              <div class="container-xxl d-flex h-100">
+                <ul class="menu-inner">
+                  <!-- Dashboards -->
+                  <li class="menu-item active">
+                    <a href="{% url 'dashboard' %}" class="menu-link menu-togglfge">
+                      <i class="menu-icon tf-icons bx bxs-home-circle"></i> 
+                      <div data-i18n="Dashboards">Dashboards</div>
+                    </a>
+                  </li>
+                  <!-- Apps -->
+                  <li class="menu-item">
+                    <a href="javascript:void(0)" class="menu-link menu-toggle">
+                      <i class="menu-icon tf-icons bx bxs-video"></i>
+                      <div data-i18n="Video Manager">Video Manager</div>
+                    </a>
+                    <ul class="menu-sub">
+                      <li class="menu-item">
+                      </li>
+                      <li class="menu-item">
+                        <a href="{% url 'vms_page' %}" class="menu-link">
+                          <i class="menu-icon tf-icons bx bxs-video-recording"></i>
+                          <div data-i18n="Live View">Live View</div>
+                        </a>
+                      </li>
+                      <li class="menu-item">
+                        <a href="javascript:void(0);" class="menu-link menu-toggle">
+                          <i class="menu-icon tf-icons bx bxs-videos"></i>
+                          <div data-i18n="Playback">Playback</div>
+                        </a>
+                        <ul class="menu-sub">
+                          <li class="menu-item">
+                            <a href="#" class="menu-link">
+                              <i class="menu-icon tf-icons bx bx-right-arrow"></i> 
+                              <div data-i18n="Camera 1">Camera 1</div>
+                              <span class="badge badge-dot bg-success"></span>
+                            </a>
+                          </li>
+                          <li class="menu-item">
+                            <a href="#" class="menu-link">
+                              <i class="menu-icon tf-icons bx bx-right-arrow"></i> 
+                              <div data-i18n="Camera 1">Camera 1</div>
+                            </a>
+                          </li>
+                          <li class="menu-item">
+                            <a href="#" class="menu-link">
+                              <i class="menu-icon tf-icons bx bx-right-arrow"></i> 
+                              <div data-i18n="Camera 1">Camera 1</div>
+                            </a>
+                          </li>
+                          <li class="menu-item">
+                            <a href="#" class="menu-link">
+                              <i class="menu-icon tf-icons bx bx-right-arrow"></i>  
+                              <div data-i18n="Camera 1">Camera 1</div>
+                            </a>
+                          </li>
+                        </ul>
+                      </li>
+                      <li class="menu-item">
+                        <a href="javascript:void(0);" class="menu-link menu-toggle">
+                          <i class="menu-icon tf-icons bx bxs-download"></i> 
+                          <div data-i18n="Download">Download</div>
+                        </a>
+                        <ul class="menu-sub">
+                          <li class="menu-item">
+                            <a href="#" class="menu-link">
+                              <i class="menu-icon tf-icons bx bx-chevrons-down"></i> 
+                              <div data-i18n="Camera 1">Camera 1</div>
+                              <span class="badge badge-dot bg-success"></span>
+                            </a>
+                          </li>
+                          <li class="menu-item">
+                            <a href="#" class="menu-link">
+                              <i class="menu-icon tf-icons bx bx-chevrons-down"></i> 
+                              <div data-i18n="Camera 1">Camera 1</div>
+                            </a>
+                          </li>
+                          <li class="menu-item">
+                            <a href="#" class="menu-link">
+                              <i class="menu-icon tf-icons bx bx-chevrons-down"></i> 
+                              <div data-i18n="Camera 1">Camera 1</div>
+                            </a>
+                          </li>
+                          <li class="menu-item">
+                            <a href="#" class="menu-link">
+                              <i class="menu-icon tf-icons bx bx-chevrons-down"></i>  
+                              <div data-i18n="Camera 1">Camera 1</div>
+                            </a>
+                          </li>
+                        </ul>
+                      </li>
+                    </ul>
+                  </li>
+
+                  <!-- Pages -->
+                  <li class="menu-item">
+                    <a href="javascript:void(0)" class="menu-link menu-toggle">
+                      <i class="menu-icon tf-icons bx bxs-car-wash"></i>
+                      <div data-i18n="ATCC">ATCC</div>
+                    </a>
+                    <ul class="menu-sub">
+                      <li class="menu-item">
+                      </li>
+                      <li class="menu-item">
+                        <a href="javascript:void(0);" class="menu-link menu-toggle">
+                          <i class="menu-icon tf-icons bx bx-show-alt"></i>
+                          <div data-i18n="Liveview">Liveview</div>
+                        </a>
+                        <ul class="menu-sub">
+                          {% for cameras in camera_list %}
+                          <li class="menu-item">
+                            <a href="{% url 'dashboard' cameras.id %}" class="menu-link">
+                              <i class="menu-icon tf-icons bx bx-webcam"></i>
+                              <div data-i18n="Camera1">{{cameras.camera_name }}</div>
+                              {% if cameras.status %}
+                              <span class="badge badge-dot bg-success"></span>
+                              {% else %}
+                              <span class="badge badge-dot bg-danger"></span>
+                              {% endif %}
+                            </a>
+                          </li>
+                          {% endfor %}
+                        </ul>
+                      </li>
+                      <li class="menu-item">
+                        <a href="javascript:void(0);" class="menu-link menu-toggle">
+                          <i class="menu-icon tf-icons bx bx-movie-play"></i>
+                          <div data-i18n="Playback">Playback</div>
+                        </a>
+                        <ul class="menu-sub">
+                          <li class="menu-item">
+                            <a href="#" class="menu-link">
+                              <i class="menu-icon tf-icons bx bx-right-arrow"></i>
+                              <div data-i18n="Camera 1">Camera 1</div>
+                              <span class="badge badge-dot bg-success"></span>
+                            </a>
+                          </li>
+                          <li class="menu-item">
+                            <a href="#" class="menu-link">
+                              <i class="menu-icon tf-icons bx bx-right-arrow"></i> 
+                              <div data-i18n="Camera 1">Camera 1</div>
+                            </a>
+                          </li>
+                          <li class="menu-item">
+                            <a href="#" class="menu-link">
+                              <i class="menu-icon tf-icons bx bx-right-arrow"></i> 
+                              <div data-i18n="Camera 1">Camera 1</div>
+                            </a>
+                          </li>
+                          <li class="menu-item">
+                            <a href="#" class="menu-link">
+                              <i class="menu-icon tf-icons bx bx-right-arrow"></i> 
+                              <div data-i18n="Camera 1">Camera 1</div>
+                            </a>
+                          </li>
+                        </ul>
+                      </li>
+                      <li class="menu-item">
+                        <a href="javascript:void(0);" class="menu-link menu-toggle">
+                          <i class="menu-icon tf-icons bx bx-chevron-down-circle"></i> 
+                          <div data-i18n="Download">Download</div>
+                        </a>
+                        <ul class="menu-sub">
+                          <li class="menu-item">
+                            <a href="#" class="menu-link">
+                              <i class="menu-icon tf-icons bx bx-chevron-down"></i>
+                              <div data-i18n="Camera 1">Camera 1</div>
+                              <span class="badge badge-dot bg-success"></span>
+                            </a>
+                          </li>
+                          <li class="menu-item">
+                            <a href="#" class="menu-link">
+                              <i class="menu-icon tf-icons bx bx-chevron-down"></i> 
+                              <div data-i18n="Camera 1">Camera 1</div>
+                            </a>
+                          </li>
+                          <li class="menu-item">
+                            <a href="#" class="menu-link">
+                              <i class="menu-icon tf-icons bx bx-chevron-down"></i> 
+                              <div data-i18n="Camera 1">Camera 1</div>
+                            </a>
+                          </li>
+                          <li class="menu-item">
+                            <a href="#" class="menu-link">
+                              <i class="menu-icon tf-icons bx bx-chevron-down"></i> 
+                              <div data-i18n="Camera 1">Camera 1</div>
+                            </a>
+                          </li>
+                        </ul>
+                      </li>
+                      <li class="menu-item">
+                        <a href="javascript:void(0);" class="menu-link menu-toggle">
+                          <i class="menu-icon tf-icons bx bxs-show"></i>
+                          <div data-i18n="AI Liveview">AI Liveview</div>
+                        </a>
+                        <ul class="menu-sub">
+                          <li class="menu-item">
+                            <a href="#" class="menu-link">
+                              <i class="menu-icon tf-icons bx bxs-webcam"></i>
+                              <div data-i18n="Camera 1">Camera 1</div>
+                              <span class="badge badge-dot bg-success"></span>
+                            </a>
+                          </li>
+                          <li class="menu-item">
+                            <a href="#" class="menu-link">
+                              <i class="menu-icon tf-icons bx bxs-webcam"></i> 
+                              <div data-i18n="Camera 1">Camera 1</div>
+                            </a>
+                          </li>
+                          <li class="menu-item">
+                            <a href="#" class="menu-link">
+                              <i class="menu-icon tf-icons bx bxs-webcam"></i> 
+                              <div data-i18n="Camera 1">Camera 1</div>
+                            </a>
+                          </li>
+                          <li class="menu-item">
+                            <a href="#" class="menu-link">
+                              <i class="menu-icon tf-icons bx bxs-webcam"></i> 
+                              <div data-i18n="Camera 1">Camera 1</div>
+                            </a>
+                          </li>
+                        </ul>
+                      </li>
+                      <li class="menu-item">
+                        <a href="javascript:void(0);" class="menu-link menu-toggle">
+                          <i class="menu-icon tf-icons bx bxs-movie-play"></i> 
+                          <div data-i18n="AI Playback">AI Playback</div>
+                        </a>
+                        <ul class="menu-sub">
+                          <li class="menu-item">
+                            <a href="#" class="menu-link">
+                              <i class="menu-icon tf-icons bx bxs-right-arrow"></i>
+                              <div data-i18n="Camera 1">Camera 1</div>
+                              <span class="badge badge-dot bg-success"></span>
+                            </a>
+                          </li>
+                          <li class="menu-item">
+                            <a href="#" class="menu-link">
+                              <i class="menu-icon tf-icons bx bxs-right-arrow"></i> 
+                              <div data-i18n="Camera 1">Camera 1</div>
+                            </a>
+                          </li>
+                          <li class="menu-item">
+                            <a href="#" class="menu-link">
+                              <i class="menu-icon tf-icons bx bxs-right-arrow"></i> 
+                              <div data-i18n="Camera 1">Camera 1</div>
+                            </a>
+                          </li>
+                          <li class="menu-item">
+                            <a href="#" class="menu-link">
+                              <i class="menu-icon tf-icons bx bxs-right-arrow"></i> 
+                              <div data-i18n="Camera 1">Camera 1</div>
+                            </a>
+                          </li>
+                        </ul>
+                      </li>
+                      <li class="menu-item">
+                        <a href="javascript:void(0);" class="menu-link menu-toggle">
+                          <i class="menu-icon tf-icons bx bxs-chevron-down-circle"></i>
+                          <div data-i18n="AI Download">AI Download</div>
+                        </a>
+                        <ul class="menu-sub">
+                          <li class="menu-item">
+                            <a href="javascript:void(0)" class="menu-link">
+                              <i class="menu-icon tf-icons bx bx-chevrons-down"></i> 
+                              <div data-i18n="Camera 1">Camera 1</div>
+                              <span class="badge badge-dot bg-success"></span>
+                            </a>
+                          </li>
+                          <li class="menu-item">
+                            <a href="javascript:void(0)" class="menu-link">
+                              <i class="menu-icon tf-icons bx bx-chevrons-down"></i> 
+                              <div data-i18n="Camera 2">Camera 2</div>
+                            </a>
+                          </li>
+                          <li class="menu-item">
+                            <a href="javascript:void(0)" class="menu-link">
+                              <i class="menu-icon tf-icons bx bx-chevrons-down"></i> 
+                              <div data-i18n="Camera 3">Camera 3</div>
+                            </a>
+                          </li>
+                          <li class="menu-item">
+                            <a href="javascript:void(0)" class="menu-link">
+                              <i class="menu-icon tf-icons bx bx-chevrons-down"></i> 
+                              <div data-i18n="Camera 1">Camera 4</div>
+                            </a>
+                          </li>
+                        </ul>
+                      </li>
+                    </ul>
+                  </li>
+
+                  <!-- Tables -->
+                  <li class="menu-item">
+                    <a href="javascript:void(0)" class="menu-link menu-toggle">
+                      <i class="menu-icon tf-icons bx bxs-report"></i> 
+                      <div data-i18n="Report">Report</div>
+                    </a>
+                    <ul class="menu-sub">
+                      <!-- Tables -->
+                      <li class="menu-item">
+                        <a href="javascript:void(0)" class="menu-link">
+                          <i class="menu-icon tf-icons bx bxs-video-recording"></i>
+                          <div data-i18n="Video Manager">Video Manager</div>
+                        </a>
+                      </li>
+                      <li class="menu-item">
+                        <a href="javascript:void(0);" class="menu-link">
+                          <i class="menu-icon tf-icons bx bxs-car-garage"></i>
+                          <div data-i18n="ATCC">ATCC</div>
+                        </a>
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+              </div>
+            </aside>
+            <!-- / Menu -->
+            
+
+            <!-- Main Content -->
+            <div class="container-xxl flex-grow-1 container-p-y">
+			  <h4 class="py-3 breadcrumb-wrapper mb-4">
+				<span class="text-muted fw-light">Admin /</span> Camera List
+			  </h4>
+			  <!-- Bootstrap Table with Header - Dark -->
+			  <div class="card">
+				<h5 class="card-header">Camera Table</h5>
+				<div class="table-responsive text-nowrap">
+				  <table class="table">
+					<thead class="table-dark">
+					  <tr>
+						<th>Camera</th>
+						<th>Channel Name</th>
+						<th>Status</th>
+						<th>Start</th>
+						<th>Stop</th>
+						<th>View</th>                         
+					  </tr>
+					</thead>
+					<tbody class="table-border-bottom-0">
+					  {% for dev_loc in device_location %}
+					  <tr>
+						<td><i class="menu-icon tf-icons bx bxs-webcam fa-lg text-danger me-3"></i> <strong>{{dev_loc.camera_name}}</strong></td>
+						<td>{{dev_loc.channel_name}}</td>
+						{% if dev_loc.status %}
+						<td><span class="badge bg-label-success me-1">Active</span></td>
+						{% else  %}
+						<td><span class="badge bg-label-danger me-1">InActive</span></td>
+						{% endif %}
+						<td>
+						  <button type="button" onclick="startClick('{{dev_loc.id}}')" id = "start_detect" class="btn rounded-pill btn-success">
+							<i class="tf-icons bx bxs-right-arrow"></i></button>
+						</td>
+						<td>
+						  <button type="button" onclick="stopClick('{{dev_loc.id}}')" id = "stop_detect" class="btn rounded-pill btn-google-plus">
+							<i class="tf-icons bx bxs-x-square"></i></button>
+						</td>
+						<td>
+						  <a href="{% url 'dashboard' dev_loc.id %}" class="btn rounded-pill btn-instagram">
+							<i class="tf-icons bx bxs-show"></i></a>
+						</td>                        
+					  </tr>  
+					  {% endfor %}                                                                
+					</tbody>
+				  </table>
+				</div>
+			  </div>
+			</div>
+            <!--/ Content -->
+
+            <!-- Footer -->
+            <footer class="content-footer footer bg-footer-theme">
+              <div class="container-xxl d-flex flex-wrap justify-content-between py-2 flex-md-row flex-column">
+                <div class="mb-2 mb-md-0">
+                  ©
+                  <script>
+                    document.write(new Date().getFullYear());
+                  </script>
+                  
+                  <a href="#" class="footer-link fw-semibold">COS AI | All Rights Reserved</a>
+                </div>
+                
+              </div>
+            </footer>
+            <!-- / Footer -->
+          
+           
+
+            <div class="content-backdrop fade"></div>
+          </div>
+          <!--/ Content wrapper -->
+        </div>
+
+        <!--/ Layout container -->
+      </div>
+    </div>
+
+    <!-- Overlay -->
+    <div class="layout-overlay layout-menu-toggle"></div>
+
+    <!-- Drag Target Area To SlideIn Menu On Small Screens -->
+    <div class="drag-target"></div>
+
+    <!--/ Layout wrapper -->
+
+    <!-- Core JS -->
+    <!-- build:js assets/vendor/js/core.js -->
+    <script src="{% static 'assets/vendor/libs/jquery/jquery.js' %}"></script>
+    <script src="{% static 'assets/vendor/libs/popper/popper.js' %}"></script>
+    <script src="{% static 'assets/vendor/js/bootstrap.js' %}"></script>
+    <script src="{% static 'assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js' %}"></script>
+
+    <script src="{% static 'assets/vendor/libs/hammer/hammer.js' %}"></script>
+
+    <script src="{% static 'assets/vendor/js/menu.js' %}"></script>
+    <!-- endbuild -->
+
+    <!-- Vendors JS -->
+
+    <!-- Main JS -->
+    <script src="{% static 'assets/js/main.js' %}"></script>
+
+    <!-- Page JS -->
+    <script>
+
+    // var socket = new ReconnectingWebSocket("ws://" + window.location.host + "/ws/stream/" + "room/" )
+    
+    function startClick(id){
+        
+        console.log('working')
+        $.ajax({
+            url: "{% url 'start_detect' %}",
+            method: 'post',
+            data: {
+                'id':id ,
+                'csrfmiddlewaretoken': '{{ csrf_token }}',
+            },
+            dataType: 'json',
+            beforeSend: function(){
+                $.blockUI({
+                message:
+                '<div class="d-flex justify-content-center"><p class="mb-0">Please wait...</p> <div class="sk-wave m-0"><div class="sk-rect sk-wave-rect"></div> <div class="sk-rect sk-wave-rect"></div> <div class="sk-rect sk-wave-rect"></div> <div class="sk-rect sk-wave-rect"></div> <div class="sk-rect sk-wave-rect"></div></div> </div>',
+                css: {
+                backgroundColor: 'transparent',
+                color: '#fff',
+                border: '0'
+                },
+                overlayCSS: {
+                opacity: 0.5
+                }
+            });
+            },
+            complete: function () {
+                 $.unblockUI();
+            },
+            success: function(data){
+                
+             
+                if (data.success){
+                    $('#start_detect').prop('disabled', true);
+                    $('#stop_detect').prop('disabled', false);
+                    Swal.fire({
+                    title: 'Good job!',
+                    text: 'You started detection!',
+                    icon: 'success',
+                    customClass: {
+                    confirmButton: 'btn btn-primary'
+                    },
+                    buttonsStyling: false
+                  });
+               }else{
+                Swal.fire({
+                title: 'Warning!',
+                text: ' You detection already started!',
+                icon: 'warning',
+                customClass: {
+                confirmButton: 'btn btn-primary'
+                },
+                buttonsStyling: false
+            });
+            }
+                
+            }
+        });
+    }
+ 
+    function stopClick(id){
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, stop it!',
+            customClass: {
+            confirmButton: 'btn btn-primary me-3',
+            cancelButton: 'btn btn-label-secondary'
+            },
+            buttonsStyling: false
+        }).then(function (result) {
+       
+        if (result.value) {
+  
+          $.ajax({
+            url: "{% url 'stop_detect' %}",
+            method: 'post',
+            data: {
+                'id':id,
+                'csrfmiddlewaretoken': '{{ csrf_token }}',
+            },
+            dataType: 'json',
+            success: function(data){
+              
+                  if(data.success == 1){
+                    $('#start_detect').prop('disabled', false);
+                    $('#stop_detect').prop('disabled', true);
+                    Swal.fire({
+                    icon: 'success',
+                    title: 'Stoped!',
+                    text: 'Your detection stoped',
+                    customClass: {
+                      confirmButton: 'btn btn-success'
+                    }
+                  });
+                  }else if (data.success == 2){
+                    Swal.fire({
+                      title: 'Error!',
+                      text: 'No detection found!',
+                      icon: 'error',
+                      customClass: {
+                        confirmButton: 'btn btn-primary'
+                      },
+                      buttonsStyling: false
+                    });
+                  }
+                  else if (data.success == 3){
+                    Swal.fire({
+                      title: 'Error!',
+                      text: ' detection already stopped!',
+                      icon: 'error',
+                      customClass: {
+                        confirmButton: 'btn btn-primary'
+                      },
+                      buttonsStyling: false
+                    });
+                  }
+                    
+                }
+            })
+            
+          } else if (result.dismiss === Swal.DismissReason.cancel) {
+            Swal.fire({
+              title: 'Cancelled',
+              text: 'Your detection is safe :)',
+              icon: 'error',
+              customClass: {
+                confirmButton: 'btn btn-success'
+              }
+            });
+          }
+        });
+      
+
+    }
+    
+    </script>
+    <script src="{% static 'assets/vendor/libs/sweetalert2/sweetalert2.js' %}"></script>
+       <!-- Vendors JS -->
+    <script src="{% static 'assets/vendor/libs/block-ui/block-ui.js' %}"></script>
+
+    <script src="{% static 'assets/js/extended-ui-blockui.js' %}"></script>
+
+  </body>
+</html>

@@ -1,0 +1,127 @@
+
+{% extends 'templates/main_base.html' %}
+
+{% load static %}
+
+{% block title %} External Videos Detection Status List{% endblock %}
+<script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+<script src='https://code.jquery.com/jquery-3.2.1.min.js'></script>
+<script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js'></script>
+
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.css">
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.js"></script>
+<script javascript>
+
+
+</script>
+
+
+{% block content %}
+
+<div class="container-fluid">
+    <h1>External Videos Detection Status Update</h1>
+    {% csrf_token %}
+    
+    <div class="row" > 
+      <div class="col-md-8">
+        
+        {% if all_Videos  %}
+        <table id="videosTable" name="videosTable" class="table table-striped">
+          <thead>
+            <tr>
+              <th>CompanyName</th>
+              <th>ProjectName</th>
+              <th>StationName</th>
+              <th>GIS</th>
+              <th>TrafficType</th>
+              <th>No.of Days (Video)</th>
+              <th>StartDate</th>
+              <th>EndDate</th> 
+              {% comment %} <th>uploaded Video /URL Path</th> {% endcomment %}
+              <th> uploaded Video link</th>
+              <th> uploaded Video download</th>
+              <th>Detected Video Path</th>
+              <th>Report Path</th>
+              <th>Detectionstatus</th>
+              <th>Remarks </th>
+              <th>Action</th>              
+              <!-- <th>Save</th> -->
+              
+            </tr>
+          </thead>
+          <tbody>
+            
+            {% for video in all_Videos %}
+            <form name="Videoform" id="{{id}}">
+              <tr name="videolist" id="{{video.id}}">
+                
+                <td class="companyName videoData" name="CompanyName">{{video.CompanyName}}</td>
+                <td class="ProjectName videoData" name="ProjectName">{{video.ProjectName}}</td>
+                <td class="StationName videoData" name="StationName">{{video.StationName}}</td>
+                <td class="GIS videoData" name="VideoTakenDate">{{video.GIS}}</td>
+                <td class="TrafficType videoData" name="VideoTakenDate">{{video.TrafficType}}</td>
+                <td class="Ndays videoData" name="VideoTakenDate">{{video.Ndays}}</td>
+                <td class="StartDate videoData" name="VideoTakenDate">{{video.VideoStartDate}}</td>
+                <td class="EndDate videoData" name="VideoStartTime">{{video.VideoEndDate}}</td>
+                {% if video.urlpath|default:''|striptags|length == 0  %}
+                  {% comment %} <td class="files videoData" name="files"> 
+                  <video autoplay="autoplay" controls muted   height="100px"> <source src= "{{DRIVE}}{{video.CompanyName}}/{{video.files}}"/> </video> </td> {% endcomment %}
+                  <td class="gdrive_view videoData" name="gdrive_view"> <a href = "{{video.gdrive_view}}">{{video.gdrive_view}}</a></td>
+                  <td class="gdrive_dwnld videoData" name="gdrive_dwnld"> 
+                    <a href="{{video.gdrive_dwnld}}" download>Download Video</a>                  
+                   </td>
+                  
+                {% else %}
+                  <td class="urlpath videoData" name="urlpath">{{video.urlpath}}</td>
+                  <td> </td>
+                {% endif %}
+                <td class="detectedvideopath videoData" name="DetectedVideoPath">{{video.DetectedVideoPath}}</td>
+                <td class="detectionReportpath videoData" name="detectionReportpath">{{video.detectionReportpath}}</td>
+                <td class="detectionstatus videoData" id="detectionstatus" name="detectionstatus" style="{% if video.videostatus == 'Completed' %}color: green;{% elif video.videostatus == 'Not Started' %}color: red;{% elif video.videostatus == 'InProgress' %}color: Blue;{% endif %}"> {{video.videostatus}}</td>
+                <td class="Remarks videoData" name="Remarks">{{video.Remarks}}</td>
+                <td > <a href="{% url 'UpdateExtVideo' video.id %}">Edit </a></td>
+                  
+                           
+                
+                
+               
+              </tr>
+
+            </form>
+            {% endfor %}  
+         
+          </tbody>
+ 
+        </table>
+        
+        {% else %}
+          <span> No videos available for detection</span> 
+        {% endif %}
+      </div>
+    </div>
+    
+  </div>
+  {%endblock%}
+
+  {% block script %}
+ 
+  <script javascript >
+
+    
+    
+  </script>
+ 
+<script>
+  $(document).ready(function() {
+    $('#videosTable').DataTable({
+      "paging": true,
+      "pageLength": 10,
+      "lengthMenu": [10, 25, 50, 75, 100],
+    });
+  });
+ </script>
+ 
+ 
+   
+ {% endblock %}
+ 

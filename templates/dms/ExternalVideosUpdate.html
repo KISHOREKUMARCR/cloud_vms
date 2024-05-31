@@ -1,0 +1,191 @@
+
+{% extends 'templates/main_base.html' %}
+{% load static %}
+
+{% block title %}Update Client Video File Detection Status{% endblock %}
+{% comment %} <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script> {% endcomment %}
+<script src='https://code.jquery.com/jquery-3.2.1.min.js'></script>
+<script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js'></script>
+{% block content %}
+<div class="container flex-grow-1 container-p-y">
+        <h1> Detection Status Update   </h1> 
+        <form method="POST" action="" class="as_t" enctype="multipart/form-data"> 
+
+          {% csrf_token %} 
+          
+        <div class="as_t row" >
+          
+          <div class="row">  
+            <div class='col'>
+            <label>Company</label> <br>
+            <input type="text" id="CompName" name="CompName" value={{form.instance.CompanyName.name}} readonly> 
+            <input type="hidden" name="CompanyName" value="{{ form.instance.CompanyName.id }}">
+            </div>         
+             <div class='col'>
+                <label >Project</label> <br>
+                <input type="text" id="ProjName" name="ProjName"value={{form.instance.ProjectName.name}}   readonly>    
+                <input type="hidden" name="ProjectName" value="{{ form.instance.ProjectName.id }}">
+              </div>
+              <div class='col'>
+                <label >location</label>  <br>
+                <input type="text" value={{form.instance.StationName.name}} readonly> 
+                <input type="hidden" name="StationName" value="{{ form.instance.StationName.id }}">
+              </div>
+              <div class='col' hidden> 
+              <label >GIS</label> <br>
+               <input type="text" value={{ form.instance.GIS}} readonly> 
+              <input type="hidden" name="GIS" value="{{ form.instance.GIS|escape}}">  
+              </div>
+          </div > 
+            <div class='row'> 
+             <div class='col'> 
+              <label >TrafficType</label> <br>
+              <input type="text" value="{{form.instance.TrafficType}}" readonly> 
+              <input type="hidden" name="TrafficType" value="{{form.instance.TrafficType}}">
+              </div>
+              <div class='col'> 
+                 <label >Video Analytics Days</label> 
+                <input type="text" value={{form.instance.Ndays}} readonly> 
+                <input type="hidden" name="Ndays" value="{{form.instance.Ndays}}"></div>
+              <div class='col' >
+             <label>video Start Date</label>
+             {{form.VideoStartDate}}  </div>
+             <div class='col'  readonly> 
+             <label >Video End Date</label> 
+            {{form.VideoEndDate}} </div>
+             </div>
+          
+          
+            <div class='col'> <label >DetectedVideoPath</label> <br> 
+             {{form.DetectedVideoPath}}
+            </div>
+              <div class='col'><label > DetectionReportpath</label> <br> 
+               
+                {{form.DetectionReportPath}}
+               </div>
+             <div class="col"> <label >Remarks</label> <br> 
+              <input type="text" value="{{ form.instance.Remarks }}" readonly>
+              <input type="hidden" name="Remarks" value="{{form.instance.Remarks}}">
+            </div>
+          </div>
+             
+             <div class="row" >
+              <div class="col" style="height :30px; width : 90px">
+                
+              <label >Video Detection Status</label> <br>
+              
+              {{ form.videostatus|safe }}<br>
+             
+              {% comment %}
+              <select class="form-select videostatus"  for="basic-default-videostatus" name="videostatus" style="margin: 10px;width: 200px" required>
+               
+                 <option value="Not Started" data-icon="bx bxl-codepen">Not Started </option>                
+                <option value="InProgress" data-icon="bx bxl-codepen">InProgress </option>
+                <option value="Completed" data-icon="bx bxl-codepen">Completed </option>     
+                <option value="Not Started" data-icon="bx bxl-codepen" {% if form.videostatus == 'Not Started' %}selected{% endif %}>Not Started</option>
+                <option value="InProgress" data-icon="bx bxl-codepen" {% if form.videostatus == 'InProgress' %}selected{% endif %}>InProgress</option>
+                <option value="Completed" data-icon="bx bxl-codepen" {% if form.videostatus == 'Completed' %}selected{% endif %}>Completed</option> 
+            </select> {% endcomment %}
+            </div> 
+           <br><br>
+          
+            {%if form.files|default:''|striptags|length > 0 %}
+            
+              <div class='col'  hidden> 
+                <label > Uploaded Video Link</label> 
+               {{form.gdrive_view}} 
+              </div>
+              <div class='col' hidden> 
+                <label > Video Dwnld</label> 
+               
+                {{ form.gdrive_dwnld }}
+              </div>
+                
+                
+            
+            {% else %}
+            <div class="col"> <label >URL Path</label> <br> 
+              <input type="text" value="{{ form.instance.urlpath }}" readonly>
+              <input type="hidden" name="urlpath" value="{{form.instance.urlpath}}">
+            </div>
+            {% endif %}
+            <br> <br>
+              <div class="mb-5 px-4">
+               <button type="submit" class="btn btn-primary">Submit</button>
+              <button type="button" value="reset" class="btn btn-secondary" id="resetBtn" onClick="this.form.reset()" >reset</button>
+   
+              </div>
+            
+          </div>
+            
+    
+           <!-- {{ form }}  -->
+          
+    {% if errors %}
+    <div class="alert alert-danger">
+        <strong>Error:</strong> Please correct the following errors.
+        <ul>
+            {% for field, error_list in errors.items %}
+                {% for error in error_list %}
+                    <li>{{ field }}: {{ error }}</li>
+                {% endfor %}
+            {% endfor %}
+        </ul>
+    </div>
+{% endif %}
+         
+        </form> 
+      </div>
+      </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+<style>
+  form {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  .mb-1 {
+    flex: 1 0 30%; /* Adjust the percentage as needed */
+} {% comment %} 
+ input, select, .VideoFile {
+    height: 40px;
+    width: 30%;
+    margin: 10px;
+    padding: 10px;
+    box-sizing: border-box;
+    line-height: 0.6rem;
+   
+  } 
+{% endcomment %}
+ input[type="text"] {
+    height: 40px;
+    width: 95%; 
+    margin: 5px;
+    padding: 10px;
+    box-sizing: border-box;
+    line-height: 0.6rem;
+  } 
+  .form-element {
+    height: 43px;
+    width: 200px !important;
+    
+}
+
+  .option {
+    margin-right: 10px;
+  }
+  .col{ margin: 5px;
+    padding: 10px;}
+  
+  
+</style>
+
+  {%endblock%}

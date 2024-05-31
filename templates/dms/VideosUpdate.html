@@ -1,0 +1,129 @@
+
+{% extends 'templates/main_base.html' %}
+{% load static %}
+
+{% block title %}Edit Video File{% endblock %}
+{% block stylesheet %} 
+
+<style>
+ 
+</style>
+{% endblock %}
+<script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+<script src='https://code.jquery.com/jquery-3.2.1.min.js'></script>
+<script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js'></script>
+{% block content %}
+
+<div class="container flex-grow-1 container-p-y">
+  <h1 class="py-3 mb-4">Edit Video File</h1s> 
+  <div class="row mb-8">
+      <!-- Browser Default -->
+      <div class="col-md mb-7 mb-md-0">
+      <div >
+        form.CompanyName
+        <form method="POST" action="" class="as_t" enctype="multipart/form-data"> 
+
+          {% csrf_token %} 
+          
+        <div class="as_t row" >
+          &nbsp&nbsp&nbsp<div class="mb-1">  
+            <label class="form-label" for="basic-default-company" style="margin: 10px ;">company</label><br> 
+             {{form.CompanyName}}  </div>
+         
+          <div class="mb-1"> 
+            <label class="form-label" for="basic-default-project" style="margin: 10px;">project</label> <br> 
+            {{form.ProjectName}} </div>
+          <div class="mb-1">
+            <label class="form-label" for="basic-default-location" style="margin: 10px;" >location</label><br>
+             {{form.StationName}} </div>
+          <div class="mb-2 ">
+             <label class="form-label" for="basic-default-CameraNo" name="CameraNo" style="margin: 10px;">CameraNo</label><br>
+            {{form.CameraNo}}
+          </div>
+          <div class="mb-2">
+            <label class="form-label" for="basic-default-cModel"  name="cModel" style="margin: 10px;">CameraModel</label> <br>
+             {{form.CModel}}
+          </div>  
+          <div class="mb-1">
+             <label class="form-label" for="basic-default-CHeight"  name="CHeight" style="margin: 10px;">Camera Height</label><br> 
+            {{form.CHeight}} </div>
+          <div class="mb-1">
+             <label class="form-label" for="basic-default-CView" name="CView" style="margin: 10px;">Camera View</label><br>
+            {{form.CView}} </div>
+          <div class="mb-1">
+             <label class="form-label" for="basic-default-VideoStartTime" name="VideoStartTime" style="margin: 10px;">video Start Time</label> <br>
+             {{form.VideoStartTime}} </div>
+          <div class="mb-1"> 
+             <label class="form-label" for="basic-default-VideoEndTime" name="VideoEndTime" style="margin: 10px;">Video End Time</label> <br> 
+            {{form.VideoEndTime}} </div>
+          <div class="mb-1"> 
+            <label class="form-label" for="basic-default-LICate" name="LICate" style="margin: 10px;">Light Intensity</label><br> 
+            {{form.LICate}} </div>
+          <div class="mb-1">
+             <label class="form-label" for="basic-default-VideoFormat" name="VideoFormat" style="margin: 10px;">Video File Format</label><br> 
+             {{form.VideoFormat}} </div>   
+            <div class="mb-1"> 
+              <label class="form-label" for="basic-default-FileName"  name="FileName" style="margin: 10px;">FileName</label> <br>
+            {{form.FileName}} </div>
+          <div class="mb-1 "> 
+            <label class="form-label" name="VideoFile" for="VideoFile" style="margin: 10px;">VideoFile</label><br><br>  
+            <video autoplay="autoplay" class="px-4" controls muted  width="250px" height="100px"> 
+              <source src="{{DRIVE}}{{form.instance.VideoFile}}" >  </video>
+            <br> <br> <div class="px-4">{{form.VideoFile}} </div> 
+          </div>
+            <div class="mb-1"> <label class="form-label mb-1" for="basic-default-Remarks" name="Remarks" style="margin: 10px;">Remarks</label> <br> 
+            {{form.Remarks}} </div>
+          <div> <input type="hidden" id="videostatus" name="videostatus" value="Updated"> <br>
+             {{form.videostatus}} </div>
+            </div>
+           <!-- {{ form }}  -->
+           <div class="mb-5 px-4">
+            <button type="submit" class="btn btn-primary">Submit</button>
+           <button type="button" value="reset" class="btn btn-secondary" id="resetBtn" onClick="this.form.reset()" >reset</button>
+
+           </div>
+           
+         
+        </form> 
+      </div>
+      </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+{% comment %} <style>
+  form {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  
+  input, select, .VideoFile {
+    height: 40px;
+    width: 200px;
+    margin: 10px;
+    padding: 10px;
+    box-sizing: border-box;
+    line-height: 0.6rem;
+   
+  }
+  
+  .form-element {
+    height: 43px;
+    width: 200px !important;
+    
+}
+
+
+  .VideoFile {
+    margin-right: 12px;
+  }
+  
+</style> {% endcomment %}
+
+  {%endblock%}

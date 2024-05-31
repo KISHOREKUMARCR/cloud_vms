@@ -1,0 +1,294 @@
+{% extends "main_base.html" %}
+{% load static %}
+
+<!-- tile tag -->
+{% block title %}{% endblock %}
+
+<!-- link stylesheet tag -->
+{% block stylesheet  %}
+<link rel="stylesheet" href="{% static 'assets/vendor/libs/typeahead-js/typeahead.css' %}" />
+<link rel="stylesheet" href="{% static 'assets/vendor/libs/select2/select2.css' %}" />
+<link rel="stylesheet" href="{% static 'assets/vendor/libs/formvalidation/dist/css/formValidation.min.css' %}" />
+<link rel="stylesheet" href="{% static 'assets/vendor/libs/animate-css/animate.css' %}" />
+<link rel="stylesheet" href="{% static 'assets/vendor/libs/sweetalert2/sweetalert2.css' %}" />
+<link rel="stylesheet" href="{% static 'assets/css/customcaptcha.css' %}" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.2.0/sweetalert2.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.2.0/sweetalert2.all.min.js"></script>
+
+<link rel="stylesheet" href="{% static 'assets/vendor/css/pages/page-account-settings.css' %}" />
+<link rel="stylesheet" href="{% static 'assets/vendor/libs/datatables-bs5/datatables.bootstrap5.css' %}" />
+<link rel="stylesheet" href="{% static 'assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css' %}" />
+<link rel="stylesheet" href="{% static 'assets/vendor/libs/datatables-checkboxes-jquery/datatables.checkboxes.css' %}" />
+
+<!-- Page CSS -->
+<link rel="stylesheet" href="{% static 'assets/vendor/css/pages/page-profile.css' %}" />
+{% endblock %}
+
+<!-- content tag -->
+{% block content %}
+<!-- Content -->
+	     
+	<div class="container-xxl flex-grow-1 container-p-y">
+	  <h4 class="py-3 breadcrumb-wrapper mb-4">
+		<span class="text-muted fw-light">Account Settings /</span> Security
+	  </h4>
+
+	  <div class="row">
+		<div class="col-md-12">
+		  <ul class="nav nav-pills flex-column flex-md-row mb-3">
+			<li class="nav-item">
+			  <a class="nav-link " href="{% url 'profile_edit_final' %}"><i class="bx bx-user me-1"></i> Profile</a>
+			</li>
+			<li class="nav-item">
+			  <a class="nav-link active" href="{% url 'profile_edit_security' %}"
+				><i class="bx bx-lock-alt me-1"></i> Security</a>
+			</li>
+			<li class="nav-item">
+			  <a class="nav-link" href="{% url 'profile_edit_account_delete' %}"
+				><i class="bx bx-link-alt me-1"></i> Account</a
+			  >
+			</li>
+		   </ul> 
+		  <!-- Change Password -->
+		  <div class="card mb-4">
+			<h5 class="card-header" id="username">{{user.user_name}}</h5>
+			<h5 class="card-header">Change Password </h5>
+			<div class="card-body">
+			  <form method="POST">
+			   {% csrf_token %}
+				<div class="row">
+				  <div class="mb-3 col-md-6 form-password-toggle">
+					<label class="form-label" for="currentPassword">Current Password</label>
+					<div class="input-group input-group-merge">
+					  <input required
+ 						class="form-control"
+						type="password"
+						name="password"
+						id="password"
+						maxlength = "8"
+						placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
+					  />
+					  <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
+					</div>
+					<span id="WrongCuPError" class="error"></span>
+				  </div>
+				</div>
+				<div class="row">
+				  <div class="mb-3 col-md-6 form-password-toggle">
+					<label class="form-label" for="newPassword">New Password</label>
+					<div class="input-group input-group-merge">
+					  <input required
+						class="form-control"
+						type="password"
+						id="newPassword"
+						maxlength = "8"
+						name="newPassword"
+						placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
+					  />
+					  <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
+					</div>
+				  </div>
+
+				  <div class="mb-3 col-md-6 form-password-toggle">
+					<label class="form-label" for="confirmPassword">Confirm New Password</label>
+					<div class="input-group input-group-merge">
+					  <input required
+						class="form-control"
+						type="password"
+						name="confirmPassword"
+						id="confirmPassword"
+						maxlength = "8"
+						placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
+					  />
+					  <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
+					</div>
+					<span id="WrongCPError" class="error"></span>
+				  </div>
+				  <div class="col-12 mb-4">
+					<p class="fw-semibold mt-2">Password Requirements:</p>
+					<ul class="ps-3 mb-0">
+					  <li class="mb-1" id="PWmsg1">Must be 8 characters long </li>
+					  <li class="mb-1" id="PWmsg2">At least one uppercase character</li>
+					  <li id="PWmsg3">At least one number</li>
+					</ul>
+				  </div>
+				  <div class="col-12 mt-1">
+					<button type="submit" class="btn btn-primary me-2">Save changes</button>
+					
+				  </div>
+				</div>
+			  </form>
+			</div>
+		  </div>
+		  <!--/ Change Password -->
+
+		  
+		  <!--/ Recent Devices -->
+		</div>
+	  </div>
+	</div>
+	<!--/ Content -->
+	<!--/ Content -->
+	
+
+
+{% endblock %}
+
+{% block script %} 
+<script src="{% static 'assets/vendor/libs/hammer/hammer.js' %}"></script>
+
+<script src="{% static 'assets/vendor/libs/i18n/i18n.js' %}"></script>
+<script src="{% static 'assets/vendor/libs/typeahead-js/typeahead.js' %}"></script>
+
+
+<!-- endbuild -->
+
+<!-- Vendors JS -->
+<script src="{% static 'assets/vendor/libs/select2/select2.js' %}"></script>
+<script src="{% static 'assets/vendor/libs/formvalidation/dist/js/FormValidation.min.js' %}"></script>
+<script src="{% static 'assets/vendor/libs/formvalidation/dist/js/plugins/Bootstrap5.min.js' %}"></script>
+<script src="{% static 'assets/vendor/libs/formvalidation/dist/js/plugins/AutoFocus.min.js' %}"></script>
+<script src="{% static 'assets/vendor/libs/cleavejs/cleave.js' %}"></script>
+<script src="{% static 'assets/vendor/libs/cleavejs/cleave-phone.js' %}"></script>
+<script src="{% static 'assets/vendor/libs/sweetalert2/sweetalert2.js' %}"></script>
+<script src="{% static 'assets/vendor/js/menu.js' %}"></script>
+<script src="{% static 'assets/js/modal-enable-otp.js' %}"></script>
+
+
+<!-- Page JS -->
+<script src="{% static 'assets/js/pages-account-settings-account.js' %}"></script>
+
+<script>
+	var temp = 0,tempcp =0 ,tempp=0,tempcup=0;
+	var upperCase= new RegExp('[A-Z]');
+	var numbers = new RegExp('[0-9]');
+	
+	function validatecurrentpassword(){
+		$(document).ready(function(){
+			
+			//alert();
+			$("#password").keyup(function () {
+				var password = $(this).val();
+				var username = $("#username").text();
+				
+				  $.ajax({
+					url: 'validate_username',
+					data: {
+					  'username' : username,
+					  'password': password
+					},
+					dataType: 'json',
+					success: function (data) {
+						if (!data.is_user) {tempcup=0;
+							$('#WrongCuPError').text("Please Enter the correct current password for this account.").show();$('#WrongCuPError').css('color','red');
+						}else{tempcup=1;$('#WrongCuPError').text("Valid.").show();$('#WrongCuPError').css('color','green');}
+					 } 
+			  });
+			 
+			});			
+				
+		}); 
+	}
+	
+	function validatepassword(){
+	  $("#newPassword").keyup(function() {
+			if(($(this).val().length >= 0 && $(this).val().length <= 7)){
+				$('#PWmsg1').css('color','red');
+				$('#PWmsg2').css('color','red');
+				$('#PWmsg3').css('color','red');
+				}
+				
+			if($(this).val().match(upperCase) ){$('#PWmsg2').css('color','green');}
+					
+			if($(this).val().match(numbers) ){$('#PWmsg3').css('color','green');}
+			
+			if(($(this).val().length >= 8)){$('#PWmsg1').css('color','green');}
+		});
+	}
+	
+	function passwordvalidation(){
+		if( $("#newPassword").val().length >= 8 && $("#newPassword").val().match(upperCase) && $("#newPassword").val().match(numbers)){
+				tempp=1;
+			}else{tempp=0;}
+	}
+	
+	function arePasswordsMatching() {
+		return $("#newPassword").val() === $("#confirmPassword").val();
+	}
+			
+	function validateconfirmpassword(){
+	  $("#confirmPassword").keyup(function() {
+		if(arePasswordsMatching()){tempcp=1;$('#WrongCPError').text("Password Confirmed.").show();$('#WrongCPError').css('color','green');vcpass = "true";}
+		else{tempcp=0;$('#WrongCPError').text("Please Enter the same password.").show();$('#WrongCPError').css('color','red');vcpass = "false";}
+	  });
+	}
+	
+	$(function(){
+		
+		validatecurrentpassword();
+		validatepassword();
+		validateconfirmpassword();
+		passwordvalidation();
+		
+		$("button").click(function(e){
+			if(tempcp == 1 && $("#newPassword").val().length >= 8 && $("#newPassword").val().match(numbers) && $("#newPassword").val().match(upperCase) && tempcup == 1){
+				temp = 1;
+			}
+			
+			if(temp == 0){
+				//temp = 1;
+				validateconfirmpassword();
+				if(tempcp == 0){$('#confirmPassword').focus();temp = 0 ;}
+				if(!(arePasswordsMatching())){tempcp == 0;$('#WrongCPError').text("Please Enter the same password.").show();$('#WrongCPError').css('color','red');$('#confirmPassword').focus();temp = 0 ;}
+				if( !$("#newPassword").val().match(numbers)){$('#newPassword').focus();temp = 0 ;}
+				if( !$("#newPassword").val().match(upperCase)){$('#newPassword').focus();temp = 0 ;}
+				if( !$("#newPassword").val().length >= 8){$('#newPassword').focus();temp = 0 ;}
+				//if( !$("#newPassword").val().length >= 8){$('#newPassword').focus();temp = 0 ;}
+				if(tempcup == 0){$('#password').focus();temp = 0 ;}
+				
+				
+				return false;
+			}
+			else{
+				swal(
+					'Success',
+					'Registered Successfully!',
+					'success'
+				)
+			}
+		});
+	});		
+		
+		/*
+		
+		$("button").click(function(e){
+			//alert(temcp,tempp,tempcup);
+			if(!($("#newPassword").val().length >= 8) ||( !$("#newPassword").val().match(upperCase)) || ( !$("#newPassword").val().match(numbers)) || tempcup == 0 || tempcp == 0){
+				//if(tempp == 0){$('#newPassword').focus();temp = 0 ;}
+				if(tempcp == 0){$('#confirmPassword').focus();temp = 0 ;}
+				if(tempcup == 0){$('#password').focus();temp = 0 ;}
+				if( !$("#newPassword").val().length >= 8){$('#newPassword').focus();temp = 0 ;}
+				if( !$("#newPassword").val().match(numbers)){$('#newPassword').focus();temp = 0 ;}
+				if( !$("#newPassword").val().match(upperCase)){$('#newPassword').focus();temp = 0 ;}
+				//alert(temcp,tempp,tempcup);
+				//return false;
+				e.preventDefault();
+			}
+			if(tempp == 1 || tempcup == 1 || tempcp == 1){
+				swal(
+					'Success',
+					'Registered Successfully!',
+					'success'
+				)
+			}
+			else{return true;}
+			
+		});
+		*/
+	
+	
+
+</script>
+{% endblock %}          
+
+        

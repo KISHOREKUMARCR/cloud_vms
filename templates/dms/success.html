@@ -1,0 +1,18 @@
+
+
+{% extends 'templates/main_base.html' %}
+{% block content %}
+<div class="container">
+    
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <script>
+        Swal.fire({
+            icon: 'success',
+            title: 'Success',
+            text: 'Data Saved successfully',
+            confirmButtonText: 'OK'
+        });
+    </script>
+  
+</div>
+{% endblock %}

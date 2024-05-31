@@ -1,0 +1,78 @@
+{% extends 'templates/main_base.html' %}
+{% load static %}
+
+{% block title %} Videos List{% endblock %}
+<script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+<script src='https://code.jquery.com/jquery-3.2.1.min.js'></script>
+<script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js'></script>
+{% block content %}
+ <!-- Content wrapper -->
+ <div class="content-wrapper">
+  <!-- Content -->
+
+  <div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="py-3 breadcrumb-wrapper mb-4"><span class="text-muted fw-light">Videos /</span> Detection</h4>
+    <form method="get"> 
+    {{ VideoDetect.form}} 
+    
+   
+      <button class="btn btn-primary" type="submit">  Search </button>
+         
+    </form>  
+ 
+    <div class="row"> <div class="col-md-12">
+    <input type="button" id="submit" class="btn btn-primary" value="submit" style="float: right;">
+    </div>
+    <!-- DataTable with Buttons -->
+    <div class="card">
+      <div class="card-datatable table-responsive pt-0">
+       
+        <table class="datatables-basic table table-bordered">
+          <thead>
+            
+            <tr>         
+              
+              <th>id</th>
+              <th>Company</th>
+              <th>Project</th>
+              <th>Location</th>              
+              <th>Video Date</th>
+              <th>Remarks</th>
+              <th> <input type="checkbox" id="check_all" name="check_all" /> Detect All</th>
+            </tr>
+          </thead>
+          {% if all_Videos  %}
+
+          <tbody>
+            {% for video in all_Videos %}
+            <tr>
+                           
+              <td>{{video.id}}</td>
+              <td>{{video.CompanyName}}</td>
+              <td>{{video.ProjectName}}</td>
+              <td>{{video.StationName}}</td>
+              <td>{{video.VideoTakenDate}}</td>              
+              <td>{{video.Remarks}}</td>
+              <td><input type="checkbox" class="row_check" id="row_id"></td>
+            </tr>
+            {% endfor %}
+          </tbody>
+          {% endif %}
+        </table>
+      </div>
+    </div>
+  
+    {% endblock %}
+
+    {% block script %}
+
+
+    <script>
+      
+      $('#check_all').change(function () {
+        $('tbody tr td input[type="checkbox"]').prop('checked', $(this).prop('checked'));
+    });
+  
+  
+    </script>
+    {% endblock %}

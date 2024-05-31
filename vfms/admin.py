@@ -1,0 +1,9 @@
+from django.contrib import admin
+from .models import *
+# Register your models here.
+
+admin.site.register(VideoFiles)
+admin.site.register(File)
+admin.site.register(CustVideoFiles)
+admin.site.register(LabelInformation)
+admin.site.register(AddLabelInfo)

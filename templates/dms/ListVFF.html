@@ -1,0 +1,40 @@
+{% extends 'templates/main_base.html' %}
+{% load static %}
+
+{% block title %}View Video File Formats{% endblock %}
+<script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+<script src='https://code.jquery.com/jquery-3.2.1.min.js'></script>
+<script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js'></script>
+{% block content %}
+<div class="container">
+    <div class="row" > 
+      <div class="col-md-8">
+        <h3>Existing Video Formats</h3>
+         {% if all_vff  %}
+            <table id="VFFTable" class="table table-striped" >
+              <thead>
+                <tr>
+                  <th>VideoFormat</th>
+
+                </tr>
+              </thead>
+              <tbody >
+                {% for vff in all_vff %}
+                  <tr id="vff-{{vff.id}}">
+                  <td class="vfftype vffData" name="vtype">{{vff.vtype}}</td>
+                
+                
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+         {% else %}
+          <span> No Video Formats  </span> 
+        {% endif %}
+      </div>
+    </div>
+    
+  </div>
+  {%endblock%}
+
+ 

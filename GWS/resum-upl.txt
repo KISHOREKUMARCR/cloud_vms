@@ -1,0 +1,55 @@
+
+            let upload_options = {
+              method: "PUT",
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Length": chunkToSend.size,
+                "Content-Range": `bytes ${positionInUpload}-${
+                  positionInUpload + chunkToSend.size - 1
+                }/*`,
+              },
+              body: chunkToSend,
+            };
+            const uResponse = await fetch(resumableURI, upload_options);
+            const uploadResponse = await uResponse.text();
+            var upload_options = {
+    method: "PUT",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Length": 300,
+      "Content-Range": `bytes 5500-5800/5801`,
+    },
+    body: chunkToSend,
+  };
+  const uResponse = await fetch(resumableURI, upload_options);
+  const uploadResponse = await uResponse.text();
+
+        var upload_options = {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Length": 300,
+            "Content-Range": `bytes 5500-5800/5801`,
+          },
+          body: chunkToSend,
+        };
+        const uResponse = await fetch(resumableURI, upload_options);
+        const uploadResponse = await uResponse.text();
+--------------
+
+async function upload_chunks1(token,filesize)
+{
+var upload_options = {
+  method: "PUT",
+  headers: {
+    Authorization: `Bearer ${token}`,
+    "Content-Length": chunkToSend.size,
+    "Content-Range": `bytes ${positionInUpload}-${positionInUpload + chunkToSend.size - 1
+    }/${filesize}`,
+  },
+  body: chunkToSend,
+};
+const uResponse = await fetch(resumableURI, upload_options);
+const uploadResponse = await uResponse.text();
+return (uploadResponse);
+}

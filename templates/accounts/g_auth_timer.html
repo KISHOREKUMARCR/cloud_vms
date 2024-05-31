@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% load static %}
+
+<!-- tile tag -->
+{% block title %}{% endblock %}
+
+<!-- link stylesheet tag -->
+{% block stylesheet  %}
+<style>
+.timer{
+  display:flex;
+ align-items:center;
+  justify-content:center;
+  background-color:#ccc;
+  height:100%;
+  width:100%;
+}
+</style>
+{% endblock %}
+
+<!-- content tag -->
+{% block content %}
+<!-- Content -->
+<text id="myfield" text-anchor="middle" x="70" y="110" style="font-size: 20px; fill:#343434;"></text>
+<div class="timer">
+  
+  <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="0 0 300 300" preserveAspectRatio="none" style="width:300; height:300; top:0; left:0;">
+    <circle cx="100" cy="100" r="57" id="pink-halo" fill="none" stroke="#009c95" stroke-width="10" stroke-dasharray="0, 361" transform="rotate(-90,100,100)" />
+    <text id="myTimer" text-anchor="middle" x="100" y="110" style="font-size: 40px; fill:#343434;"></text>
+    
+</svg>
+
+</div>
+
+
+<!--  dasharray size 2*r*pi, first number 0-->
+<!-- transform rotate is here because svg begins right on 3 o'clock initialy -->
+	
+<!--/ Content -->
+
+
+
+{% endblock %}
+
+{% block script %} 
+<script>
+	(function () {
+		var url = "{% url 'loginprocess' %}"
+		var circle = document.getElementById('pink-halo');
+		var myTimer = document.getElementById('myTimer');
+		var myf = document.getElementById('myfield');
+		var t = 5;
+		var interval = 30;
+		var angle = 0;
+		var angle_increment = 360/t;
+		var intervalCounter = 0;
+	  
+		window.timer = window.setInterval(function () {
+		  myf.innerHTML = "Something went Wrong ... Please Wait.."
+		  intervalCounter ++;    
+			circle.setAttribute("stroke-dasharray", angle + ", 361");
+		 
+		   myTimer.innerHTML = t - parseInt((angle/360)*t);
+
+			if (angle >= 360) {
+				window.clearInterval(window.timer);
+				window.location.href = url;
+			}
+
+		  angle += angle_increment/(1000/interval);
+		  
+		}.bind(this), interval);
+		
+		
+		
+		
+	})()
+	
+</script>
+{% endblock %}          
+
+        

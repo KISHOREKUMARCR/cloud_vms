@@ -1,0 +1,14 @@
+{% autoescape off %}
+Hello,
+
+We received a request to recover the username for your account for this email address. 
+
+Your Username is {{uname}}
+
+If you need to login again, please visit {{ protocol }}://{{domain}}
+
+
+Sincerely,
+The Website Team
+
+{% endautoescape %}

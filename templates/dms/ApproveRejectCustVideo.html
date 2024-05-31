@@ -1,0 +1,218 @@
+
+{% extends 'templates/main_base.html' %}
+
+{% load static %}
+
+{% block title %} Videos Approval List{% endblock %}
+<script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+<script src='https://code.jquery.com/jquery-3.2.1.min.js'></script>
+<script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js'></script>
+
+<script javascript>
+
+
+</script>
+
+
+{% block content %}
+
+<div class="container-fluid">
+    <h1>Videos Approval List</h1>
+    {% csrf_token %}
+    
+    <div class="row" > 
+      <div class="col-md-8">
+        
+        {% if all_Videos  %}
+        <table id="videosTable" name="videosTable" class="table table-striped">
+          <thead>
+            <tr>
+              <th>CompanyName</th>
+              <th>ProjectName</th>
+              <th>StationName</th>
+              <th>CameraNo</th>
+              <th>CModel</th>
+              <th>CHeight</th>
+              <th>VideoTakenDate</th>
+              <th>VideoStartTime</th>
+              <th>VideoEndime</th>
+              <th>LICate</th>
+              <th>VideoFormat</th>
+             
+              <th>FileName</th>
+              <th>VideoFile</th>
+              <th>Remarks</th>
+              <th>videostatus</th>
+              <th>Rejected Reason</th>
+              <th>Action</th>              
+              <!-- <th>Save</th> -->
+              
+            </tr>
+          </thead>
+          <tbody>
+            
+            {% for video in all_Videos %}
+            <form name="Videoform" id="{{id}}">
+              <tr name="videolist" id="{{video.id}}">
+                
+                <td class="companyName videoData" name="CompanyName">{{video.CompanyName}}</td>
+                <td class="ProjectName videoData" name="ProjectName">{{video.ProjectName}}</td>
+                <td class="StationName videoData" name="StationName">{{video.StationName}}</td>
+                
+                <td class="CameraNo videoData" name="CameraNo">{{video.CameraNo}}</td>
+                <td class="CModel videoData" name="CModel">{{video.CModel}}</td>
+                <td class="CHeight videoData" name="CHeight">{{video.CHeight}}</td>
+                <td class="VideoTakenDate videoData" name="VideoTakenDate">{{video.VideoTakenDate}}</td>
+                <td class="VideoStartTime videoData" name="VideoStartTime">{{video.VideoStartTime}}</td>
+                <td class="VideoEndTime videoData" name="VideoEndTime">{{video.VideoEndTime}}</td>
+                <td class="LICate videoData" name="LICate">{{video.LICate}}</td>
+                <td class="VideoFormat videoData" name="VideoFormat">{{video.VideoFormat}}</td>
+                
+                
+                
+                <td class="name videoData" name="name">{{video.name}}</td>
+                <td class="existingPath videoData" name="existingPath"> 
+                  <video autoplay="autoplay" controls muted   height="100px"> <source src= "{{DRIVE}}{{video.existingPath}}"/> </video> </td>
+                
+                <td class="Remarks videoData" name="Remarks">{{video.Remarks}}</td>
+                 
+                <td class="videostatus videoData" id="Videostatus" name="videostatus"> {{video.videostatus}}</td>
+               
+                <td> 
+                <input type="text"  class= "RejectedReason videoData" label="Rejection Reason" name="RejectedReason" value= "" id= "RejectedReason" />
+                </td>
+               
+                <td class="radio-check videoData">
+                  <div class="radio-check videoData">
+                    <input class="radio-check-input Approval" type="radio" name="Approval"  id= "Approval" value="Approved" >
+                    <label class="radio-check-label" for="Approved">Approve</label>
+                  </div>
+                  <div class="radio-check videoData">
+                    <input class="radio-check-input Approval" type="radio" name="Approval" id= "Approval" value="Rejected"/> 
+                   
+                    <label class="radio-check-label" for="Rejected">Reject</label>
+                  </div>
+                 
+                </td>
+
+              </tr>
+
+            </form>
+            {% endfor %}  
+         
+          </tbody>
+ 
+        </table>
+        
+        {% else %}
+          <span> No videos available for approval</span> 
+        {% endif %}
+      </div>
+    </div>
+    
+  </div>
+  {%endblock%}
+
+  {% block script %}
+ 
+  <script javascript >
+
+    
+    
+  </script>
+ 
+<script>
+
+  $(".Approval").click(function() {   
+     var rowid = $(this).closest("tr").attr('id'); 
+     console.log("rowid",rowid);
+ 
+     var $childval = $(this).attr('value'); 
+     var $childval2 = $(this).closest("tr").find("td:nth-child(15)"); 
+     var childval3 = $(this).closest("tr").find("td:nth-child(16)"); 
+
+     var rejectreason= childval3[0].childNodes[1].value;
+
+   
+    
+     console.log("childval3",rejectreason)
+
+ 
+     if ($childval=="Approved") 
+     
+     {
+       console.log('Approved selection',$childval);
+       var approverowid = $(this).closest("tr").attr('id'); 
+       console.log("ROWID INSIDE APPROVAL",approverowid);
+       $childval2.text($childval)
+       $childval2.css("color", "green");
+       $childval2.css("font-size", "200%");
+         $.ajax({
+                     url: "{%url 'ApproveRejectCustVideos' %}",
+                     method: 'POST',
+                     
+                     data: {
+                         'id':approverowid,
+                         'videostatus':$childval2.text(),
+                        
+                         'csrfmiddlewaretoken':'{{ csrf_token }}'
+                     },
+                     dataType: 'json',
+                     success: function(data){
+                       console.log(data)
+                       if(1){  }
+                     }
+               });
+     }
+     if ($childval=="Rejected") 
+     {
+        console.log('Rejected record',$childval)
+          
+       if ( rejectreason =='' ) 
+       {
+         console.log('inside else part - reject reason is blank : --- : ' , $childval)
+
+         $('input[type="radio"]').prop('checked', false);
+         
+         alert("Please enter Rejected Reason, then select  Reject")
+        
+                
+        
+       }
+       if (rejectreason !='' ) 
+       {
+         var rowid1 = $(this).closest("tr").attr('id'); 
+         console.log("ROWID INSIDE REJECTION",rowid1)
+         console.log('Rejection with remarks',rejectreason)
+         $childval2.text($childval)
+         $childval2.css("color", "red");
+         $childval2.css("font-size", "200%");
+         $.ajax({
+                     url: "{%url 'ApproveRejectCustVideos' %}",
+                     method: 'POST',
+                     
+                     data: {
+                         'id':rowid1,
+                         'videostatus':$childval2.text(),
+                         'RejectedReason':rejectreason,
+                         'csrfmiddlewaretoken':'{{ csrf_token }}'
+                     },
+                     dataType: 'json',
+                     success: function(data){
+                       console.log(data)
+                       if(1){  }
+                     }
+                   });
+       } 
+       
+     
+    }
+   } )
+
+ 
+ </script>
+ 
+ 
+   
+ {% endblock %}
+ 

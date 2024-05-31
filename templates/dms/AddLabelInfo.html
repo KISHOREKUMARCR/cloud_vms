@@ -1,0 +1,72 @@
+{% extends 'templates/main_base.html' %}
+{% load static %}
+
+{% block title %}Add Label Information{% endblock %}
+<script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+<script src='https://code.jquery.com/jquery-3.2.1.min.js'></script>
+<script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js'></script>
+{% block content %}
+
+    
+<div class="container">
+    <h1>  Add Label Info </h1>
+    <div class="form-group">
+      <form method="POST" class="myform">
+        <fieldset>
+          <legend>Label Information to be added</legend>
+          {% csrf_token %}
+          {% comment %} <div class="form-group">
+            {{form.station}}
+            {{ form.station.label_tag }}<br>
+            
+          </div> {% endcomment %}
+          <div class="form-group">
+            {{ form.as_p }}
+          
+            {% comment %} {{form.lname }}
+            {{form.totalframecnt}}
+            {{form.totalinstancecnt}}
+            {{form.carcnt}}
+            {{form.2Wcnt}}
+            {{form.buscnt}}
+            {{form.minibuscnt}}
+            {{form.3Wcnt}}
+            {{form.eichercnt}}
+            {{form.axle2cnt}}
+            {{form.axle3cnt}}
+            {{form.axle4cnt}}
+            {{form.axle6cnt}}
+            {{form.maxlecnt}}
+            {{form.tractorcnt}}
+            {{Form.storedlocation}} {% endcomment %}
+          </div><br>
+          &nbsp&nbsp   <button type="submit" class="btn btn-primary">Submit</button>&nbsp &nbsp &nbsp        <input type="button" value="reset" class="btn btn-secondary" id="resetBtn" onClick="this.form.reset()" />
+        </fieldset>
+      </form>
+  </div>
+    
+</div>
+<style>
+  myform{
+    margin-top: 60px;
+    display: flex;
+  }
+  .form-group  {
+    width: 85%;
+  
+    padding: 6px 12px;
+    margin: 8px 0;
+    box-sizing: border-box;
+  }
+  select {
+  width: 26%;
+  
+  padding: 6px 12px;
+  margin: 8px 0;
+  box-sizing: border-box;
+}
+
+
+</style>
+    
+{%endblock%}

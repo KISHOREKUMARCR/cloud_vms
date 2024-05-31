@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+{% load static %}
+
+<!-- tile tag -->
+{% block title %}{% endblock %}
+
+<!-- link stylesheet tag -->
+{% block stylesheet  %}
+<link rel="stylesheet" href="{% static 'assets/vendor/libs/typeahead-js/typeahead.css' %}" />
+<link rel="stylesheet" href="../../assets/vendor/libs/select2/select2.css" />
+<link rel="stylesheet" href="../../assets/vendor/libs/formvalidation/dist/css/formValidation.min.css" />
+<link rel="stylesheet" href="../../assets/vendor/libs/animate-css/animate.css" />
+<link rel="stylesheet" href="../../assets/vendor/libs/sweetalert2/sweetalert2.css" />
+
+<link rel="stylesheet" href="{% static 'assets/vendor/libs/datatables-bs5/datatables.bootstrap5.css' %}" />
+<link rel="stylesheet" href="{% static 'assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css' %}" />
+<link rel="stylesheet" href="{% static 'assets/vendor/libs/datatables-checkboxes-jquery/datatables.checkboxes.css' %}" />
+
+<!-- Page CSS -->
+<link rel="stylesheet" href="{% static 'assets/vendor/css/pages/page-profile.css' %}" />
+{% endblock %}
+
+<!-- content tag -->
+{% block content %}
+<!-- Content -->
+	
+	<div class="container-xxl flex-grow-1 container-p-y">
+		<h4 class="py-3 breadcrumb-wrapper mb-4">
+			<span class="text-muted fw-light">Delete User Account / {{user.user_name}}
+		  </h4>
+		 <div class="row">
+			<div class="col-md-12">
+			  <ul class="nav nav-pills flex-column flex-md-row mb-3">
+				<li class="nav-item">
+				  <a class="nav-link " href="{% url 'profile_edit_final' %}"><i class="bx bx-user me-1"></i> Profile</a>
+				</li>
+				{% ifequal user.user_social_provider 'manual' %}
+					<li class="nav-item">
+					  <a class="nav-link" href="{% url 'profile_edit_security' %}"
+						><i class="bx bx-lock-alt me-1"></i> Security</a>
+					</li>
+				
+				<li class="nav-item">
+				  <a class="nav-link active" href="{% url 'profile_edit_account_delete' %}"
+					><i class="bx bx-link-alt me-1"></i> Account</a
+				  >
+				</li>
+				{% endifequal %}
+			   </ul> 
+			<div class="card">
+			<h5 class="card-header">Delete Account</h5>
+			<div class="card-body">
+			  <div class="mb-3 col-12 mb-0">
+				<div class="alert alert-warning">
+				  <h6 class="alert-heading mb-1">Are you sure you want to delete your account?</h6>
+				  <p class="mb-0">Once you delete your account, there is no going back. Please be certain.</p>
+				</div>
+			  </div>
+			  <form method="POST">
+			   {% csrf_token %}
+				
+				<div class="form-check mb-3">
+				  <input required
+					class="form-check-input"
+					type="checkbox"
+					name="accountActivation"
+					id="accountActivation"
+					value="1"
+				  />
+				  <label class="form-check-label" for="accountActivation"
+					>I confirm my account deactivation</label
+				  >
+				</div>
+				<button type="submit" class="btn btn-danger deactivate-account">Deactivate Account</button>
+			  </form>
+			</div>
+		  </div>
+		</div>
+	  </div>	
+	</div>
+            <!--/ Content -->
+	
+
+{% endblock %}
+
+{% block script %} 
+<script src="../../assets/vendor/libs/hammer/hammer.js"></script>
+
+<script src="../../assets/vendor/libs/i18n/i18n.js"></script>
+<script src="../../assets/vendor/libs/typeahead-js/typeahead.js"></script>
+
+
+<!-- endbuild -->
+
+<!-- Vendors JS -->
+<script src="../../assets/vendor/libs/select2/select2.js"></script>
+<script src="../../assets/vendor/libs/formvalidation/dist/js/FormValidation.min.js"></script>
+<script src="../../assets/vendor/libs/formvalidation/dist/js/plugins/Bootstrap5.min.js"></script>
+<script src="../../assets/vendor/libs/formvalidation/dist/js/plugins/AutoFocus.min.js"></script>
+<script src="../../assets/vendor/libs/cleavejs/cleave.js"></script>
+<script src="../../assets/vendor/libs/cleavejs/cleave-phone.js"></script>
+<script src="../../assets/vendor/libs/sweetalert2/sweetalert2.js"></script>
+
+
+
+<!-- Page JS -->
+<script src="../../assets/js/pages-account-settings-account.js"></script>
+
+<script>
+	$(document).ready(() => {
+		$("#upload").change(function () {
+			const file = this.files[0];
+			if (file) {
+				let reader = new FileReader();
+				reader.onload = function (event) {
+					$("#uploadedAvatar")
+					  .attr("src", event.target.result);
+				};
+				reader.readAsDataURL(file);
+			}
+		});
+		
+		
+			
+	});
+</script>
+{% endblock %}          
+
+        

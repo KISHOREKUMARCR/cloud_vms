@@ -1,0 +1,45 @@
+<script src="https://cdn.jsdelivr.net/gh/tanaikech/ResumableUploadForGoogleDrive_js/resumableupload2_js.min.js"></script>
+
+<body>
+  <form>
+    <input name="file" id="uploadfile" type="file" />
+  </form>
+  <div id="progress"></div>
+</body>
+
+<script>
+  const accessToken = gapi.auth.getToken().access_token; // Please set access token here.
+
+  document.getElementById("uploadfile").addEventListener("change", run, false);
+
+  function run(obj) {
+    const resource = {
+      file: obj.target.files[0],
+      accessToken: accessToken,
+    };
+    resumableUpload(resource);
+  }
+
+  function resumableUpload(resource) {
+    document.getElementById("progress").innerHTML = "Initializing.";
+
+    const ru = new ResumableUploadToGoogleDrive2();
+    ru.Do(resource, function (res, err) {
+      if (err) {
+        console.log(err);
+        return;
+      }
+      console.log(res);
+      let msg = "";
+      if (res.status == "Uploading") {
+        msg =
+          Math.round(
+            (res.progressNumber.current / res.progressNumber.end) * 100
+          ) + "%";
+      } else {
+        msg = res.status;
+      }
+      document.getElementById("progress").innerText = msg;
+    });
+  }
+</script>

@@ -1,0 +1,51 @@
+{% extends 'templates/main_base.html' %}
+{% load static %}
+
+{% block title %}View Videos List{% endblock %}
+<script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+<script src='https://code.jquery.com/jquery-3.2.1.min.js'></script>
+<script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js'></script>
+{% block content %}
+
+<div class="container">
+    <h1>Videos List</h1>
+
+    <div class="row" > 
+      <div class="col-md-8">
+        
+        {% if all_testimages  %}
+        <table id="videosTable" class="table table-striped">
+          <thead>
+            <tr>
+                <th>Files</th>
+              
+              
+            </tr>
+          </thead>
+          <tbody>
+          
+            {% for timage in all_testimages %}
+            
+              <tr id="timage-{{id}}">
+                
+                
+                <td class="Image1 videoData" name="Image1"><img src= "{{EXTERNAL_URL}}{{timage.my_file}}" width:"50px" height="50px"/>
+                
+                  
+                </td> 
+               
+              </tr>
+
+            {% endfor %}
+          </tbody>
+        </table>
+        {% else %}
+          <span> No Files </span> 
+        {% endif %}
+      </div>
+    </div>
+    
+  </div>
+  {%endblock%}
+
+ 

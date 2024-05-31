@@ -1,0 +1,95 @@
+{% extends 'templates/main_base.html' %}
+{% load static %}
+
+{% block title %} Company Info Update{% endblock %}
+<script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+<script src='https://code.jquery.com/jquery-3.2.1.min.js'></script>
+<script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js'></script>
+{% block content %}
+<div class="container-fluid">
+    <h1>Videos List</h1>
+    {% csrf_token %}
+    
+    <div class="row" > 
+      <div class="col-md-8">
+        
+        {% if all_Videos  %}
+        <table id="videosTable" name="videosTable" class="table table-striped">
+          <thead>
+            <tr>
+              <th>CompanyName</th>
+              <th>ProjectName</th>
+              <th>StationName</th>
+              <th>CameraNo</th>
+              <th>CModel</th>
+              <th>CHeight</th>
+              <th>VideoStartTime</th>
+              <th>VideoEndime</th>
+              <th>LICate</th>
+              <th>VideoFormat</th>
+              
+              <th>FileName</th>
+              <th>VideoFile</th>
+
+              <th>Remarks</th>
+              <th>RejectedReason</th> 
+              <th>videostatus</th>
+               <th>Action</th>
+                            
+            </tr>
+          </thead>
+          <tbody>
+            
+            {% for video in all_Videos %}
+            <form name="Videoform" id="{{id}}">
+              <tr name="videolist" id="{{video.id}}">
+                
+                <td class="companyName videoData" name="CompanyName">{{video.CompanyName}}</td>
+                <td class="ProjectName videoData" name="ProjectName">{{video.ProjectName}}</td>
+                <td class="StationName videoData" name="StationName">{{video.StationName}}</td>
+                <td class="CameraNo videoData" name="CameraNo">{{video.CameraNo}}</td>
+                <td class="CModel videoData" name="CModel">{{video.CModel}}</td>
+                <td class="CHeight videoData" name="CHeight">{{video.CHeight}}</td>
+                <td class="VideoStartTime videoData" name="VideoStartTime">{{video.VideoStartTime}}</td>
+                <td class="VideoEndTime videoData" name="VideoEndTime">{{video.VideoEndTime}}</td>
+                <td class="LICate videoData" name="LICate">{{video.LICate}}</td>
+                <td class="VideoFormat videoData" name="VideoFormat">{{video.VideoFormat}}</td>
+              
+                <td class="FileName videoData" name="FileName">{{video.FileName}}</td>
+                <td class="VideoFile videoData" name="VideoFile"> 
+                  <video autoplay="autoplay" controls muted  width:"100px" height="100px"> <source src= "{{DRIVE}}{{video.VideoFile}}"/> </video> </td>
+                
+                <td class="Remarks videoData" name="Remarks">{{video.Remarks}}</td>
+                <td class="RejectedReason videoData" name="Remarks">{{video.RejectedReason}}</td>
+                <td class="videostatus videoData" id="videostatus" name="videostatus">{{video.videostatus}}</td>
+                <td > <a href="{% url 'UpdateVideo' video.id %}">Edit </a></td>
+                           
+               
+              
+              </tr>
+            </form>
+            {% endfor %}  
+            
+          </tbody>
+         
+        </table>
+        
+        {% else %}
+          <span> No videos </span> 
+        {% endif %}
+      </div>
+    </div>
+    
+  </div>
+  {%endblock%}
+
+  {% block script %}
+ 
+  <!-- <script src="https://code.jquery.com/jquery-1.11.1.js"></script> -->
+
+
+  
+ <script> 
+ </script>
+  
+{% endblock %}

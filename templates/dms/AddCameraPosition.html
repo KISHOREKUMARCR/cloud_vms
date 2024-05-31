@@ -1,0 +1,45 @@
+{% extends 'templates/main_base.html' %}
+{% load static %}
+
+{% block title %}Add Camera Position{% endblock %}
+<script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+<script src='https://code.jquery.com/jquery-3.2.1.min.js'></script>
+<script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js'></script>
+{% block content %}
+
+<div class="container">
+  <h1>Add Camera Position Details</h1>
+  <form method="POST">
+    {% csrf_token %}
+    <div class="mb-3">
+      <label for="{{ form.CHeight.id_for_label }}">Camera Height:</label><br>
+      {{ form.CHeight }}
+    </div>
+    <div class="mb-3">
+      <label for="{{ form.Cview.id_for_label }}">Camera View:</label><br>
+     {{ form.Cview }}
+    </div>
+     <button type="submit" class="btn btn-primary">Submit</button> &nbsp   &nbsp
+    <input type="button" value="Reset" class="btn btn-secondary" onclick="this.form.reset()" />
+  </form>
+</div> 
+<style>
+  .my-form {
+margin-top: 60px;
+text-align: left;
+}
+.form-group {
+margin-bottom: 40px;
+}
+
+.form-group input {
+  width: 110px;
+  padding: 6px 10px;
+  margin: 8px 0;
+  box-sizing: border-box;
+}
+</style>
+
+
+    
+{%endblock%}

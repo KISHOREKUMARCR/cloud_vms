@@ -1,0 +1,128 @@
+
+{% extends 'templates/main_base.html' %}
+
+{% load static %}
+
+{% block title %} External Videos Detection Status List{% endblock %}
+<script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+<script src='https://code.jquery.com/jquery-3.2.1.min.js'></script>
+<script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js'></script>
+
+<script javascript>
+
+
+</script>
+
+
+{% block content %}
+
+<div class="container-fluid">
+    <h1>External Videos Detection Status List</h1>
+    {% csrf_token %}
+    
+    <div class="row" > 
+      <div class="col-md-8">
+        
+        {% if all_Videos  %}
+        <table id="videosTable" name="videosTable" class="table table-striped">
+          <thead>
+            <tr>
+              <th>CompanyName</th>
+              <th>ProjectName</th>
+              <th>StationName</th>
+              <th>GIS</th>
+              <th>TrafficType</th>
+              <th>No.of Days (Video)</th>
+              <th>StartDate</th>
+              <th>EndDate</th>                
+              <th>uploaded Video / URL Path </th>
+              <th>Remarks </th>
+              {% if custom_user.user_roles.id != 3 %}
+              <th>Detected Video Path</td>
+              <th>Detected Report Path</td>
+                {% endif %}
+              <th>Detectionstatus</th>
+             
+              <th>View Report</th>              
+              <th>Download Report</td>
+             
+              <!-- <th>Save</th> -->
+              
+            </tr>
+          </thead>
+          <tbody>
+            
+            {% for video in all_Videos %}
+            <form name="Videoform" id="{{id}}">
+              <tr name="videolist" id="{{video.id}}">
+                
+                <td class="companyName videoData" name="CompanyName">{{video.CompanyName}}</td>
+                <td class="ProjectName videoData" name="ProjectName">{{video.ProjectName}}</td>
+                <td class="StationName videoData" name="StationName">{{video.StationName}}</td>
+                <td class="GIS videoData" name="GIS">{{video.GIS}}</td>
+                <td class="TrafficType videoData" name="TrafficType">{{video.TrafficType}}</td>
+                <td class="Ndays videoData" name="Ndays">{{video.Ndays}}</td>
+                <td class="VideoStartDate videoData" name="VideoStartDate">{{video.VideoStartDate}}</td>
+                <td class="VideoEndDate videoData" name="VideoEndDate">{{video.VideoEndDate}}</td>
+                {% if video.urlpath|default:''|striptags|length == 0  %}
+                <td class="files videoData" name="files"> 
+                  <video autoplay="autoplay" controls muted   height="100px"> <source src= "{{DRIVE}}{{video.CompanyName}}/{{video.files}}"/> </video> </td>
+                {% else %}
+                <td class="urlpath videoData" name="urlpath">{{video.urlpath}}</td>
+                {% endif %}
+                
+                <td class="Remarks videoData" name="Remarks">{{video.Remarks}}</td>
+                {% if custom_user.user_roles.id != 3 %}
+                <td class="detectedvideopath videoData" name="DetectedVideoPath">{{video.DetectedVideoPath}}</td> 
+                {% comment %} <td> <a href="{% url 'redirect_to_folder' folder_path=video.DetectedVideoPath %}">DetectedVideoPath</a></td> {% endcomment %}
+                <td class="detectionReportpath videoData" name="detectionReportpath">{{video.detectionReportpath}}</td>
+                {% endif %}
+               
+                <td class="detectionstatus videoData" id="detectionstatus" name="detectionstatus" style="{% if video.videostatus == 'Completed' %}color: green;{% elif video.videostatus == 'Not Started' %}color: red;{% elif video.videostatus == 'InProgress' %}color: Blue;{% endif %}"> {{video.videostatus}} </td>
+                {% if video.videostatus == "Completed" %}
+                  {% if video.urlpath|default:''|striptags|length == 0  %}
+                    <td > <a href="{% url 'ReportExtVideo' video.id %}">Report </a></td>
+                    <td > <a href="{% url 'ReportDownload' video.id %}" download>Download </a></td>               
+                  {%else%}   
+                    <td > NA </td>
+                    <td > NA </td>
+                  {% endif %}
+                {% else %}
+                    <td > NA </td>
+                    <td > NA </td>
+                {% endif %}
+               
+              </tr>
+
+            </form>
+            {% endfor %}  
+         
+          </tbody>
+ 
+        </table>
+        
+        {% else %}
+          <span> No Detection Reports available</span> 
+        {% endif %}
+      </div>
+    </div>
+    
+  </div>
+  {%endblock%}
+
+  {% block script %}
+ 
+  <script javascript >
+
+    
+    
+  </script>
+ 
+<script>
+ 
+ </script>
+ 
+ 
+   
+ {% endblock %}
+ 

@@ -1,0 +1,457 @@
+{% extends "base.html" %}
+{% load static %}
+
+<!-- tile tag -->
+{% block title %}roles datatable{% endblock %}
+
+<!-- link stylesheet tag -->
+{% block stylesheet  %}
+<!-- Vendors CSS -->
+<link rel="stylesheet" href="{% static 'assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css' %}" />
+<link rel="stylesheet" href="{% static 'assets/vendor/libs/typeahead-js/typeahead.css' %}" />
+<link rel="stylesheet" href="{% static 'assets/vendor/libs/datatables-bs5/datatables.bootstrap5.css' %}" />
+<link rel="stylesheet" href="{% static 'assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css' %}" />
+<link rel="stylesheet" href="{% static 'assets/vendor/libs/datatables-select-bs5/select.bootstrap5.css' %}" />
+<link rel="stylesheet" href="{% static 'assets/vendor/libs/datatables-checkboxes-jquery/datatables.checkboxes.css' %}" />
+<link rel="stylesheet" href="{% static 'assets/vendor/libs/datatables-fixedcolumns-bs5/fixedcolumns.bootstrap5.css' %}" />
+<link rel="stylesheet" href="{% static 'assets/vendor/libs/datatables-fixedheader-bs5/fixedheader.bootstrap5.css' %}" />
+
+ <!-- Vendors CSS  sweet alert-->
+ <link rel="stylesheet" href="{% static 'assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css' %}" />
+ <link rel="stylesheet" href="{% static 'assets/vendor/libs/typeahead-js/typeahead.css'%}" />
+ <link rel="stylesheet" href="{% static 'assets/vendor/libs/animate-css/animate.css'%}" />
+ <link rel="stylesheet" href="{% static 'assets/vendor/libs/sweetalert2/sweetalert2.css'%}" />
+{% endblock %}
+
+<!-- content tag -->
+{% block content %}
+<div class="container-xxl flex-grow-1 container-p-y" >
+    <h4 class="py-3 breadcrumb-wrapper mb-4">
+      <span class="text-muted fw-light">DataTables /</span> Roles
+    </h4>
+    <div class="card">
+        <h5 class="card-header">Roles</h5>
+        <div class="card-datatable dataTable_select text-nowrap table-responsive">
+          <button
+        class="btn btn-primary"
+        type="button"
+        data-bs-toggle="offcanvas"
+        data-bs-target="#addModelDate"
+        aria-controls="offcanvasBoth"
+      >
+        add records
+      </button>
+          {% csrf_token %}
+          <table class="dt-select-table table table-bordered" id = "roleTable">
+            <thead>
+              <tr>
+                <th></th>
+                <th>role_name</th>
+                <th>role_description</th>
+                <th>role_status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+          </table>
+        </div>
+    </div>
+    
+</div>
+  <!-- Add role Enable Scrolling & Backdrop Offcanvas -->
+  <div class="col-lg-4 col-md-6">
+    <small class="text-light fw-semibold mb-3"></small>
+    <div class="mt-3">
+      
+      <div
+        class="offcanvas offcanvas-end"
+        data-bs-scroll="true"
+        tabindex="-1"
+        id="addModelDate"
+        aria-labelledby="offcanvasBothLabel"
+      >
+        <div class="offcanvas-header">
+          <h5 id="offcanvasBothLabel" class="offcanvas-title">Add Roles</h5>
+          <button
+            type="button"
+            class="btn-close text-reset"
+            data-bs-dismiss="offcanvas"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="offcanvas-body my-auto mx-0 flex-grow-0">
+          <form class="needs-validation" method = "post" action="" id ="addData">
+            {% csrf_token %}
+            <div class="mb-3">
+              <label class="form-label" for="bs-validation-name">role_name</label>
+              <input
+                name = "role_name"
+                type="text"
+                class="form-control"
+                id="bs-validation-name"
+                placeholder="John Doe"
+                required
+              />
+              <div class="valid-feedback">Looks good!</div>
+              <div class="invalid-feedback">Please enter your name.</div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label" for="bs-validation-name">role_description</label>
+              <input
+                name = "role_description"
+                type="text"
+                class="form-control"
+                id="bs-validation-description"
+                placeholder="type something"
+                required
+              />
+              <div class="valid-feedback">Looks good!</div>
+              <div class="invalid-feedback">Please enter your name.</div>
+            </div>
+            <div class="mb-3">
+              <label class="switch switch-primary">
+                <input type="checkbox" class="switch-input" required />
+                <span class="switch-toggle-slider">
+                  <span class="switch-on"></span>
+                  <span class="switch-off"></span>
+                </span>
+                <span class="switch-label"></span>
+              </label>
+            </div>
+            <div class="row">
+              <div class="demo-inline-spacing">
+                <div class="col-12">
+                  <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+                <div class="col-12">
+                  <button type="button" data-bs-dismiss="offcanvas" class="btn btn-danger">cancel</button>
+                </div>
+            </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<!-- update role Enable Scrolling & Backdrop Offcanvas -->
+<div class="col-lg-4 col-md-6">
+  <small class="text-light fw-semibold mb-3"></small>
+  <div class="mt-3">
+    
+    <div
+      class="offcanvas offcanvas-end"
+      data-bs-scroll="true"
+      tabindex="-1"
+      id="updateModelData"
+      aria-labelledby="offcanvasBothLabel"
+    >
+      <div class="offcanvas-header">
+        <h5 id="offcanvasBothLabel" class="offcanvas-title">Update Roles</h5>
+        <button
+          type="button"
+          class="btn-close text-reset"
+          data-bs-dismiss="offcanvas"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="offcanvas-body my-auto mx-0 flex-grow-0">
+        <form class="needs-validation" method = "post" action="" id ="updateData">
+          {% csrf_token %}
+          <input type="hidden" name = "u_id" id = "update_id" />
+          <div class="mb-3">
+            <label class="form-label" for="bs-validation-name">role_name</label>
+            <input
+              name = "u_role_name"
+              type="text"
+              class="form-control"
+              id="update_role_name"
+              placeholder="John Doe"
+              required
+            />
+            <div class="valid-feedback">Looks good!</div>
+            <div class="invalid-feedback">Please enter your name.</div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label" for="bs-validation-name">role_description</label>
+            <input
+              name = "u_role_description"
+              type="text"
+              class="form-control"
+              id="update_role_description"
+              placeholder="type something"
+              required
+            />
+            <div class="valid-feedback">Looks good!</div>
+            <div class="invalid-feedback">Please enter your name.</div>
+          </div>
+          <div class="mb-3">
+            <label class="switch switch-primary">
+              <input type="checkbox" class="switch-input" required />
+              <span class="switch-toggle-slider">
+                <span class="switch-on"></span>
+                <span class="switch-off"></span>
+              </span>
+              <span class="switch-label"></span>
+            </label>
+          </div>
+          <div class="row">
+            <div class="demo-inline-spacing">
+              <div class="col-12">
+                <button type="submit" class="btn btn-primary">Submit</button>
+              </div>
+              <div class="col-12">
+                <button type="button" data-bs-dismiss="offcanvas" class="btn btn-danger">cancel</button>
+              </div>
+          </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+ <!-- script tag -->
+{% block script %}
+
+ <!-- Vendors JS -->
+ <script src="{% static 'assets/vendor/libs/datatables/jquery.dataTables.js' %}"></script>
+ <script src="{% static 'assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js' %}"></script>
+ <script src="{% static 'assets/vendor/libs/datatables-responsive/datatables.responsive.js' %}"></script>
+ <script src="{% static 'assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.js' %}"></script>
+ <!-- Fixed columns -->
+ <script src="{% static 'assets/vendor/libs/datatables-fixedcolumns/datatables.fixedcolumns.js' %}"></script>
+ <!-- Fixed header -->
+ <script src="{% static 'assets/vendor/libs/datatables-fixedheader-bs5/fixedheader.bootstrap5.js' %}"></script>
+ <!-- Select -->
+ <script src="{% static 'assets/vendor/libs/datatables-select/datatables-select.js' %}"></script>
+ <script src="{% static 'assets/vendor/libs/datatables-select-bs5/select.bootstrap5.js' %}"></script>
+ <script src="{% static 'assets/vendor/libs/datatables-checkboxes-jquery/datatables.checkboxes.js' %}"></script>
+
+ <!-- Main JS -->
+ <!-- <script src="{% static 'assets/js/main.js' %}"></script> -->
+
+ <!-- Page JS -->
+ <!-- <script src="{% static 'assets/js/tables-datatables-extensions.js' %}"></script> -->
+
+ 
+  <!-- Vendors JS  sweet alert-->
+  <script src="{% static 'assets/vendor/libs/sweetalert2/sweetalert2.js' %}"></script>
+<script>
+var dt_select;
+$(function () {
+  var dt_scrollable_table = $('.dt-scrollableTable'),
+    dt_fixedheader_table = $('.dt-fixedheader'),
+    dt_fixedcolumns_table = $('.dt-fixedcolumns'),
+    dt_select_table = $('.dt-select-table');
+
+  // select
+  // --------------------------------------------------------------------
+
+  if (dt_select_table.length) {
+    var dt_select = dt_select_table.DataTable({
+    //   ajax: assetsPath + 'json/table-datatable.json',
+      ajax: "{% url 'role_data_table' %}",
+      'fnCreatedRow': function (nRow, aData, iDataIndex) {
+       
+        $(nRow).attr('id', 'my' + aData.id); // or whatever you choose to set as the id
+      },
+      columns: [
+        { data: 'id', name:'id' },
+        { data: 'role_name', name:'role_name' },
+        { data: 'role_description', name:'role_description' },
+        { data: 'role_status', name: 'role_status' },
+        { data: '' }
+      ],
+      columnDefs: [
+        
+        {
+          // For Checkboxes
+          targets: 0,
+          searchable: false,
+          orderable: false,
+          render: function () {
+            return '<input type="checkbox" class="dt-checkboxes form-check-input">';
+          },
+          checkboxes: {
+            selectRow: true,
+            selectAllRender: '<input type="checkbox" class="form-check-input">'
+          }
+        },
+        {
+          // Actions
+          targets: -1,
+          title: 'Actions',
+          searchable: false,
+          orderable: false,
+          render: function (data, type, full, meta) {
+            
+            return (
+              '<div class="demo-inline-spacing">'+
+              '<button type="button" class="btn btn-danger" onclick="deleteClick(this)" >delete</button>'+
+              '<button type="button" class="btn btn-info"  onclick="editClick('+ full.id +')" type="button" data-bs-toggle="offcanvas" data-bs-target="#updateModelData" aria-controls="offcanvasBoth">edit</button>'+
+              '</div>'
+            );
+          }
+        }
+      ],
+      order: [[1, 'desc']],
+      dom: '<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6 d-flex justify-content-center justify-content-md-end"f>>t<"row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
+      select: {
+        // Select style
+        style: 'multi'
+      }
+    });
+    $('form#addData').submit(function(e){
+        
+        var role_name = $('input[name = "role_name"]').val().trim();
+        var role_description = $('input[name = "role_description"]').val().trim();
+        console.log('ajax callinnnnnnng')
+        $.ajax({
+          url: "{% url 'add_role_table' %}",
+          method: 'post',
+          data: {
+            'role_name':role_name,
+            'role_description': role_description,
+            'csrfmiddlewaretoken': '{{ csrf_token }}'
+          },
+          dataType: 'json',
+          success: function(data){
+            dt_select.row.add({'id':data.id, 'role_name':data.role_name, 'role_description':data.role_description, 'role_status':data.role_status});
+            dt_select.draw();
+
+                }
+              });
+        e.preventDefault();
+    });
+    $('form#updateData').submit(function(e){
+        console.log('working condition')
+        var id = $('input[name = "u_id"]').val().trim();
+        var role_name = $('input[name = "u_role_name"]').val().trim();
+        var role_description = $('input[name = "u_role_description"]').val().trim();
+        console.log('ajax callinnnnnnng', id)
+        $.ajax({
+          url: "{% url 'update_role_data' %}",
+          method: 'post',
+          data: {
+            'id':id,
+            'role_name':role_name,
+            'role_description': role_description,
+            'csrfmiddlewaretoken': '{{ csrf_token }}'
+          },
+          dataType: 'json',
+          success: function(data){
+            if (data.success){
+              dt_select.row("#my" + data.id).remove().draw();
+              dt_select.row.add({'id':data.id, 'role_name':data.role_name, 'role_description':data.role_description, 'role_status':data.role_status});
+              dt_select.draw();
+
+            }else{
+              Swal.fire({
+                title: 'Error!',
+                text: ' Object Not Found!',
+                icon: 'error',
+                customClass: {
+                  confirmButton: 'btn btn-primary'
+                },
+                buttonsStyling: false
+              });
+
+            }
+
+          }
+        });
+        e.preventDefault();
+      });
+
+
+  }
+  
+
+});
+
+function editClick(id){
+  $.ajax({
+      url: "{% url 'get_role_table' %}",
+      method: 'get',
+      data: {
+          'id':id
+      },
+      dataType: 'json',
+      success: function(data){
+        $('#update_id').val(data.id);
+        $('#update_role_name').val(data.role_name);
+        $('#update_role_description').val(data.role_description);
+      }
+    });
+
+}
+
+
+function deleteClick (obj) {
+  // var myTable = $('#roleTable').DataTable();
+  var id = $(obj).attr('id');
+  
+  Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, delete it!',
+        customClass: {
+          confirmButton: 'btn btn-primary me-3',
+          cancelButton: 'btn btn-label-secondary'
+          },
+          buttonsStyling: false
+        }).then(function (result) {
+       
+        if (result.value) {
+  
+          $.ajax({
+                url: "{% url 'delete_role_table' %}",
+                method: 'post',
+                data: {'id':id,'csrfmiddlewaretoken': '{{ csrf_token }}',},
+                success: function(data){
+              
+                  if(data.deleted){
+                    $("#roleTable #my" + id).remove();
+                    Swal.fire({
+                    icon: 'success',
+                    title: 'Deleted!',
+                    text: 'Your file has been deleted.',
+                    customClass: {
+                      confirmButton: 'btn btn-success'
+                    }
+                  });
+                  }else{
+                    Swal.fire({
+                      title: 'Error!',
+                      text: ' Deleted Object Not Found!',
+                      icon: 'error',
+                      customClass: {
+                        confirmButton: 'btn btn-primary'
+                      },
+                      buttonsStyling: false
+                    });
+                  }
+                    
+                }
+            })
+            
+          } else if (result.dismiss === Swal.DismissReason.cancel) {
+            Swal.fire({
+              title: 'Cancelled',
+              text: 'Your file is safe :)',
+              icon: 'error',
+              customClass: {
+                confirmButton: 'btn btn-success'
+              }
+            });
+          }
+        });
+  }
+
+
+</script>
+
+{% endblock %}

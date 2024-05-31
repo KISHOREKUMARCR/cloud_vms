@@ -1,0 +1,18 @@
+{% extends 'templates/main_base.html' %}
+{% load static %}
+
+{% block title %} Import Label Dataset Details {% endblock %}
+<script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+<script src='https://code.jquery.com/jquery-3.2.1.min.js'></script>
+<script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js'></script>
+{% block content %}
+<div class="container">
+  
+  <h1 class="py-3 mb-4">Import Label Dataset</h1> 
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="file" name="xlsx_file">
+    <button type="submit">Upload</button>
+  </form>
+</div> 
+{%endblock%}

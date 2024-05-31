@@ -1,0 +1,94 @@
+
+{% extends 'templates/main_base.html' %}
+
+{% load static %}
+
+{% block title %} External Videos Detection Report{% endblock %}
+<script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+<script src='https://code.jquery.com/jquery-3.2.1.min.js'></script>
+<script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js'></script>
+
+<script javascript>
+
+
+</script>
+
+
+{% block content %}
+
+<div class="container-fluid">
+    <h1>External Videos Detection Report</h1>
+    {% csrf_token %}
+    
+    <div class="row" > 
+      <div class="col-md-8">
+        
+        {% if get_video  %}
+        <table id="videosTable" name="videosTable" class="table table-striped">
+          <thead>
+            <tr>
+              {% comment %} <th>video_id</th> {% endcomment %}
+              <th>date_time</th>
+              <th>vehicle_id</th>
+              <th>vehicle_class_id</th>
+              <th>vehicle_name</th>
+              <th>direction</th>
+              <th>Cross_line</th>             
+              <th>frame_number</th>
+              <th>image_path</th>
+             
+
+              <!-- <th>Save</th> -->
+              
+            </tr>
+          </thead>
+          <tbody>
+            
+            {% for video in get_video %}
+            <form name="Reportform" id="{{id}}">
+              <tr name="Reportlist" id="{{video.id}}">
+                
+                {% comment %} <td class="video_id ReportData" name="video_id">{{video.video_id}}</td> {% endcomment %}
+                <td class="date_time ReportData" name="date_time">{{video.date_time}}</td>
+                <td class="vehicle_id ReportData" name="vehicle_id">{{video.vehicle_id}}</td>
+                <td class="vehicle_class_id ReportData" name="vehicle_class_id">{{video.vehicle_class_id}}</td>
+                <td class="vehicle_name ReportData" name="vehicle_name">{{video.vehicle_name}}</td>
+                <td class="direction ReportData" name="direction">{{video.direction}}</td>
+                <td class="Cross_line ReportData" name="Cross_line">{{video.Cross_line}}</td>
+                <td class="frame_number ReportData" name="frame_number">{{video.frame_number}}</td>
+                <td class="image_path ReportData" name="image_path">{{video.image_path}}</td>
+ 
+              </tr>
+
+            </form>
+            {% endfor %}  
+         
+          </tbody>
+ 
+        </table>
+        
+        {% else %}
+          <span> No Detection Reports available</span> 
+        {% endif %}
+      </div>
+    </div>
+    
+  </div>
+  {%endblock%}
+
+  {% block script %}
+ 
+  <script javascript >
+
+    
+    
+  </script>
+ 
+<script>
+ 
+ </script>
+ 
+ 
+   
+ {% endblock %}
+ 

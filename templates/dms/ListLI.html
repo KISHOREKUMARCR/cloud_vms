@@ -1,0 +1,40 @@
+{% extends 'templates/main_base.html' %}
+{% load static %}
+
+{% block title %}View Light Intensity Category{% endblock %}
+<script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+<script src='https://code.jquery.com/jquery-3.2.1.min.js'></script>
+<script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js'></script>
+{% block content %}
+<div class="container">
+    <div class="row" > 
+      <div class="col-md-8">
+        <h3>Existing Video Formats</h3>
+         {% if all_li  %}
+            <table id="LITable" class="table table-striped" >
+              <thead>
+                <tr>
+                  <th>LightIntensity Category</th>
+
+                </tr>
+              </thead>
+              <tbody >
+                {% for licate in all_li %}
+                  <tr id="licate-{{licate.id}}">
+                  <td class="litype liData" name="LItype">{{licate.LItype}}</td>
+                
+                
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+         {% else %}
+          <span> No Light Intensity Category  </span> 
+        {% endif %}
+      </div>
+    </div>
+    
+  </div>
+  {%endblock%}
+
+ 

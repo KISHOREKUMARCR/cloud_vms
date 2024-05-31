@@ -1,0 +1,738 @@
+<!-- upload_files.html -->
+{% extends 'templates/main_base.html' %}
+{% load static %}
+{% block title %}Add Video File{% endblock %}
+{% comment %} <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script> {% endcomment %}
+<script src='https://code.jquery.com/jquery-3.2.1.min.js'></script>
+<script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js'></script>
+
+{% block content %}
+
+<div class="container-xxl flex-grow-1 container-p-y">
+  <form class="browser-default-validation" id="VideoUpload" method="post" enctype="multipart/form-data" event="preventDefault()">
+    {% comment %} form class="browser-default-validation" id="VideoUpload" method="post" enctype="multipart/form-data"> {% endcomment %}
+    {% csrf_token %}
+  <h4 class="py-3 breadcrumb-wrapper mb-4">
+    <span class="text-muted fw-light">COS AI - Client /</span> New Video Upload
+   
+  </h4>
+  <div class="row">
+  <div class="col-md-12">
+  <div class="card mb-4">
+        <h5 class="card-header">Videos Upload</h5>
+  <div class="card-body">
+  <div class="form-group">  
+  <div class="row">
+            <!-- Add this inside your form -->
+            <div class="progress" style="display: none;">
+              <div class="progress-bar" role="progressbar" style="width: 10%;background-color: lightgreen;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                <span class="sr-only">0% Complete</span>
+                <span id="progressText">0%</span>
+              </div>
+            </div>
+            <br><br>
+    <!-- Form controls -->
+    <div class="col-md-3" >    
+      <div class="mb-3">
+        <label for="exampleFormControlReadOnlyInput1" class="form-label">Company</label>
+        {% if custom_user.user_roles.id != 1 %}
+            
+            <input
+            type="text"
+            readonly=true
+            id="Company"
+            name="Company"
+            class="form-control"
+            placeholder=""
+            value= " {{usercomp}}
+                  
+            "/>
+            
+          {% endif%}
+          {% if custom_user.user_roles.id == 1 %}
+           <select class="form-select CompanyName" id="Company" name="Company" required>
+            <option value="">List of Company</option> 
+          {% comment %} {% endif %} {% endcomment %}
+            {% for comp in get_user_company  %}
+            <option value="{{comp.name}}" data-icon="bx bxl-codepen" {% if forloop.first %}selected{% endif %}>{{comp.name}}                  
+            </option>
+            {% endfor %}            
+        </select>
+        {% endif%}
+      </div>
+    </div>
+    <div class="col-md-3" >    
+      <div class="mb-3">
+        <label for="exampleFormControlInput1" class="form-label">Project Name</label>
+        <input
+        type="text"
+        id="Project"
+        name="Project"
+        class="form-control"
+        placeholder="Jamshedpur RingRoad Project"
+        value="P45"
+        required=true
+        onchange="validate_project_name()"       
+      />
+      </div>
+    </div>
+    <div class="col-md-3" >    
+      <div class="mb-3">
+        <label for="exampleFormControlInput1" class="form-label">Location Name</label>
+        <input
+        type="text"
+        id="Location"
+        name="Location"
+        class="form-control"
+        placeholder="Straight Mile Rd"
+        value="L1"
+        required=true
+       
+      />
+      </div>
+    </div>
+    <div class="col-md-3" >    
+      <div class="mb-3">
+        <label for="gisInput">GIS (latitude, longitude): </label>
+        <input type="text" id="gisInput" name="gisInput" value="37.7749, -122.4194" placeholder="e.g., 37.7749, -122.4194"  onchange ="GISvalidate()"/>
+       
+      </div>
+    </div>
+    </div>
+
+      <!-- Form controls -->
+      <div class="row">
+          
+          <div class="col-md-3"> 
+            <div class="mb-3">
+            <label>Video Analysis for:</label><br>
+              <input type="radio" id="TTraffic"  name="Trafficchoice" value="TTrafficradio" onchange="AnalysistoggleOption()" checked>
+              <label for="TTrafficradio">Through Traffic</label>
+              <br>
+              <input type="radio" id="JTraffic" name="Trafficchoice" value="JTrafficradio" onchange="AnalysistoggleOption()">
+              <label for="JTrafficradio">Junction Traffic</label>
+            </div> 
+          </div>
+          <div class="col-md-3" >    
+            <div class="mb-3">
+              <label for="exampleFormControlReadOnlyInput1" class="form-label">Remarks</label>
+              <input
+              type="text"
+              id="Remarks"
+              name="Remarks"
+              class="form-control"
+              placeholder=""
+              value="Analysis for towards Jamshedpur "
+              required
+            />
+            </div>
+          </div>         {% comment %}  class="form-group"> {% endcomment %}
+          <div class="col-md-3" >    
+            <div class="mb-3">
+              
+              <input
+              type="text"
+              id="TrafficType"
+              name="TrafficType"
+              class="form-control"
+              placeholder=""
+              value="Through Traffic"
+              hidden
+            />
+            </div>
+          </div>
+          
+         <div class="card mb-4" id="div1">
+        <h5 class="card-header">* Upload Videos Only</h5>
+         <div class="card-body">
+          <div class="row">
+            <div class="col-md-3">  
+              <div class="mb-3">
+                <label for="exampleFormControlReadOnlyInputPlain1" class="form-label">No. of days </label>
+                <input
+                type="number"
+                id="Ndays"
+                name="Ndays"
+                class="form-control"
+                placeholder=""
+                value=1
+                required
+            />
+              </div>
+            </div>  
+          <div class="col-md-3">  
+            <div class="mb-3">
+              <label for="exampleFormControlReadOnlyInputPlain1" class="form-label">Video Start Date </label>
+              <input
+              type="date"
+              id="StartDate"
+              name="StartDate"
+              class="form-control"
+              placeholder=""
+              value="2023-11-20" 
+              required
+          />
+            </div>
+          </div>  
+          <div class="col-md-3">  
+            <div class="mb-3">
+              <label for="exampleFormControlReadOnlyInputPlain1" class="form-label">Video End Date </label>
+              <input
+              type="date"
+              id="EndDate"
+              name="EndDate"
+              class="form-control"
+              placeholder=""
+              required   
+              value="2023-11-20" 
+              onchange="EndDatevalidate()"           
+          />
+            </div>
+          </div>  
+         
+        </div >
+          <div class="row">
+           <div class="col-md-3"> 
+            
+                <label>Choose one:</label><br>
+                  <input type="radio" id="urlpathradio" name="choice" value="urlpathradio" onchange="toggleOption()" onselect="toggleOption()">
+                  <label for="urlpathradio">URL Path</label>
+                  <br>
+                  <input type="radio" id="fileuploadradio" name="choice" value="fileuploadradio" onchange="toggleOption()" onselect="toggleOption()">
+                  <label for="fileuploadradio">File Upload</label>
+                </div> 
+                    
+                {% comment %} <div class="col-md-3"> {% endcomment %}
+                  <div class="form-group" >
+                        <label for="urlpathlabel" id="urlpathlabel" style="display: none" class="hidden">URL Path</label>
+                        <input
+                                  type="Text"
+                                  id="urlpath"
+                                  style="display: none"
+                                  name="urlpath"
+                                  class="hidden"
+                                  placeholder=""
+                                  required
+                            />
+                       
+                    </div>      
+                   
+                    <!-- Inside the "div1" card-body section -->
+                    <div class="form-group">
+                      <label id="fileuploadlabel" style="display: none">Select video files (Max 10 at a time, allowed formats: {{ VideoFormat }}).</label>
+                      <input type="file" id="fileupload" name="fileupload" style="display: none" placeholder="Select file" multiple accept="{{ VideoFormat }}">
+                      
+                      <br>
+                      
+                      <table id="fileTable" style="display: none" hidden>
+                        <thead>
+                          <tr>
+                            <th>Action</th>
+                            <th>File Name</th>
+                            <th>File Size</th>
+                           
+                          </tr>
+                        </thead>
+                        <tbody></tbody>
+                      </table>
+                      <button type="button" id='deletebtn' style="display: none" hidden onclick="deleteSelected()">Delete Selected</button>
+                      <br> <br>
+                      <input type="submit" value="Save" name="submitbtn" id="submit" style="display: none" class="btn btn-success"> 
+                    </div>
+                 
+               
+                 </div>  
+                </div>             
+              </div>  
+              </div>  
+            </div>  
+             
+
+          </form>
+          </div>  
+
+{% endblock %}
+
+<!-- style css -->
+<!-- script tag -->
+
+{% block script %}
+<script>
+  console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$')
+function GISvalidate() {
+  event.preventDefault();
+  // Get the input value
+  console.log("inside ValidGIS");
+  var gisInput = document.getElementById('gisInput');
+  console.log("gisInput",gisInput);
+  // Get the input value
+  var gisValue = gisInput.value;
+  // Regular expression to match valid latitude and longitude format
+  var gisRegex = /^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?),\s*[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$/;
+
+  // Test the input against the regular expression
+  if (gisRegex.test(gisValue)) {
+    if (gisValue.length>20) {
+      alert('Retrict GIS latitude and longitude upto 6 decimals');
+      gisInput.value="";
+    }
+    
+  } else {
+    console.log("test1");
+    alert('Invalid GIS information. Please enter valid latitude and longitude.');
+    gisInput.value="";
+  }
+}
+
+function validate_project_name()
+{
+  event.preventDefault();
+    var reservedNames = ['con', 'prn', 'aux', 'nul', 'com1', 'com2', 'com3', 'com4', 'com5',
+                      'com6', 'com7', 'com8', 'com9', 'lpt1', 'lpt2', 'lpt3', 'lpt4', 'lpt5',
+                      'lpt6', 'lpt7', 'lpt8', 'lpt9']
+    var project = document.getElementById('Project').value.toLowerCase();                 
+    if (reservedNames.includes(project)){ 
+      alert("The name "+ project +" is a reserved word and cannot be used.");
+      project.value="";
+     }
+    
+
+}
+
+document.getElementById('fileupload').addEventListener('change', function() {
+  console.log("")
+  var files = this.files;
+  console.log("files:",files," count:",files.length)
+  var maxFiles = 10;
+  var allowedFormats = ['mp4', 'mkv'];  // Add your allowed video formats
+
+  
+  var filetable = document.getElementById('fileTable');
+  var deletebtn = document.getElementById('deletebtn');
+  filetable.hidden=false;
+  filetable.style.display = 'block';
+  deletebtn.hidden = false;
+  deletebtn.style.display = 'block';
+  var fileTable = $('#fileTable').DataTable();
+ 
+  // Clear previous file list
+  fileTable.clear().draw();
+
+  if (files.length > maxFiles) {
+      alert('You can only upload a maximum of ' + maxFiles + ' files at a time.');
+      this.value = "";
+      return;
+  }
+
+  for (var i = 0; i < files.length; i++) {
+      var fileExtension = files[i].name.split('.').pop().toLowerCase();
+      console.log("fileExtension of file :",i ," ",fileExtension)
+      if (allowedFormats.indexOf(fileExtension) === -1) {
+        console.log
+          alert('Invalid file extension found. Upload valid video files only.');
+          this.value = "";
+          return;
+      }
+        // Add the checkbox, file name, and size to the DataTable
+        fileTable.row.add([
+        '<input type="checkbox" class="file-checkbox" data-index="' + i + '">',
+        files[i].name,
+        formatFileSize(files[i].size)
+      ]).draw();
+  }
+});
+
+
+function formatFileSize(size) {
+  event.preventDefault();
+  if (size < 1024) {
+    return size + ' B';
+  } else if (size < 1024 * 1024) {
+    return (size / 1024).toFixed(2) + ' KB';
+  } else {
+    return (size / (1024 * 1024)).toFixed(2) + ' MB';
+  }
+}
+function deleteFile(event) {
+  event.preventDefault();
+  event.stopPropagation(); // Prevent the default form submission
+  var fileTable = $('#fileTable').DataTable();
+  var filesInput = document.getElementById('fileupload');
+  var files = filesInput.files;
+
+  // Get the index from the data attribute of the button
+  var index = $(event.target).data('index');
+  console.log("selected delete file index:", index);
+
+  // Remove the corresponding row from the DataTable
+  fileTable.row(event.target.closest('tr')).remove().draw();
+
+  // Remove the corresponding file from the files array
+  var newFiles = Array.from(files);
+  newFiles.splice(index, 1);
+  var fileList = arrayToFileList(files);
+  files =fileList
+    // Clear existing files from the input and reassign the updated file list
+    filesInput.value.clear();
+    filesInput.files = fileList;
+}
+
+function deleteSelected() {
+  var fileTable = $('#fileTable').DataTable();
+  var filesInput = document.getElementById('fileupload');
+  var files = filesInput.files;
+
+  // Get all selected checkboxes
+  var checkboxes = $('.file-checkbox:checked');
+
+  // Loop through selected checkboxes and remove corresponding rows and files
+  checkboxes.each(function () {
+    var index = $(this).data('index');
+    fileTable.row($(this).closest('tr')).remove().draw();
+    //convert filelist to array
+     
+      files = Array.from(files);
+      files.splice(index, 1);    
+  
+      console.log("files length after removal",files)
+  });
+
+  // Reassign index to checkboxes
+  $('.file-checkbox').each(function (index) {
+    $(this).data('index', index);
+  });
+  var fileList = arrayToFileList(files);
+  files =fileList
+   // Clear existing files from the input and reassign the updated file list
+   filesInput.value = '';
+   filesInput.files = fileList;
+
+}
+
+function arrayToFileList(filesArray) {
+  // Create a new DataTransfer object
+  console.log("filesArray:",filesArray)
+  var dataTransfer = new DataTransfer();
+
+  // Add each file from the array to the DataTransfer object
+  filesArray.forEach(function (file) {
+      dataTransfer.items.add(file);
+  });
+   console.log("dataTransfer.files:",dataTransfer.files)
+  // Get the FileList from the DataTransfer object
+  var fileList = dataTransfer.files;
+  console.log("fileList:",fileList)
+  return fileList;  
+}
+
+
+function AnalysistoggleOption() {
+  event.preventDefault();
+  
+  var radioButtons = document.getElementsByName('Trafficchoice'); 
+  var textTType = document.getElementById('TrafficType');
+  if (radioButtons[0].checked) {
+    textTType.value='Through Traffic'
+    
+  } else if (radioButtons[1].checked) {
+    textTType.value='Junction Traffic'
+  }
+  console.log("Trafficchoice",textTType.value);
+} 
+
+function toggleOption() {
+  event.preventDefault();
+  var textOption = document.getElementById('urlpath');
+ // console.log("calling toggleOption",textOption);
+  var labelOption = document.getElementById('urlpathlabel');
+  //var urlbuttonOption=document.getElementById('saveurl') ;
+  var fileOption = document.getElementById('fileupload');
+  var uploadlabelOption = document.getElementById('fileuploadlabel');
+  var buttonOption = document.getElementById("submit");
+  var radioButtons = document.getElementsByName('choice');
+  var filetable = document.getElementById('fileTable');
+  var deletebtn = document.getElementById('deletebtn');
+
+  //console.log("selected fileOption :", fileOption)
+
+  if (radioButtons[0].checked) {
+    //console.log("urlpath selected :",textOption)
+    textOption.style.display = 'block';
+    labelOption.style.display = 'block';
+    //urlbuttonOption.style.display = 'block';
+    filetable.style.display = 'none';
+    fileOption.style.display = 'none';
+    uploadlabelOption.style.display = 'none';
+    buttonOption.style.display = 'block';
+    deletebtn.style.display = 'none';
+    filetable.hidden=true;
+    deletebtn.hidden = true;
+  } else if (radioButtons[1].checked) {
+      //console.log("fileupload selected")
+      textOption.style.display = 'none';
+      labelOption.style.display = 'none';
+     // urlbuttonOption.style.display = 'none';
+      fileOption.style.display = 'block';
+      uploadlabelOption.style.display = 'block';
+      buttonOption.style.display = 'block';   
+  }
+} 
+
+function pad2Digits(number) {
+  event.preventDefault();
+  return number < 10 ? '0' + number : number;
+}
+
+function EndDatevalidate(){
+  event.preventDefault();
+  var VSDate = document.getElementById('StartDate');
+  var VEDate = document.getElementById('EndDate');
+  var Vdays = document.getElementById('Ndays');
+  var currentdate = new Date();
+  var year = currentdate.getFullYear();
+  var month = pad2Digits(currentdate.getMonth() + 1); // Months are zero-based
+  var day = pad2Digits(currentdate.getDate());
+
+// Format the date as needed
+  var formattedDate = year + '-' + month + '-' + day;
+  console.log("currentdate :",formattedDate);
+  if (VSDate && VEDate && Vdays) 
+    {
+    console.log("VSDate : ",VSDate.value);
+    console.log("VEDate : ",VEDate.value);
+    console.log("Vdays : ",Vdays.value);
+
+    var VSDate1 = new Date(document.getElementById('StartDate').value);
+    var VEDate1 = new Date(document.getElementById('EndDate').value);
+
+    // Calculate the difference in milliseconds
+    var timeDifference = VEDate1 - VSDate1;
+
+    // Convert the difference to days
+    var daysDifference = timeDifference / (1000 * 60 * 60 * 24);
+    daysDifference = daysDifference + 1;
+    console.log("Difference in days: ", daysDifference,"timeDifference :",timeDifference);
+    if ((VEDate.value <= formattedDate) && (VSDate.value <= formattedDate) ) {
+        console.log("1");
+        if (VEDate.value < VSDate.value) {
+          console.log("2");
+          alert('Video End Date should be greater than or equal to Video Start Date . Please Enter Valid  Date');
+          VSDate.value="" ;
+          VEDate.value="";
+        }
+        else {
+            console.log("3");
+              if ((Vdays.value == 1 ) && (VSDate.value != VEDate.value)){
+                console.log("4");
+                alert(' 1 day video . Please Enter Valid End Date');
+                VSDate.value="" ;
+                VEDate.value="";
+              }
+              else {
+                console.log("5");
+              if ((Vdays.value > 1 ) && (VSDate.value >= VEDate.value))
+              {
+                console.log("6");
+              alert('more than 1 day video . Please Enter Valid End Date');
+              VSDate.value="" ;
+              VEDate.value="";
+              } 
+              else {
+                console.log("7");
+                  if ((Vdays.value > 1 ) && (daysDifference != Vdays.value))
+                  {  console.log("8");
+                     console.log("VEDate.value - VSDate.value :",daysDifference);
+                      alert('start date/end date does match with No.of days.Please Enter Valid Start and End Date');
+                      VSDate.value="" ;
+                      VEDate.value="";
+                    }
+        
+                  }
+              }
+            }
+      
+    }
+    else {console.log("9");
+          alert('Invalid Date -greater than current date. Please enter valid date');
+          VSDate.value="" ;
+          VEDate.value="";
+        }
+      }
+  else {console.log("10");
+        console.error("One or more elements not found");
+        }
+  
+}
+
+
+$('#submit').on('click', (event) => {
+  event.preventDefault(); // Prevent the default form submission
+  console.log("save btn clicked : ")
+   // Create a FormData object to handle file uploads
+   var textTType = document.getElementById('TrafficType');
+   console.log("textTType.value : ",textTType.value)
+
+   var company = document.getElementById('Company');
+   console.log("validation - company",company.value);
+   var project = document.getElementById('Project');
+
+   var location = document.getElementById('Location');
+
+   var gis = document.getElementById('gisInput');
+   var ndays = document.getElementById('Ndays');
+   var vsdate = document.getElementById('StartDate');
+
+   var vedate = document.getElementById('EndDate');
+   console.log("validation - enteries",project.value ,"--",location.value,"--", gis.value,"--", ndays.value,"--",vsdate.value ,"--",vedate.value,"--" ,textTType.value);
+
+   console.log("validation starts here");
+   if (company.value.trim() === ""|| company.value === null){
+    console.log("validation - company");
+    alert("Please select Company");
+   }
+   if (project.value.trim() === "" || project.value === null){
+    console.log("validation - project");
+    alert("Please enter project name");
+   } else {console.log("validation - project --else part"); validate_project_name()}
+   if (location.value.trim() === "" || location.value === null){
+    console.log("validation - location");
+    alert("Please enter  location name");
+   }
+
+   if (gis.value.trim() === "" || gis.value === null){
+    console.log("validation - gis");
+    alert("Please enter GIS-latlong");
+   }
+   else { console.log("validation - gis -- else part"); GISvalidate()}
+   if (ndays.value.trim() === "" || ndays.value === null){
+    console.log("validation - ndays");
+    alert("Please enter No.of days video");
+   }
+   if (vsdate.value.trim() === "" || vsdate.value === null){
+    console.log("validation - vsdate");
+    alert("Please enter  start date");
+   }
+   if (vedate.value.trim() === "" || vedate.value === null){
+    console.log("validation - enddate");
+    alert("Please enter  end date");
+   } else {console.log("validation - enddate - else part"); EndDatevalidate()}
+   if (textTType.value.trim() === "" || textTType.value === null){
+    console.log("validation - traffic");
+    alert("Please select TrafficType");
+   }
+ 
+   
+
+   if (
+    company.value !== "" &&
+    project.value !== "" &&
+    location.value !== "" &&
+    gis.value !== "" &&
+    ndays.value !== "" &&
+    vsdate.value !== "" &&
+    vedate.value !== "" &&
+    textTType.value !== ""
+   )
+   { 
+    console.log("if - condition")
+   
+
+    var textOption = document.getElementById('urlpath');
+   // console.log("calling toggleOption",textOption);
+    var labelOption = document.getElementById('urlpathlabel');
+    //var urlbuttonOption=document.getElementById('saveurl') ;
+    var fileOption = document.getElementById('fileupload');
+    var uploadlabelOption = document.getElementById('fileuploadlabel');
+    var buttonOption = document.getElementById("submit");
+    var radioButtons = document.getElementsByName('choice');
+    var validated = true;
+
+    if (radioButtons[0].checked &&  textOption.value.trim() === "" )
+    {
+      console.log("validation - urlpath" ,textOption.value);
+      alert("Please enter urlpath");
+      validated = false;
+    }
+
+    if (radioButtons[1].checked &&  fileOption.value.trim() === "" )
+    {
+       console.log("validation - file upload");
+       alert("Please upload video files");
+       validated = false;
+    }
+
+
+      if (validated === true)
+      { 
+        var form = new FormData(document.getElementById('VideoUpload'));
+        $(".progress").show();
+        //var newName = ""
+        //var newfileName=newName.concat(company,"_",project,"_",location,"_",currentDate)
+        //form.files=newfileName;
+      $.ajaxSetup({
+        headers: {
+            "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value,
+        }
+      });
+      $.ajax({
+        xhr: function () {
+            var xhr = new XMLHttpRequest();
+            $("#submit").prop({disabled: true});
+            // Track the progress
+            
+
+          xhr.upload.addEventListener("progress", function (evt) {
+            if (evt.lengthComputable) {
+              var percentComplete = (evt.loaded / evt.total) * 99;
+              $(".progress-bar").css("height", "25px");
+              $(".progress-bar").width(percentComplete + '%');
+              $("#progressText").text('Upload in progress').css({
+                'font-family': 'Arial black', //  desired font
+                'font-weight': 'bold', // Make the text bold
+                'color': 'black' // make font color black
+            });
+             // $("#progressText").text(Math.round(percentComplete) + '%');
+            }
+           }, false);
+            return xhr; 
+        }, // Add a comma here
+        url: 'upload_files', // Add a comma here
+        type: 'POST',
+        dataType: 'json',
+        data: form,
+        processData: false, // Important! Don't process the files
+        contentType: false, // Important! Set content type to false
+        error: function (xhr) { 
+          console.log('Error:', xhr); 
+        alert(xhr.ResponseText);
+        $('#fileupload input').val("");
+      },
+        success: function (res) { 
+           // Show progress at 100% upon success
+           $(".progress-bar").width('100%');
+           $("#progressText").text('done');
+          console.log('Success:', res); 
+          if ('error' in res) {
+            alert("Error: " + res.error); 
+          }
+          else {
+             
+                  alert("uploaded successfully"); 
+            //$('#fileupload input').val("");
+            document.getElementById('fileupload').value = '';
+            $(".progress").hide(); // Hide the progress bar when upload is complete
+            $("#submit").prop({disabled: false});
+          }
+         
+        }
+      });
+    }
+    }
+    else {
+      console.log("validation - error");
+      alert("Entry missing");
+    }
+});    
+
+</script>
+{% endblock %}

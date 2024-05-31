@@ -1,0 +1,653 @@
+{% load static %}
+
+
+<!DOCTYPE html>
+
+  <html
+    lang="en"
+    class="light-style layout-navbar-fixed layout-menu-fixed"
+    dir="ltr"
+    data-theme="theme-default"
+    data-assets-path="{% static 'assets/' %}"
+    data-template="vertical-menu-template-no-customizer"
+  >
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
+    />
+    
+
+    <title>VFMS Dashboard</title>
+    {% block title %}
+
+    {% endblock %}
+    <meta name="description" content="" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{% static 'assets/img/favicon/favicon.ico' %}" />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Rubik:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
+      rel="stylesheet"
+    /> -->
+    <!-- Google Fonts -->
+    <link
+    href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Roboto:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i"
+    rel="stylesheet">
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="{% static 'assets/vendor/fonts/boxicons.css' %}" />
+    <link rel="stylesheet" href="{% static 'assets/vendor/fonts/fontawesome.css' %}" />
+    <link rel="stylesheet" href="{% static 'assets/vendor/fonts/flag-icons.css' %}" />
+
+    <!-- Core CSS -->
+    <link rel="stylesheet" href="{% static 'assets/vendor/css/rtl/core.css' %}" />
+    <link rel="stylesheet" href="{% static 'assets/vendor/css/rtl/theme-default.css' %}" />
+    <link rel="stylesheet" href="{% static 'assets/css/demo.css' %}" />
+
+    <!-- Vendors CSS -->
+    <link rel="stylesheet" href="{% static 'assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css' %}" />
+    <link rel="stylesheet" href="{% static 'assets/vendor/libs/typeahead-js/typeahead.css' %}" />
+    <link rel="stylesheet" href="{% static 'assets/vendor/libs/apex-charts/apex-charts.css' %}" />
+
+    <!-- Vendors CSS fixed datatable -->
+    <link rel="stylesheet" href="{% static 'assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css' %}" />
+    <link rel="stylesheet" href="{% static 'assets/vendor/libs/typeahead-js/typeahead.css' %}" />
+    <link rel="stylesheet" href="{% static 'assets/vendor/libs/datatables-bs5/datatables.bootstrap5.css' %}" />
+    <link rel="stylesheet" href="{% static 'assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css' %}" />
+    <link rel="stylesheet" href="{% static 'assets/vendor/libs/datatables-select-bs5/select.bootstrap5.css' %}" />
+    <link rel="stylesheet" href="{% static 'assets/vendor/libs/datatables-checkboxes-jquery/datatables.checkboxes.css' %}" />
+    <link rel="stylesheet" href="{% static 'assets/vendor/libs/datatables-fixedcolumns-bs5/fixedcolumns.bootstrap5.css' %}" />
+    <link rel="stylesheet" href="{% static 'assets/vendor/libs/datatables-fixedheader-bs5/fixedheader.bootstrap5.css' %}" />
+
+    <!-- Vendors CSS sweet alert -->
+    <link rel="stylesheet" href="{% static 'assets/vendor/libs/animate-css/animate.css' %}" />
+    <link rel="stylesheet" href="{% static 'assets/vendor/libs/sweetalert2/sweetalert2.css' %}" />
+     
+    {% block stylesheet  %} {% endblock %}
+ 
+    <!-- Page CSS -->
+
+    <!-- Helpers -->
+    <script src="{% static 'assets/vendor/js/helpers.js' %}"></script>
+
+    <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
+    <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
+    <script src="{% static 'assets/js/config.js' %}"></script>
+
+    <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+
+  </head>
+
+  <body>
+    <!-- Layout wrapper -->
+    <div class="layout-wrapper layout-content-navbar">
+      <div class="layout-container">
+        <!-- Menu -->
+
+        <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
+          <div class="app-brand demo">
+            <a href="" class="app-brand-link">
+            
+              <span class="app-brand-logo demo">
+                <img src="{% static 'assets/svg/cosai_logo.svg' %}" class="navbar-logo" alt="logo" width="28px" height="28px">
+              </span>
+              <span class="app-brand-text demo menu-text fw-bold ms-2">COS AI</span>
+            </a>
+
+            <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto">
+              <i class="bx menu-toggle-icon d-none d-xl-block fs-4 align-middle"></i>
+              <i class="bx bx-x d-block d-xl-none bx-sm align-middle"></i>
+            </a>
+          </div>
+
+          <div class="menu-divider mt-0"></div>
+
+          <!-- <div class="menu-inner-shadow"></div> -->
+
+                <ul class="menu-inner py-1">
+                  <!-- Dashboards -->
+                  <li class="menu-item active open">
+                    <a href="{% url 'dashboarddata' %}"class="menu-link">
+                    
+                      <i class="menu-icon tf-icons bx bx-home-circle"></i>
+                      <div data-i18n="Dashboards">Dashboards</div>
+                    </a>
+                  </li>
+                  
+                  <!-- User -->
+                  <li class="menu-item active " >
+                    <a href="javascript:void(0);" class="menu-link menu-toggle">
+                      <i class="menu-icon tf-icons fa fa-user fs-4"></i> 
+                      <div data-i18n="User Administration">User Administration</div>
+                    </a>
+                    <ul class="menu-sub">
+                      <li class="menu-item">    
+                        <a href="{% url 'AddUser' %}" class="menu-link list_profile"  >
+                          <i class="menu-icon tf-icons bx bx-right-arrow"></i> 
+                          <div data-i18n="Add User" >Add User</div>
+                        </a>
+                      </li>
+                      <li class="menu-item">
+                        <a href="{% url 'ModifyUserProfile' %}" class="menu-link list_profile" >
+                          <i class="menu-icon tf-icons bx bx-right-arrow"></i> 
+                          <div data-i18n="Update User" >Update User</div>
+                        </a>
+                      </li>
+                <li class="menu-item">
+                  <a href="{% url 'ListUser' %}" class="menu-link list_profile"  >
+                    <i class="menu-icon tf-icons bx bx-right-arrow"></i> 
+                    <div data-i18n=" Users list"> Users list</div>
+                  </a>
+                </li>
+                <li class="menu-item">
+                  <a href="{% url 'AddRole'%}" class="menu-link list_profile" >
+                    <i class="menu-icon tf-icons bx bx-right-arrow"></i> 
+                    <div data-i18n="Add Role" >Add Role</div>
+                  </a>
+                </li>
+                <li class="menu-item">
+                  <a href="{% url 'ModifyRole' %}" class="menu-link"  >
+                    <i class="menu-icon tf-icons bx bx-right-arrow"></i> 
+                    <div data-i18n="Update Role" >Update Role</div>
+                  </a>
+                </li>
+                <li class="menu-item">
+                  <a href="{% url 'ListRole' %}" class="menu-link" >
+                    <i class="menu-icon tf-icons bx bx-right-arrow"></i> 
+                    <div data-i18n=" Roles List"> Roles List</div>
+                  </a>
+                </li>
+                
+              </ul>
+            </li>
+            <!-- Projects -->
+            <!-- <li class="menu-item active">
+              <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons fa-solid fa-location-crosshairs fs-4"></i> 
+                <div data-i18n="Project Administration">Project Administration</div>
+              </a>
+              <ul class="menu-sub">
+                <li class="menu-item">
+                  <a href="{% url 'AddCompany' %}" class="menu-link list_project" >
+                    <i class="menu-icon tf-icons bx bx-right-arrow"></i> 
+                    <div data-i18n="Add Company">Add Company</div>
+                  </a>
+                </li>
+                <li class="menu-item">
+                  <a href="{% url 'ModifyCompany' %}" class="menu-link list_project" >
+                    <i class="menu-icon tf-icons bx bx-right-arrow"></i> 
+                    <div data-i18n="Update Company">Update Company</div>
+                  </a>
+                </li>
+                <li class="menu-item">
+                  <a href="{%  url 'ListCompany' %}" class="menu-link"  >
+                    <i class="menu-icon tf-icons bx bx-right-arrow"></i> 
+                    <div data-i18n="Company List"> Company List</div>
+                  </a>
+                </li>
+                <li class="menu-item">
+                  <a  href="{%  url 'AddProject' %}" class="menu-link list_project" >
+                    <i class="menu-icon tf-icons bx bx-right-arrow"></i> 
+                    <div data-i18n="Add Project">Add Project</div>
+                  </a>
+                </li>
+                <li class="menu-item">
+                  <a  href="{%  url 'ModifyProject' %}" class="menu-link list_project" >
+                    <i class="menu-icon tf-icons bx bx-right-arrow"></i> 
+                    <div data-i18n="Update Project">Update Project</div>
+                  </a>
+                </li>
+                <li class="menu-item">
+                  <a  href="{%  url 'ListProject' %}" class="menu-link"  >
+                    <i class="menu-icon tf-icons bx bx-right-arrow"></i> 
+                    <div data-i18n="Project List"> Project List</div>
+                  </a>
+                </li>
+                <li class="menu-item">
+                  <a href="{%  url 'AddStation' %}" class="menu-link list_project" >
+                    <i class="menu-icon tf-icons bx bx-right-arrow"></i> 
+                    <div data-i18n="Add Station">Add Station</div>
+                  </a>
+                </li>
+                <li class="menu-item">
+                  <a href="{%  url 'Modifytation' %}" class="menu-link list_project" >
+                    <i class="menu-icon tf-icons bx bx-right-arrow"></i> 
+                    <div data-i18n="Update Station">Update Station</div>
+                  </a>
+                </li>
+                <li class="menu-item">
+                  <a href="{%  url 'ListStation' %}" class="menu-link"   >
+                    <i class="menu-icon tf-icons bx bx-right-arrow"></i> 
+                    <div data-i18n="Station List"> Station List</div>
+                  </a>
+                </li>
+                
+              </ul>
+            </li>    -->
+            <!-- Cameras -->
+            <!-- <li class="menu-item active">
+              <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons fa-solid fa-camera fs-4"></i> 
+                <div data-i18n="Cameras">Camera Administration</div>
+              </a>
+              <ul class="menu-sub">
+                <li class="menu-item">
+                  <a href="{% url 'AddCameraModel' %}" class="menu-link list_camera" >
+                    <i class="menu-icon tf-icons bx bx-right-arrow"></i> 
+                    <div data-i18n="Add Camera Model">Add Camera Model</div>
+                  </a>
+                </li>
+                <li class="menu-item">
+                  <a href="{% url 'ModifyCameraModel' %}" class="menu-link list_camera" >
+                    <i class="menu-icon tf-icons bx bx-right-arrow"></i> 
+                    <div data-i18n="Update Camera Model">Update Camera Model</div>
+                  </a>
+                </li>
+                <li class="menu-item">
+                  <a href="{% url 'ListCameraModel' %}" class="menu-link" >
+                    <i class="menu-icon tf-icons bx bx-right-arrow"></i> 
+                    <div data-i18n="Camera Model List"> Camera Model List</div>
+                  </a>
+                </li>
+                <li class="menu-item">
+                  <a href="{% url 'AddCameraPosition' %}" class="menu-link list_camera" >
+                    <i class="menu-icon tf-icons bx bx-right-arrow"></i> 
+                    <div data-i18n="AddCamera Position">Add Camera Position</div>
+                  </a>
+                </li>
+                <li class="menu-item">
+                  <a href="{% url 'ModifyCameraPosition' %}" class="menu-link list_camera" >
+                    <i class="menu-icon tf-icons bx bx-right-arrow"></i> 
+                    <div data-i18n="Update Camera Position">Update Camera Position</div>
+                  </a>
+                </li>
+                <li class="menu-item">
+                  <a href="{% url 'ListCameraPosition' %}"  class="menu-link" >
+                    <i class="menu-icon tf-icons bx bx-right-arrow"></i> 
+                    <div data-i18n="Camera Position List">  Camera Position List</div>
+                  </a>
+                </li>
+                
+               
+              </ul>
+            </li>     -->
+<!-- Videos File / Light Intensity -->
+<!-- <li class="menu-item active">
+  <a href="javascript:void(0);" class="menu-link menu-toggle">
+    <i class="menu-icon tf-icons fa-solid fa-video fs-4"></i> 
+    <div data-i18n="Video Administration">Video Administration</div>
+  </a>
+  <ul class="menu-sub">
+    <li class="menu-item">
+      <a href="{% url 'AddVideoFormat' %}" class="menu-link list_video" >
+        <i class="menu-icon tf-icons bx bx-right-arrow"></i> 
+        <div data-i18n="Add Video File Format">Add Video File Format</div>
+      </a>
+    </li>
+    <li class="menu-item">
+      <a href="{% url 'ModifyVideoFormat' %}"  class="menu-link list_video" >
+        <i class="menu-icon tf-icons bx bx-right-arrow"></i> 
+        <div data-i18n="Update Video File Format">Update Video File Format</div>
+      </a>
+    </li>
+    <li class="menu-item">
+      <a href="{% url 'ListVideoFormat' %}"  class="menu-link list_video" >
+        <i class="menu-icon tf-icons bx bx-right-arrow"></i> 
+        <div data-i18n="Video File Format List">  Video File Format List</div>
+      </a>
+    </li>
+    <li class="menu-item">
+      <a href="{% url 'AddLightIntensity' %}" class="menu-link list_video" >
+        <i class="menu-icon tf-icons bx bx-right-arrow"></i> 
+        <div data-i18n="Add Light Intensity">Add Light Intensity</div>
+      </a>
+    </li> -->
+    <!-- <li class="menu-item">
+      <a href="{% url 'ModifyLightIntensity' %}" class="menu-link list_video" >
+        <i class="menu-icon tf-icons bx bx-right-arrow"></i> 
+        <div data-i18n="Update Light Intensity">Update Light Intensity</div>
+      </a>
+    </li> -->
+    <!-- <li class="menu-item">
+      <a href="{% url 'ListLightIntensity' %}" class="menu-link" >
+        <i class="menu-icon tf-icons bx bx-right-arrow"></i> 
+        <div data-i18n="Light Intensity List">  Light Intensity List</div>
+      </a>
+    </li>
+  </ul>
+</li> -->
+
+<!-- Video Uploader -->
+<li class="menu-item active">
+  <a href="{javascript:void(0)};" class="menu-link menu-toggle">
+     <i class="menu-icon tf-icons fa-solid fa-cloud-arrow-up fs-4"></i> 
+        <div data-i18n="Video Uploader">Video Uploader</div>
+          </a>
+            <ul class="menu-sub"> 
+              <!-- <li class="menu-item">
+                <a href="{% url 'AddVideo'%}" class="menu-link" >
+                  <i class="menu-icon tf-icons bx bx-right-arrow"></i> 
+                    <div data-i18n="Upload Videos">Upload Videos</div>
+                 </a>
+              </li>
+             
+             
+              <li class="menu-item">
+                    <a href="{% url 'ModifyVideo' %}" class="menu-link" >
+                      <i class="menu-icon tf-icons bx bx-right-arrow"></i> 
+                      <div data-i18n="Edit Videos">Edit Videos</div>
+                    </a>
+              </li> -->
+              <li class="menu-item">  
+                    <a href="{% url 'ApproveRejectVideos' %}" class="menu-link" >
+                      <i class="menu-icon tf-icons bx bx-right-arrow"></i> 
+                      <div data-i18n="Approve/Reject Videos">Approve/Reject Videos</div>
+                    </a>
+              </li>
+                    
+              <!-- <li class="menu-item">
+                    <a href="{% url 'ListVideos' %}" class="menu-link" >
+                      <i class="menu-icon tf-icons bx bx-right-arrow"></i> 
+                      <div data-i18n="List Videos">List Videos</div>
+                    </a>
+              </li>   -->
+                
+              </ul>
+            </li>         
+        </aside>
+        <!-- / Menu -->
+
+        <!-- Layout container -->
+        <div class="layout-page">
+          <!-- Navbar -->
+
+          <nav class="layout-navbar navbar navbar-expand-xl align-items-center bg-navbar-theme" id="layout-navbar">
+            <div class="container-fluid">
+              <div class="layout-menu-toggle navbar-nav align-items-xl-center me-3 me-xl-0 d-xl-none">
+                <a class="nav-item nav-link px-0 me-xl-4" href="javascript:void(0)">
+                  <i class="bx bx-menu bx-sm"></i>
+                </a>
+              </div>
+
+              <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
+                <!-- Search -->
+                <div class="navbar-nav align-items-center">
+                  <div class="nav-item navbar-search-wrapper mb-0">
+                    <a class="nav-item nav-link search-toggler px-0" href="javascript:void(0);">
+                      <!-- <i class="bx bx-search-alt bx-sm"></i> -->
+                      <span class="d-none d-md-inline-block text-muted"></span>
+                    </a>
+                  </div>
+                </div>
+                <!-- /Search -->
+
+                <ul class="navbar-nav flex-row align-items-center ms-auto">
+                  <!-- Language -->
+                  
+                  <!--/ Language -->
+
+                  <!-- Style Switcher -->
+                  <!--/ Style Switcher -->
+
+                  <!-- Quick links  -->
+                  
+                  <!-- Quick links -->
+
+                  <!-- Notification -->
+                  
+                  <!--/ Notification -->
+
+                  <!-- User -->
+                  <div class="d-none d-lg-flex">
+                    <div class="app-brand demo">
+                      <a href="" class="app-brand-link">
+                        <div class="avatar">
+                          <img src="{% static 'assets/img/logo/data_motor.jpg' %}" alt class="rounded" />
+                        </div>
+                        <span class="app-brand-text demo menu-text fw-bold ms-2">VFMS</span>
+                      </a>
+                    </div>
+                  </div>
+                  <li class="nav-item navbar-dropdown dropdown-user dropdown">
+                    <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
+                      <div class="avatar avatar-online">
+                        {% if custom_user.user_image %}
+                        <img src={{custom_user.user_image}} alt class="rounded-circle" />
+                        {% elif custom_user.user_image_url %}
+                          <img src={{custom_user.user_image_url}} alt class="rounded-circle" />
+                        {% else %}
+                          <img src="{% static 'media/user_icon.png' %}" alt class="rounded-circle" />						
+                        {% endif %}	
+                        <!-- <img src="{% static 'assets/img/logo/pro.png' %}" alt class="rounded-circle" /> -->
+                      </div>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                      <li>
+                        <a class="dropdown-item" href="pages-account-settings-account.html">
+                          <div class="d-flex">
+                            <div class="flex-shrink-0 me-3">
+                              <div class="avatar avatar-online">
+                                {% if custom_user.user_image %}
+                                  <img src={{custom_user.user_image}} alt class="rounded-circle" />
+                                {% elif custom_user.user_image_url %}
+                                  <img src={{custom_user.user_image_url}} alt class="rounded-circle" />
+                                {% else %}
+                                  <img src="{% static 'media/user_icon.png' %}" alt class="rounded-circle" />						
+                                {% endif %}	
+                              </div>
+                            </div>
+                            <div class="flex-grow-1">
+                              <span class="fw-semibold d-block lh-1">{{custom_user.user_name}}</span>
+                              <small>Approver</small>
+                            </div>
+                          </div>
+                        </a>
+                      </li>
+                      <li>
+                        <div class="dropdown-divider"></div>
+                      </li>
+                      <li>
+                        <a class="dropdown-item" href="{% url 'profile_view_final' %}">
+                          <i class="bx bx-user me-2"></i>
+                          <span class="align-middle">My Profile</span>
+                        </a>
+                      </li>
+                      <li>
+                        <a class="dropdown-item" href="#">
+                          <i class="bx bx-cog me-2"></i>
+                          <span class="align-middle">Settings</span>
+                        </a>
+                      </li>
+                      <li>
+                        <div class="dropdown-divider"></div>
+                      </li>
+                      <li>
+                        <a class="dropdown-item" href="#">
+                          <i class="bx bx-support me-2"></i>
+                          <span class="align-middle">Help</span>
+                        </a>
+                      </li>
+                      <li>
+                        <a class="dropdown-item" href="#">
+                          <i class="bx bx-help-circle me-2"></i>
+                          <span class="align-middle">FAQ</span>
+                        </a>
+                      </li>
+                      <li>
+                        <div class="dropdown-divider"></div>
+                      </li>
+                      <li>
+                        <a class="dropdown-item" href="{% url 'logout_request' %}" target="_blank">
+                          <i class="bx bx-power-off me-2"></i>
+                          <span class="align-middle">Log Out</span>
+                        </a>
+                      </li>
+                    </ul>
+                  </li>
+                  <!--/ User -->
+                </ul>
+              </div>
+
+              <!-- Search Small Screens -->
+              <div class="navbar-search-wrapper search-input-wrapper d-none">
+                <input
+                  type="text"
+                  class="form-control search-input container-fluid border-0"
+                  placeholder="Search..."
+                  aria-label="Search..."
+                />
+                <i class="bx bx-x bx-sm search-toggler cursor-pointer"></i>
+              </div>
+            </div>
+          </nav>
+
+          <!-- / Navbar -->
+    <!-- content tag -->
+    {% block content %}
+
+
+    {% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Footer -->
+    <footer class="content-footer footer bg-footer-theme">
+      <div class="container-fluid d-flex flex-wrap justify-content-between py-2 flex-md-row flex-column">
+        <div class="mb-2 mb-md-0">
+          <script>
+          </script>
+          <a href="#" target="_blank" class="footer-link fw-semibold"></a>
+        </div>
+        <!-- <div>
+          <a href="https://themeforest.net/licenses/standard" class="footer-link me-4" target="_blank"
+            >License</a
+          >
+          <a href="https://1.envato.market/pixinvent_portfolio" target="_blank" class="footer-link me-4"
+            >More Themes</a
+          >
+
+          <a
+            href="https://pixinvent.com/demo/frest-clean-bootstrap-admin-dashboard-template/documentation-bs5/"
+            target="_blank"
+            class="footer-link me-4"
+            >Documentation</a
+          >
+
+          <a href="https://pixinvent.ticksy.com/" target="_blank" class="footer-link d-none d-sm-inline-block"
+            >Support</a
+          >
+        </div> -->
+      </div>
+    </footer>
+    <!-- / Footer -->
+
+        <div class="content-backdrop fade"></div>
+      </div>
+      <!-- Content wrapper -->
+    </div>
+    <!-- / Layout page -->
+  </div>
+
+  <!-- Overlay -->
+  <div class="layout-overlay layout-menu-toggle"></div>
+
+  <!-- Drag Target Area To SlideIn Menu On Small Screens -->
+  <div class="drag-target"></div>
+</div>
+    <!-- / Layout wrapper -->
+
+    <!-- Core JS -->
+    <!-- build:js assets/vendor/js/core.js -->
+    <script src="{% static 'assets/vendor/libs/jquery/jquery.js' %}"></script>
+    <script src="{% static 'assets/vendor/libs/popper/popper.js' %}"></script>
+    <script src="{% static 'assets/vendor/js/bootstrap.js' %}"></script>
+    <script src="{% static 'assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js' %}"></script>
+
+    <script src="{% static 'assets/vendor/libs/hammer/hammer.js' %}"></script>
+
+    <script src="{% static 'assets/vendor/libs/i18n/i18n.js' %}"></script>
+    <script src="{% static 'assets/vendor/libs/typeahead-js/typeahead.js' %}"></script>
+
+    <script src="{% static 'assets/vendor/js/menu.js' %}"></script>
+    <!-- endbuild -->
+
+    <!-- Vendors JS -->
+    <script src="{% static 'assets/vendor/libs/apex-charts/apexcharts.js' %}"></script>
+
+    <!-- Main JS -->
+    <script src="{% static 'assets/js/main.js' %}"></script>
+
+    <!-- Page JS -->
+    <script src="{% static 'assets/js/dashboards-analytics.js' %}"></script>
+    <!--<script src="{% static 'assets/js/form-basic-inputs.js' %}"></script>-->
+    <script src="{% static 'assets/vendor/libs/sweetalert2/sweetalert2.js' %}"></script>
+
+    <!-- Vendors JS -->
+    <script src="{% static 'assets/vendor/libs/datatables/jquery.dataTables.js' %}"></script>
+    <script src="{% static 'assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js' %}"></script>
+    <script src="{% static 'assets/vendor/libs/datatables-responsive/datatables.responsive.js' %}"></script>
+    <script src="{% static 'assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.js' %}"></script>
+
+    <script src="{% static 'assets/vendor/libs/datatables-fixedheader-bs5/fixedheader.bootstrap5.js' %}"></script>
+    
+    <!-- script tag -->
+
+    {% block script %}
+    
+    {% endblock %} 
+  </body>
+  </html>
+    {% block javascript %}
+    
+    <script>
+      console.log("###################################################")
+      function sweet_alert_message(icons, message) {
+    if (icons == "success") {
+      title1 = "Good job!"
+    } else if (icons == "info") {
+      title1 == "Info!"
+    } else if (icons == "warning") {
+      title1 = "Warning!"
+    } else {
+      title1 = "Error!"
+    }
+    Swal.fire({
+      title: title1,
+      text: message,
+      icon: icons,
+      customClass: {
+        confirmButton: 'btn btn-primary'
+      },
+      buttonsStyling: false
+    });
+  }
+
+  $(document).ready(function () {
+    console.log("ERTERTERERTERERTERT")
+    $(".sub-menu ul").hide();
+    console.log('HIDEHDIDEGHIDE')
+    $(".sub-menu a").click(function () {
+        $(this).parent(".sub-menu").children("ul").slideToggle("100");
+        $(this).find(".right").toggleClass("fa-caret-up fa-caret-down");
+    });
+});
+ 
+
+   </script>
+    {% endblock  %} 
+
+    

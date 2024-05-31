@@ -1,0 +1,25 @@
+{% extends 'templates/main_base.html' %}
+{% load static %}
+
+{% block title %}Add  video formats{% endblock %}
+<script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+<script src='https://code.jquery.com/jquery-3.2.1.min.js'></script>
+<script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js'></script>
+{% block content %}
+
+    
+<div class="container">
+  <h1>New video file formats to be added</h1><br>
+    <form method="POST">
+      <fieldset>
+        
+        <br>
+        {% csrf_token %}
+        {{ form.as_p }}<br>
+         <button type="submit" class="btn btn-primary">Submit</button>&nbsp &nbsp&nbsp
+        <input type="button"  class="btn btn-secondary" value="reset" id="resetBtn" onClick="this.form.reset()" />
+      </fieldset>
+    </form>
+</div>
+    
+{%endblock%}

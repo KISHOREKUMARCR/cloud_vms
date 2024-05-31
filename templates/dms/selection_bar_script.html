@@ -1,0 +1,43 @@
+<script>
+        // Select Project
+        $('#select_project').on('change', function (e) {
+        var optionSelected = $("option:selected", this);
+        var id = this.value;
+        if (id != ''){
+          $.ajax({
+            url: "{% url 'get_locations' %}",
+            method: 'get',
+            data: {
+                'id':id,
+            },
+            dataType: 'json',
+            success: function(data){
+              if(1){
+                var location_data = JSON.parse(data.location_datas)
+                var txt =  '<select class="form-select" id="select_location" disabled><option selected="">Location...</option>'
+                $.each(location_data, function( key, value ) {
+                  txt += '<option  value="'+value.pk+'"><a href="#list_camera">'+ value.fields.location_name + '</a></option>'
+                 }
+                );
+                txt += '</select>'
+                $('#select_location').html(txt)
+              //   var txt = '<div class="row" id = "list_camera" ></div>'
+              //   $('#list_camera').html(txt)
+                
+              }
+            }
+          })
+    
+        }
+        
+    });
+ 
+      $('#select_camera').on('change', function () {
+            var url = $(this).val(); // get selected value
+            if (url) { // require a URL
+                window.location = url; // redirect
+            }
+            return false;
+        });
+      
+</script>

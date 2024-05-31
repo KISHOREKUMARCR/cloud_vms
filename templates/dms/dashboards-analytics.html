@@ -1,0 +1,76 @@
+{% extends 'templates/main_base.html' %}
+{% load static %}
+
+{% block title %} DASH BOARD  {% endblock %}
+
+{% block content %}
+          <!-- Content wrapper -->
+          <div class="content-wrapper">
+            <!-- Content -->
+
+            <div class="container-xxl flex-grow-1 container-p-y">
+              <div class="row">
+                                  {% if messages %}
+                                                        {% for message in messages %}
+                                          <div class="alert alert-success" role="alert" style="display: none;">
+                                              {{ message }}
+                                          </div>
+                                      {% endfor %}
+                                  {% endif %} 
+                
+                <div class="col-lg-3 col-md-6 col-sm-12" style="">
+                  <div class="card  mb-lg-0 mb-4">
+                    <div class="card-body text-center">
+                      <h2>
+                        <i class="bx bx-store text-success display-6"></i>
+                      </h2>
+                      <h4>Total company</h4>
+                      <h5> {{ total_company }}</h5>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-3 col-md-6 col-sm-12" style="">
+                  <div class="card  mb-lg-0 mb-4">
+                    <div class="card-body text-center">
+                      <h2>
+                        <i class="bx bx-task text-info display-6"></i>
+                      </h2>
+                      <h4>Total Projects</h4>
+                      <h5> {{ total_projects }}</h5>
+                    </div>
+                  </div>
+                </div><div class="col-lg-3 col-md-6 col-sm-12">
+                  <div class="card  e mb-lg-0 mb-4">
+                    <div class="card-body text-center">
+                      <h2>                      
+                        <i class='bx bx-current-location text-primary display-6'></i>
+                      </h2>
+                      <h4>Total Location</h4>
+                      <h5> {{ total_locations }}</h5>
+                    </div>
+                  </div>
+                </div>
+              <div class="col-lg-3 col-md-6 col-sm-12" style="">
+                  <div class="card   mb-lg-0 mb-4">
+                    <div class="card-body text-center">
+                      <h2>
+                        <i class="bx bx-video text-danger display-6"></i>
+                      </h2>
+                      <h4>Total CloudURI</h4>
+
+                      <h5>{{ total_cloud_url }}</h5>
+                    </div>
+                  </div>
+                </div>
+
+
+        
+
+                    
+
+                    <!-- Growth Chart-->
+                    
+                </div>
+                <!--/ Referral, conversion, impression & income charts -->
+                {%endblock%}
+                

@@ -1,0 +1,65 @@
+let currentPosition = 0;
+let isPaused = false;
+
+async function upload_chunks(token, filesize) {
+  while (currentPosition < filesize) {
+    if (isPaused) {
+      // If paused, wait for some event to resume
+      await new Promise((resolve) => setTimeout(resolve, 1000)); // Adjust as needed
+      continue;
+    }
+
+    const chunkSize = 1024 * 1024; // 1 MB (adjust as needed)
+    const endPosition = Math.min(currentPosition + chunkSize, filesize);
+
+    const chunkBlob = file.slice(currentPosition, endPosition);
+    const chunkReader = new FileReader();
+
+    chunkReader.onload = async function () {
+      const chunkData = chunkReader.result;
+      const positionInUpload = currentPosition;
+
+      const uploadResponse = await upload_chunk(token, chunkData, positionInUpload, filesize);
+
+      // Handle the upload response if needed
+      console.log(uploadResponse);
+
+      currentPosition = endPosition;
+
+      if (currentPosition >= filesize) {
+        console.log("Upload complete!");
+        // Handle completion
+      }
+    };
+
+    chunkReader.readAsArrayBuffer(chunkBlob);
+
+    // Wait for the FileReader to finish before moving on to the next chunk
+    await new Promise((resolve) => chunkReader.onloadend = resolve);
+  }
+}
+
+async function upload_chunk(token, chunkData, positionInUpload, filesize) {
+  const resumableURI = "YOUR_UPLOAD_URL"; // Replace with your actual upload endpoint
+
+  const upload_options = {
+    method: "PUT",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Length": chunkData.byteLength,
+      "Content-Range": `bytes ${positionInUpload}-${positionInUpload + chunkData.byteLength - 1}/${filesize}`,
+    },
+    body: chunkData,
+  };
+
+  const uResponse = await fetch(resumableURI, upload_options);
+  const uploadResponse = await uResponse.text();
+  return uploadResponse;
+}
+
+// Example usage
+// Call this function to start uploading chunks
+// To pause, set isPaused to true
+// To resume, set isPaused to false
+// To stop, handle cleanup as needed
+upload_chunks("YOUR_TOKEN", file.size);

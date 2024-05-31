@@ -1,0 +1,25 @@
+{% extends 'templates/main_base.html' %}
+{% load static %}
+
+{% block title %}Add Company{% endblock %}
+<script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+<script src='https://code.jquery.com/jquery-3.2.1.min.js'></script>
+<script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js'></script>
+{% block content %}
+
+    
+<div class="container">
+    <h1>  Add Rejection Remarks </h1>
+    <form method="POST">
+      <fieldset>
+       
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Submit</button>
+        <input type="button" value="reset" class="btn btn-secondary" id="resetBtn" onClick="this.form.reset()" />
+      </fieldset>
+    </form>
+</div>
+    
+{%endblock%}
+

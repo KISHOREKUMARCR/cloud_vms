@@ -1,0 +1,640 @@
+{% load static %}
+<!DOCTYPE html>
+
+<html
+  lang="en"
+  class="light-style customizer-hide"
+  dir="ltr"
+  data-theme="theme-default"
+  data-assets-path="{% static 'assets/' %}"
+  data-template="vertical-menu-template"
+>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
+    />
+
+    <title>COS AI Login</title>
+
+    <meta name="description" content="" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{% static 'assets/img/favicon/favicon.ico' %}" />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Rubik:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="{% static 'assets/vendor/fonts/boxicons.css' %}" />
+    <link rel="stylesheet" href="{% static 'assets/vendor/fonts/fontawesome.css' %}" />
+    <link rel="stylesheet" href="{% static 'assets/vendor/fonts/flag-icons.css' %}" />
+
+    <!-- Core CSS -->
+    <link rel="stylesheet" href="{% static 'assets/vendor/css/rtl/core.css' %}" class="template-customizer-core-css" />
+    <link rel="stylesheet" href="{% static 'assets/vendor/css/rtl/theme-default.css' %}" class="template-customizer-theme-css" />
+    <link rel="stylesheet" href="{% static 'assets/css/demo.css' %}" />
+
+    <!-- Vendors CSS -->
+    <link rel="stylesheet" href="{% static 'assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css' %}" />
+    <link rel="stylesheet" href="{% static 'assets/vendor/libs/typeahead-js/typeahead.css' %}" />
+    <!-- Vendor -->
+    <link rel="stylesheet" href="{% static 'assets/vendor/libs/formvalidation/dist/css/formValidation.min.css' %}" />
+    <style>
+#google-connect {
+    background: rgb(255, 255, 255) url(https://raw.githubusercontent.com/eswarasai/social-login/master/img/google-plus.png) no-repeat scroll 50px -5px / 50px 50px padding-box border-box;
+    background: rgb(255,255,255) url("{% static 'assets/img/logo/google.png' %}") no-repeat scroll 60px 5px / 30px 30px padding-box border-box;
+    border: 1px solid rgb(13,110,253);
+}
+.btnn-primary {
+    color: #fff;
+    background-color: #5a8dee;
+    border-color: #5a8dee;
+    box-shadow: 0 0.125rem 0.25rem rgb(147 158 170 / 40%);
+}
+.btnn {
+    display: inline-block;
+    font-weight: 400;
+    line-height: 1.4;
+    color: #677788;
+    text-align: center;
+    vertical-align: middle;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+    background-color: transparent;
+    border: 1px solid transparent;
+    padding: 0.469rem 1.375rem;
+    font-size: 0.9375rem;
+    border-radius: 0.25rem;
+    transition: all 0.2s ease-in-out;
+}
+/* img.img-fluid.authentication-cover-img {
+  height: 600%;
+  
+} */
+    </style>
+
+    <!-- Page CSS -->
+    <!-- Page -->
+    <link rel="stylesheet" href="{% static 'assets/vendor/css/pages/page-auth.css' %}" />
+    <!-- Helpers -->
+    <script src="{% static 'assets/vendor/js/helpers.js' %}"></script>
+
+    <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
+    <!--? Template customizer: To hide customizer set displayCustomizer value false in config.js.  -->
+    <script src="{% static 'assets/vendor/js/template-customizer.js' %}"></script>
+    <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
+    <script src="{% static 'assets/js/config.js' %}"></script>
+  </head>
+
+  <body>
+    <!-- Content -->
+
+    <div class="authentication-wrapper authentication-cover">
+      <div class="authentication-inner row m-0">
+        <!-- /Left Text -->
+        <!-- <div class="d-none d-lg-flex col-lg-7 col-xl-8 align-items-center"> -->
+        <div class="d-none col-lg-7 col-xl-5 align-items-center">
+        </div>
+        <!-- /Left Text -->
+
+        <!-- Login -->
+        <div class="d-flex col-12 col-lg-5 col-xl-4 align-items-center authentication-bg p-sm-5 p-4">
+          
+          <div class="w-px-400 mx-auto">
+            <!-- Logo -->
+            <div class="app-brand mb-4">
+              <a href="index.html" class="app-brand-link">
+                <div class="card mb-2">
+                  <span class="app-brand-logo demo">
+                    
+                      <img src="{% static 'assets/svg/cosai_logo.svg' %}" class="navbar-logo" alt="logo" width="28px" height="28px">
+                  </span>
+                </div>
+                <span class="app-brand-text demo menu-text fw-bold ms-2">COS AI</span>
+              </a>
+            </div>
+            <!-- /Logo -->
+            <h4 class="mb-2">Welcome to COS AI</h4>
+            <p class="mb-4">Please sign-in to COS AI account</p>
+            
+            {% include './messages.html' %}
+
+
+            <form id="formAuthentication" class="mb-3" method="POST" onsubmit="return validateForm()">
+              {% csrf_token %}
+
+
+{% if form.errors %}
+<ul class="alert alert-danger" >
+{% for field, errors in form.errors.items %}
+<li >{{ field }}: {{ errors }}</li>
+{% endfor %}
+</ul>
+{% endif %}
+
+{% if messages %}
+{% for message in messages %}
+<div class="alert alert-danger" role="alert">
+{{ message }}
+</div>
+{% endfor %}
+{% endif %}
+
+<div id="errorMessage" class="alert alert-danger" style="display:none;"></div>
+
+
+              <div class="mb-3">
+                <label for="email" class="form-label">Username</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="username"
+                  name="username"
+                  placeholder="Enter your username"
+                  autofocus
+                  
+                />
+              </div>
+              <div class="mb-3 form-password-toggle">
+                <div class="d-flex justify-content-between">
+                  <label class="form-label" for="password">Password</label>
+                  <!-- <a href="{% url 'auth_forget_password' %}">
+                    <small>Forgot Password?</small>
+                  </a> -->
+                </div>
+                <div class="input-group input-group-merge">
+                  <input
+                    type="password"
+                    id="password"
+                    class="form-control"
+                    name="password"
+                    maxlength = "8"
+                    
+                    placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
+                    aria-describedby="password"
+                    
+                  />
+                  <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
+                </div>
+              </div>
+              
+                {% comment %} <ul class="list-unstyled mb-0">
+                  <li class="mb-3">
+                    <div class="d-flex align-items-center">
+                      <div class="d-flex align-items-start">
+                        <!-- <div class="avatar me-3">
+                          <img src="../../assets/img/icons/brands/support-label.png" alt="Avatar" class="rounded-circle">
+                        </div> -->
+                        <div id="CaptchaImageCode" class="me-3">
+                            <canvas id="CapCode" class="capcode" ></canvas>
+                        </div>
+                      </div>
+                      <div class="me-3">
+                        <span class="ReloadBtn" onclick="CreateCaptcha();" ><i class="fa-solid fa-rotate"></i></span>
+                      </div>
+                    </div>
+                  </li>
+                </ul>
+                <div class="mb-3">
+                  <input type="text" id="captchaval" class="form-control" placeholder="Enter Captcha - Case Sensitive" aria-describedby="password" required="">
+                  <span id="WrongCaptchaError" class="error"></span>
+
+                </div> {% endcomment %}
+              
+
+              <!-- <div class="mb-3">
+              <div class="CaptchaWrap">
+                <div id="CaptchaImageCode" >
+                    <canvas id="CapCode" class="capcode" ></canvas>
+                </div> 
+                <span class="ReloadBtn" onclick="CreateCaptcha();" ><i class="fa-solid fa-rotate"></i></span>
+              </div>
+              <br>
+              <input type="text" id="captchaval" class="form-control" placeholder="Enter Captcha - Case Sensitive" aria-describedby="password" required="">
+              <span id="WrongCaptchaError" class="error"></span>
+              </div> -->
+              <!-- <div class="mb-3">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" id="remember-me" />
+                  <label class="form-check-label" for="remember-me"> Remember Me </label>
+                </div>
+              </div> -->
+              <button class="btn btn-primary d-grid w-100" onclick="CheckCaptcha();">Sign in</button>
+             {% comment %} <br><br>
+              <button class="btn btn-primary d-grid w-100" onclick="redirect()">Upload</button> {% endcomment %}
+            </form>
+
+            <p class="text-center">
+              <span>New on our platform?</span>
+              <a href="{% url 'registration' %}">
+                <span>Create an account</span>
+              </a>
+            </p>
+<!-- 
+            <div class="divider my-4">
+              <div class="divider-text">or</div>
+            </div> -->
+
+            <div class="d-flex justify-content-center">
+              
+              <!-- <button class="btnn btnn-primary d-grid w-100"><img src="../../assets/img/logo/google.png" class="rounded-start" alt="View Sales" data-app-dark-img="illustrations/prize-dark.png">LOGIN WITH GOOGLE</button> -->
+            </div>
+          </div>
+        </div>
+        
+        <div class="d-none d-lg-flex col-lg-7 col-xl-8 align-items-center">
+          <div class="flex-row text-center mx-auto">
+            <img src="{% static 'assets/img/logo/VFMS.jpg' %}" background-image="{% static 'assets/img/logo/VFMS.jpg' %}"  object-fit="cover" background-size="cover”>
+            <!-- <img src="{% static 'assets/img/logo/VFMS.jpg' %}" alt="Auth Cover Bg color" width="920" height="5040" class="img-fluid authentication-cover-img" data-app-light-img="logo/VFMS.jpg" data-app-dark-img="logo/VFMS.jpg"> 
+          </div>
+        </div>
+        <!-- /Login -->
+      </div>
+    
+
+    <!-- / Content -->
+
+    <!-- Core JS -->
+    <!-- build:js assets/vendor/js/core.js -->
+    <script src="{% static 'assets/vendor/libs/jquery/jquery.js' %}"></script>
+    <script src="{% static 'assets/vendor/libs/popper/popper.js' %}"></script>
+    <script src="{% static 'assets/vendor/js/bootstrap.js' %}"></script>
+    <script src="{% static 'assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js' %}"></script>
+
+    <script src="{% static 'assets/vendor/libs/hammer/hammer.js' %}"></script>
+
+    <script src="{% static 'assets/vendor/libs/i18n/i18n.js' %}"></script>
+    <script src="{% static 'assets/vendor/libs/typeahead-js/typeahead.js' %}"></script>
+
+    <script src="{% static 'assets/vendor/js/menu.js' %}"></script>
+    <!-- endbuild -->
+
+    <!-- Vendors JS -->
+    <script src="{% static 'assets/vendor/libs/formvalidation/dist/js/FormValidation.min.js' %}"></script>
+    <script src="{% static 'assets/vendor/libs/formvalidation/dist/js/plugins/Bootstrap5.min.js' %}"></script>
+    <script src="{% static 'assets/vendor/libs/formvalidation/dist/js/plugins/AutoFocus.min.js' %}"></script>
+
+    <!-- Main JS -->
+    <script src="{% static 'assets/js/main.js' %}"></script>
+
+    <!-- Page JS -->
+    <script src="{% static 'assets/js/pages-auth.js' %}"></script>
+    <script>
+
+      function validateForm() {
+        var username = document.getElementById("username").value.trim();
+        var password = document.getElementById("password").value.trim();
+        var errorMessage = document.getElementById("errorMessage");
+        var errors = [];
+
+        if (username === "") {
+            errors.push("Username is required.");
+        }
+        if (password === "") {
+            errors.push("Password is required.");
+        }
+        if (errors.length > 0) {
+            errorMessage.innerHTML = errors.join("<br>");
+            errorMessage.style.display = "block";
+            return false;
+        }
+        return true; 
+    }
+
+
+        var cdvuser,vpass,vcap,temp = 0,aa = 0,vlogin;
+		var upperCase= new RegExp('[A-Z]');
+		var numbers = new RegExp('[0-9]');
+		var input = document.getElementById("password");
+		
+		
+        $(function(){
+          CreateCaptcha();
+		  validateusername();
+		  //validateloginprocess();
+		  validatepassword();
+		  validatecaptcha();
+		  //login();
+		  //validatelogin();	
+
+		  /*$('#password').on('keypress', function(e) { 
+                var s = String.fromCharCode( e.which );
+                if ( (s.toUpperCase() === s && !e.shiftKey) || 
+                        (s.toLowerCase() === s && e.shiftKey) ) {
+                    $('#CapError').text("\n CapsLock is ON.").show();
+
+                } else {
+                    $('#CapError').fadeOut(100);
+
+                }
+                  
+            });*/
+			
+		  input.addEventListener("keyup", function(event) {
+
+			if (event.getModifierState("CapsLock")) {
+				$('#CapError').text("\n CapsLock is ON.").show();
+			  } else {
+				$('#CapError').fadeOut(100);
+			  }
+			});
+			
+		  $(document).ready(function(){
+			$("#password").keyup(function () {
+			  var password = $(this).val();
+			  var username = $('#username').val();
+			 
+			  $.ajax({
+				url: 'validate_username',
+				data: {
+				  'username' :username,
+				  'password': password
+				},
+				dataType: 'json',
+				success: function (data) {
+				  if (data.is_user) {
+					vlogin = "true"
+					$('#WrongPasswordError').fadeOut(100);
+					//alert("fails");
+				  }else{
+					vlogin = "false"
+					$('#WrongPasswordError').text("\n Invalid Password for this Username.").show();
+					
+					
+				}
+				}
+			  });
+			 
+			});
+		  });
+		  
+		  $(document).ready(function(){
+			$("button").click(function(e){
+				
+				if((vlogin == "true") && (vcap == "true") && ($("#password").val().length >= 8) && ($("#password").val().match(numbers)) && ($("#password").val().match(upperCase)) && (vuser == "true" )){
+						temp = 1;}
+				
+				if(temp == 0 ){
+					
+					if(vcap == "false"){ $('#captchaval').focus();temp = 0;}
+					if( !$("#password").val().length >= 8){ $('#password').focus();temp = 0 ;}
+					if(!$("#password").val().match(numbers) ){ $('#password').focus();temp = 0 ;}
+					if(!($("#password").val().match(upperCase))){ $('#password').focus();temp = 0 ;}
+					if(vlogin == "false"){ $('#password').focus();temp = 0 ;}
+					if (vuser == "false" ){ $('#username').focus();temp = 0 ;}
+					
+						  
+					if((vlogin == "true") && (vcap == "true") && ($("#password").val().length >= 8) && ($("#password").val().match(numbers)) && ($("#password").val().match(upperCase)) && (vuser == "true" )){
+						temp = 1;}
+
+          console.log("Error")
+					console.log(vname,'--',vcompname,'--',vcheck,'--',vcap,'--',vcpass,'--',vuser,'--',vmobile,'--',vemail,'--',vbtype)
+					//alert(temp)
+					//e.preventDefault();
+					return false;
+				}
+				else{
+          console.log("sucess")
+					swal(
+						'Success',
+						'Login Successfully!',
+						'success'
+					)
+				}
+				/*
+				if(temp == 1){
+					//var data = JSON.parse("{{data|escapejs}}");
+					//alert(data);
+					if((vlogin == "true") && (vcap == "true") && ($("#password").val().length >= 8) && ($("#password").val().match(numbers)) && ($("#password").val().match(upperCase)) && (vuser == "true" )){
+						temp = 1;
+						swal(
+							'Success',
+							'Login Successfully!',
+							'success'
+						)}else{temp = 0;}
+						return true;
+				}	
+				*/	 
+			});
+		 });
+		  
+		  
+		  
+
+		  
+		  
+		}); 
+
+
+		//function validatelogin(){
+			
+			//var a = json_parse('{{ data | safe }}');
+			//alert(a);
+		  
+		//}
+		
+		function validatecaptcha(){
+			$("#captchaval").keyup(function() {
+			//var result = 
+			if(ValidateCaptcha()){
+				$('#WrongCaptchaError').text("valid.").show();
+				$('#WrongCaptchaError').css('color','green');
+				}else{
+					if($(this).val().length == 6){$('#WrongCaptchaError').text("Invalid.").show();$('#WrongCaptchaError').css('color','red');}
+					else{ $('#WrongCaptchaError').text("Please Enter the valid Captcha").show();$('#WrongCaptchaError').css('color','red');}}
+			});
+		}
+		
+		
+
+		function validateusername(){
+			$(document).ready(function(){
+				$("#username").keyup(function () {
+				  var username = $(this).val();
+			 
+				  $.ajax({
+					url: 'validate_username',
+					data: {
+					  'username': username
+					},
+					dataType: 'json',
+					success: function (data) {
+					  if (!data.is_username || !data.is_status) {
+						
+						vuser="false"
+						//alert(data.is_email);
+						$('#WrongUsernameError').text("No registered user with this username.").show();
+						$('#WrongUsernameError').css('color','red');
+						
+					  }else{
+						vuser = "true"
+						$('#WrongUsernameError').fadeOut(100);}
+					  
+					}
+				  });
+			 
+				});
+			});
+		}
+		/*
+		function validatestatus(){
+			$(document).ready(function(){
+				$("#username").keyup(function () {
+				  var username = $(this).val();
+			 
+				  $.ajax({
+					url: 'validate_username',
+					data: {
+					  'username': username
+					},
+					dataType: 'json',
+					success: function (data) {
+					  if (!data.is_status) {
+						
+						vuser="false"
+						//alert(data.is_email);
+						$('#WrongUsernameError').text("No registered user with this username.").show();
+						$('#WrongUsernameError').css('color','red');
+						
+					  }else{
+						vuser = "true"
+						$('#WrongUsernameError').fadeOut(100);}
+					  
+					}
+				  });
+			 
+				});
+			});
+		}
+		*/
+		function validateloginprocess(){
+		  $(document).ready(function(){
+			$("#password").keyup(function () {
+			  var password = $(this).val();
+			 
+			  $.ajax({
+				url: '/validate_login_user/',
+				data: {
+				  'password': password
+				},
+				dataType: 'json',
+				success: function (data) {
+				  if (data.is_user) {
+					vlogin = "true"
+					$('#WrongPasswordError').text("Invalid.").show();
+					//alert("fails");
+				  }else{
+					vlogin = "false"
+					$('#WrongPasswordError').fadeOut(100);
+					
+				}
+				}
+			  });
+			 
+			});
+		  });
+		}
+		
+		
+		function passwordvalidation(){
+			if( $("#password").val().length >= 8 && $("#password").val().match(upperCase) && $("#password").val().match(numbers)){
+					vpass = "true";
+				}else{vpass = "false";}
+		}
+		
+		function validatepassword(){
+		  $("#password").keyup(function() {
+				if(($(this).val().length >= 0 && $(this).val().length <= 7)){
+					$('#PWmsg1').css('color','red');
+					$('#PWmsg2').css('color','red');
+					$('#PWmsg3').css('color','red');
+					}
+					
+				if($(this).val().match(upperCase) ){$('#PWmsg2').css('color','green');}
+						
+				if($(this).val().match(numbers) ){$('#PWmsg3').css('color','green');}
+				
+				if(($(this).val().length >= 8)){$('#PWmsg1').css('color','green');}
+				
+				
+			});
+		}
+		
+
+		
+        // Create Captcha
+  //       function CreateCaptcha() {
+  //         //$('#InvalidCapthcaError').hide();
+  //         var alpha = new Array('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9');
+                            
+  //         var i;
+  //         for (i = 0; i < 6; i++) {
+  //           var a = alpha[Math.floor(Math.random() * alpha.length)];
+  //           var b = alpha[Math.floor(Math.random() * alpha.length)];
+  //           var c = alpha[Math.floor(Math.random() * alpha.length)];
+  //           var d = alpha[Math.floor(Math.random() * alpha.length)];
+  //           var e = alpha[Math.floor(Math.random() * alpha.length)];
+  //           var f = alpha[Math.floor(Math.random() * alpha.length)];
+  //         }
+  //         cd = a + ' ' + b + ' ' + c + ' ' + d + ' ' + e + ' ' + f;
+  //         $('#CaptchaImageCode').empty().append('<canvas id="CapCode" class="capcode" width="330" height="40"></canvas>')
+          
+  //         var c = document.getElementById("CapCode"),
+  //             ctx=c.getContext("2d"),
+  //             x = c.width / 2,
+			  
+  //             img = new Image();
+
+  //         img.src = "https://pixelsharing.files.wordpress.com/2010/11/salvage-tileable-and-seamless-pattern.jpg";
+  //         img.onload = function () {
+  //             var pattern = ctx.createPattern(img, "repeat");
+  //             ctx.fillStyle = pattern;
+  //             ctx.fillRect(0, 0, c.width, c.height);
+  //             ctx.font="26px Roboto Slab";
+  //             ctx.fillStyle = '#ccc';
+  //             ctx.textAlign = 'center';
+  //             //ctx.setTransform (1, -0.12, 0, 1, 0, 5);
+  //             ctx.fillText(cd,x,28);
+  //         };
+          
+          
+  //       }
+		
+		// // validate Username
+
+  //       // Validate Captcha
+  //       function ValidateCaptcha() {
+  //         var string1 = removeSpaces(cd);
+  //         var string2 = removeSpaces($('#captchaval').val());
+  //         if (string1 == string2) {
+		// 	vcap = "true";
+  //           return true;
+  //         }
+  //         else {
+		// 	vcap = "false";
+  //           return false;
+  //         }
+  //       }
+
+        // Remove Spaces
+        function removeSpaces(string) {
+          return string.split(' ').join('');
+        }
+        // added my meena
+        function redirect() {
+          // Change the URL to the desired destination
+          window.location.href = "http://127.0.0.1:8000/vfms/Admin_Home/";
+        }
+        //end of code change by meena
+    </script>
+  </body>
+</html>

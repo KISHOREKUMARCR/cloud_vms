@@ -1,0 +1,51 @@
+{% extends 'templates/main_base.html' %}
+{% load static %}
+
+{% block title %}Update Label Info{% endblock %}
+<script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+<script src='https://code.jquery.com/jquery-3.2.1.min.js'></script>
+<script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js'></script>
+{% block content %}
+
+<div class="container">
+  <h1>  Update Label Info </h1>
+  <form method="POST" action=""> 
+    <fieldset>
+        <legend>Label List</legend>
+        {% csrf_token %} 
+         
+        <div class="row" > 
+          <div class="col-md-8">
+            <h3>Existing Label Info</h3>
+            {% if all_label  %}
+            <table id="LableTable" class="table table-striped" >
+              <thead>
+                <tr>
+                  <th>Location Name</th>
+                  <th>Instance count</th>
+                  <th>Image count</th>
+                </tr>
+              </thead>
+              <tbody >
+                {% for label in all_label %}
+                  <tr id="label-{{label.id}}">
+                  <td class="clabelName projectData" name="name">{{label.LName}}</td>
+                  <td class="labelAnnot projectData" name="address">{{label.AnnotationCnt}}</td>
+                  <td class="labelImage projectData" name="address">{{label.ImageCnt}}</td>
+                  <td > <a href="{% url 'UpdateLabel' label.id%}"   > Edit </a></td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+      
+        {% else %}
+          <span> No Label Info </span> 
+        {% endif %}
+      </div>
+    </div>
+  </fieldset>
+  </form>
+  </div>
+  {%endblock%}
+
+ 

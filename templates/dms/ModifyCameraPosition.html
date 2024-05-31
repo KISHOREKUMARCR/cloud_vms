@@ -1,0 +1,50 @@
+{% extends 'templates/main_base.html' %}
+{% load static %}
+
+{% block title %}Update Camera Position {% endblock %}
+<script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+<script src='https://code.jquery.com/jquery-3.2.1.min.js'></script>
+<script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js'></script>
+{% block content %}
+
+<div class="container">
+  
+  <form method="POST" action=""> 
+    <fieldset>
+        <legend>Camera Position List</legend>
+        {% csrf_token %} 
+         
+        <div class="row" > 
+          <div class="col-md-8">
+            <h3>Existing Camera Position</h3>
+            {% if all_cpositions  %}
+            <table id="cModelTable" class="table table-striped" >
+              <thead>
+                <tr>
+                  <th>Camera Height</th>
+                  <th>Camera View</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody >
+                {% for cPos in all_cpositions %}
+                  <tr id="cPos-{{cPos.id}}">
+                  <td class="cPosHeight cPositionData" name="CHeight">{{cPos.CHeight}}</td>
+                  <td class="cPosView cPositionData" name="Cview">{{cPos.Cview}}</td>
+                  <td > <a href="{% url 'UpdatecPosition' cPos.id%}"   > Edit </a></td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+       
+        {% else %}
+          <span> No cameara Position details available </span> 
+        {% endif %}
+      </div>
+    </div>
+  </fieldset>
+  </form>
+  </div>
+  {%endblock%}
+
+ 

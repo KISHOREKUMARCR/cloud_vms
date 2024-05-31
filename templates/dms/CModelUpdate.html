@@ -1,0 +1,29 @@
+{% extends 'templates/main_base.html' %}
+{% load static %}
+
+{% block title %}Camera Model Update {% endblock %}
+<script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+<script src='https://code.jquery.com/jquery-3.2.1.min.js'></script>
+<script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js'></script>
+{% block content %}
+
+<div class="container">
+  <h1>Camera Model Update</h1>
+  <form method="POST">
+    <fieldset>
+     
+      {% csrf_token %}
+      {{ form.as_p }}<br>
+      &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<button type="submit" class="btn btn-primary">Submit</button>&nbsp&nbsp&nbsp&nbsp
+      <input type="button" value="reset" class="btn btn-secondary" id="resetBtn" onClick="this.form.reset()" />
+    </fieldset>
+  </form>
+
+</div>
+  
+
+
+
+  {%endblock%}
+
+ 

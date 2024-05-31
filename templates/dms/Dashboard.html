@@ -1,0 +1,121 @@
+{% extends 'templates/main_base.html' %}
+{% load static %}
+
+{% block title %} DASH BOARD  {% endblock %}
+<script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+<script src='https://code.jquery.com/jquery-3.2.1.min.js'></script>
+<script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js'></script>
+{% block content %}
+
+    
+<!-- <div class="container">
+  
+    <form id="dashboard" name="dashboard" method="GET">
+      <fieldset>
+      
+        {% csrf_token %}
+        <table>
+            <thead> Project Details</thead>
+            <tr> 
+                <td> Customers </td>
+                <td> Projects </td>
+                <td> Stations/ Locations </td>
+                <td> Videos </td>
+            </tr>
+            <tbody>
+                
+                    {{ form.as_p }}
+                
+            </tbody>
+
+
+        </table>
+        
+        
+      </fieldset>
+    </form>
+</div>
+     -->
+
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+/* table, th, td {
+  border: 1px solid black;
+}
+h1 {text-align: center;}
+.center {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  
+  .table td, .table th {
+        font-size: 30px;
+    } */
+
+
+    table {
+    width: 250px;
+    border: thin solid grey;
+    }
+    th, tfoot td {
+    border: thin solid grey;
+    text-align: center;
+    font-weight: bold;
+    }
+    tbody td {
+    font-size: 135%;
+    }
+    caption {
+    font-size: 150%;
+    text-align: center;
+    }
+    th{
+    font-size: 150%;
+    text-align: center;
+    }
+    td, th, caption {
+    padding: 4px;
+    }
+
+    .center {
+    margin-left: auto;
+    margin-right: auto;
+  }
+</style>
+</head>
+<body font size=”1″ face=”Times New Roman”>
+    
+    <h1>Dashboard</h1>
+    {% csrf_token %}
+    <table class="center"style="color:rgb(25, 113, 22)">
+
+      <tr >
+        
+        <th colspan="4" > Our Achievements sofar</th>
+      </tr>
+      <tr>
+        <td style="color:rgb(12, 45, 168)">Customers</td>
+       
+        <td>  {{total_company}}</td>
+        
+      </tr>
+      <tr>
+        <td style="color:rgb(187, 13, 112)">Projects</td>
+        <td>{{total_projects}}</td>
+      </tr>
+      <tr>
+        <td style="color:rgb(110, 93, 10)">Locations/Stations</td>
+        <td>{{total_locations}}</td>
+      </tr>
+      <tr>
+        <td style="color:rgb(183, 114, 9)">Video Files</td>
+        <td>{{total_videos}}</td>
+      </tr>
+    </table>
+    
+</body>
+</html>
+{%endblock%}

@@ -1,0 +1,1379 @@
+<!-- upload_files.html -->
+{% extends 'templates/main_base.html' %}
+{% load static %}
+{% block title %}Add Video File{% endblock %}
+{% comment %} <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script> {% endcomment %}
+<script src='https://code.jquery.com/jquery-3.2.1.min.js'></script>
+<script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js'></script>
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+<script src="https://apis.google.com/js/platform.js" async defer></script>
+
+<link rel="stylesheet" href="{% static 'assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css' %}" />
+<link rel="stylesheet" href="{% static 'assets/vendor/libs/typeahead-js/typeahead.css' %}" />
+<link rel="stylesheet" href="{% static 'assets/vendor/libs/datatables-bs5/datatables.bootstrap5.css' %}" />
+<link rel="stylesheet" href="{% static 'assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css' %}" />
+<link rel="stylesheet" href="{% static 'assets/vendor/libs/datatables-select-bs5/select.bootstrap5.css' %}" />
+<link rel="stylesheet" href="{% static 'assets/vendor/libs/datatables-checkboxes-jquery/datatables.checkboxes.css' %}" />
+<link rel="stylesheet" href="{% static 'assets/vendor/libs/datatables-fixedcolumns-bs5/fixedcolumns.bootstrap5.css' %}" />
+<link rel="stylesheet" href="{% static 'assets/vendor/libs/datatables-fixedheader-bs5/fixedheader.bootstrap5.css' %}" />
+<meta name="google-signin-client_id" content="837516796736-hck0g0t0g0fnaei3m97ml8jf62f51ekv.apps.googleusercontent.com">
+{% comment %} <script src="assests/vendor/libs/datatables/jquery.dataTables.min.js"></script> {% endcomment %}
+{% block content %}
+<div class="container-xxl flex-grow-1 container-p-y">
+  <form class="browser-default-validation" id="VideoUpload" method="post" enctype="multipart/form-data" event="preventDefault()">
+    {% comment %} form class="browser-default-validation" id="VideoUpload" method="post" enctype="multipart/form-data"> {% endcomment %}
+    {% csrf_token %}
+  <h4 class="py-3 breadcrumb-wrapper mb-4">
+    <span class="text-muted fw-light">COS AI - VMS APP /</span> New Video Upload
+  </h4>
+  <div class="row">
+  <div class="col-md-12">
+  <div class="card mb-4">
+        <h5 class="card-header">Videos Upload</h5>
+  <div class="card-body">
+  <div class="form-group">  
+    
+    <div class="row">
+
+    <!-- Form controls -->
+    <div class="col-md-3" >    
+      <div class="mb-3">
+        <label for="exampleFormControlReadOnlyInput1" class="form-label">Company</label>
+        {% if custom_user.user_roles.id != 1 %}
+            
+            <input
+            type="text"
+            readonly=true
+            id="Company"
+            name="Company"
+            class="form-control"
+            placeholder=""
+            value= " {{usercomp}}
+                  
+            "/>
+            
+          {% endif%}
+          {% if custom_user.user_roles.id == 1 %}
+           <select class="form-select CompanyName" id="Company" name="Company" required>
+            <option value="">List of Company</option> 
+          {% comment %} {% endif %} {% endcomment %}
+            {% for comp in get_user_company  %}
+            <option value="{{comp.name}}" data-icon="bx bxl-codepen" {% if forloop.first %}selected{% endif %}>{{comp.name}}                  
+            </option>
+            {% endfor %}            
+        </select>
+        {% endif%}
+      </div>
+    </div>
+    <div class="col-md-3" >    
+      <div class="mb-3">
+        <label for="exampleFormControlInput1" class="form-label">Project Name</label>
+        <input
+        type="text"
+        id="Project"
+        name="Project"
+        class="form-control"
+        placeholder="Jamshedpur RingRoad Project"
+        value="P45"
+        required=true
+        onchange="validate_project_name()"       
+      />
+      </div>
+    </div>
+    <div class="col-md-3" >    
+      <div class="mb-3">
+        <label for="exampleFormControlInput1" class="form-label">Location Name</label>
+        <input
+        type="text"
+        id="Location"
+        name="Location"
+        class="form-control"
+        placeholder="Straight Mile Rd"
+        value="L1"
+        required=true
+       
+      />
+      </div>
+    </div>
+    <div class="col-md-3" >    
+      <div class="mb-3">
+        <label for="gisInput">GIS (latitude, longitude): </label>
+        <input type="text" id="gisInput" name="gisInput" value="37.7749, -122.4194" placeholder="e.g., 37.7749, -122.4194"  onchange ="GISvalidate()"/>
+       
+      </div>
+    </div>
+    </div>
+
+      <!-- Form controls -->
+      <div class="row">
+          
+          <div class="col-md-3"> 
+            <div class="mb-3">
+            <label>Video Analysis for:</label><br>
+              <input type="radio" id="TTraffic"  name="Trafficchoice" value="TTrafficradio" onchange="AnalysistoggleOption()" checked>
+              <label for="TTrafficradio">Through Traffic</label>
+              <br>
+              <input type="radio" id="JTraffic" name="Trafficchoice" value="JTrafficradio" onchange="AnalysistoggleOption()">
+              <label for="JTrafficradio">Junction Traffic</label>
+            </div> 
+          </div>
+          <div class="col-md-3" >    
+            <div class="mb-3">
+              <label for="exampleFormControlReadOnlyInput1" class="form-label">Remarks</label>
+              <input
+              type="text"
+              id="Remarks"
+              name="Remarks"
+              class="form-control"
+              placeholder=""
+              value="Analysis for towards Jamshedpur "
+              required
+            />
+            </div>
+          </div>         {% comment %}  class="form-group"> {% endcomment %}
+          <div class="col-md-3" >    
+            <div class="mb-3">
+              
+              <input
+              type="text"
+              id="TrafficType"
+              name="TrafficType"
+              class="form-control"
+              placeholder=""
+              value="Through Traffic"
+              hidden
+            />
+            </div>
+          </div>
+          
+         <div class="card mb-4" id="div1">
+        <h5 class="card-header">* Upload Videos Only</h5>
+         <div class="card-body">
+          <div class="row">
+            <div class="col-md-3">
+                <div class="mb-3">
+                    <label for="exampleFormControlReadOnlyInputPlain1" class="form-label">No. of days </label>
+                    <input
+                        type="number"
+                        id="Ndays"
+                        name="Ndays"
+                        class="form-control"
+                        placeholder=""
+                        value="1"
+                        required
+                    />
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="mb-3">
+                    <label for="exampleFormControlReadOnlyInputPlain1" class="form-label">Video Start Date </label>
+                    <input
+                        type="date"
+                        id="StartDate"
+                        name="StartDate"
+                        class="form-control"
+                        placeholder=""
+                        value="2023-11-20"
+                        required
+                    />
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="mb-3">
+                    <label for="exampleFormControlReadOnlyInputPlain1" class="form-label">Video End Date </label>
+                    <input
+                        type="date"
+                        id="EndDate"
+                        name="EndDate"
+                        class="form-control"
+                        placeholder=""
+                        required
+                        value="2023-11-20"
+                        onchange="EndDatevalidate()"
+                    />
+                </div>
+            </div>
+           
+        </div>
+        
+          <div class="row">
+           <div class="col-md-3"> 
+            
+                <label>File Type:</label><br>
+                  <input type="radio" id="urlpathradio" name="choice" value="urlpathradio" onchange="toggleOption()" onselect="toggleOption()">
+                  <label for="urlpathradio">Cloud File</label>
+                  <br>
+                  <input type="radio" id="fileuploadradio" name="choice" value="fileuploadradio" onchange="toggleOption()" onselect="toggleOption()">
+                  <label for="fileuploadradio">Local File</label>
+
+                </div> 
+               
+                 <div class="col-md-3" id ="uploadtype-id" style="display: none" class="hidden"> 
+                  <label>Upload Type:</label><br>
+                    <input type="radio" id="singleradio" name="uploadtype" value="singleradio" onchange="UploadtoggleOption()" onselect="UploadtoggleOption()">
+                    <label for="singleradio">Single File Upload</label>
+                    <input type="file" id="singlefileupload" name="singlefileupload" style="display: none" placeholder="Select file"  accept="{{ VideoFormat }}">
+                    <ul id="singlefilelabel"></ul>
+                    {% comment %} <label class="file-label" id="singlefilelabel"> </label> {% endcomment %}
+                    <button type="button" id='clearbtn' style="display: none" hidden onclick="ClearSelected()">Delete </button>
+                    <br>
+                    <input type="radio" id="bulkradio" name="uploadtype" value="bulkradio" onchange="UploadtoggleOption()" onselect="UploadtoggleOption()">
+                    <label for="bulkradio">Bulk Upload</label>
+                    <div class="form-group">
+                      <label id="fileuploadlabel" style="display: none">Select video files (Max 10 at a time, allowed formats: {{ VideoFormat }}).</label>
+                      <input type="file" id="fileupload" name="fileupload" style="display: none" placeholder="Select file" multiple accept="{{ VideoFormat }}">
+                      
+                      <br>
+                      
+                      
+                    </div>
+
+                     
+                </div> 
+                {% comment %} <div class="col-md-3"> {% endcomment %}
+                  <div class="form-group" >
+                        <label for="urlpathlabel" id="urlpathlabel" style="display: none" class="hidden">Cloud File Link</label>
+                        <input  type="Text"  id="urlpath"  style="display: none" name="urlpath"class="hidden"  placeholder="" required/>
+                        {% comment %} <input type="submit" value="Save" name="submitbtn" id="submit" style="display: none"  class="btn btn-primary"> {% endcomment %}
+                    </div>      
+                   
+                    <!-- Inside the "div1" card-body section -->
+                    
+                    
+               
+                 </div>  
+                </div>  
+                           
+              </div>  
+              <div class="col-md-1">
+                <div class="mb-3" id='savebtn-id' >
+                 
+                    <input type="submit" value="Save" name="submitbtn" id="submit" style="display: none"  class="btn btn-primary">
+                </div>
+            </div>  
+              </div>  
+               <!-- set bulk upload as model window -->
+               <div id="fileModal" class="modal"  style="display: none;">
+                <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                      <!-- Modal Header -->
+                  <div class="modal-header">
+                    <h4 class="modal-title">Files for Bulk Upload</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                   <!-- Modal Body -->
+              <div class="modal-body">
+                
+                <input type="file" id="fileInput" accept=".mp4, .mkv">
+                <br>
+                
+                <button type="button" class="btn btn-success" id="addButton">Add File</button>
+                  <table id="fileTableModal" class="table table-bordered" cellpadding="0.2" cellspacing="0.2" border="0.5" class="display">
+                    <thead>
+                      <tr>
+                        <th><input type="checkbox" id="selectAllCheckbox"></th>
+                        
+                        <th>File Name</th>
+                        <th>File Size</th>                        
+                        <th>Action</th>
+                      
+                      </tr>
+                    </thead>
+                    <tbody></tbody>
+                  </table>
+                </div>
+                 <!-- Modal Footer -->
+              <div class="modal-footer">
+                <button type="button" class="btn btn-danger" id="deleteButton">Delete Selected</button>                  
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+    </div>
+    {% comment %} <div class="col-md-1">
+      <div class="mb-3" id='savebtn-id' >
+      <input type="submit" value="Save" name="submitbtn" id="submit" style="display: none"  class="btn btn-success">  
+      </div> 
+    </div> {% endcomment %}
+    <div class="row">
+      
+      <!-- Add this inside your form -->
+      <div class="progress" style="height:30px">
+        <div id="progress-bar" class="progress-bar" role="progressbar" style="width: 0%; background-color: lightgreen;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+          <span class="sr-only">0% Complete</span>
+          <span id="progressText">0%</span>
+        </div>
+      </div>
+      <br><br>
+    </div>
+  
+    <div class="button-row">    
+      {% comment %} <div class="col-md-1">      
+        <input type="submit" value="Save" name="submitbtn" id="submit"   class="btn btn-success">  
+        
+      </div> {% endcomment %}
+      {% comment %} <button id="uploadButton" name="submitbtn" class="btn btn-primary" onclick="startProgress()">Upload</button> {% endcomment %}
+      <button id="pauseButton" class="btn btn-warning" onclick="pauseProgress()">Pause</button>
+      <button id="resumeButton" class="btn btn-success" onclick="resumeProgress()">Resume</button>
+    </div>
+      
+</div>      
+          </form>
+          </div>  
+
+{% endblock %}
+
+<!-- style css -->
+{%block style%}
+
+{% endblock%}
+
+{% block script %}
+<script>
+
+ 
+
+
+
+  console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$')
+function GISvalidate() {
+  event.preventDefault();
+  // Get the input value
+  console.log("inside ValidGIS");
+  var gisInput = document.getElementById('gisInput');
+  console.log("gisInput",gisInput);
+  // Get the input value
+  var gisValue = gisInput.value;
+  // Regular expression to match valid latitude and longitude format
+  var gisRegex = /^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?),\s*[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$/;
+
+  // Test the input against the regular expression
+  if (gisRegex.test(gisValue)) {
+    if (gisValue.length>20) {
+      alert('Retrict GIS latitude and longitude upto 6 decimals');
+      gisInput.value="";
+    }
+    
+  } else {
+    console.log("test1");
+    alert('Invalid GIS information. Please enter valid latitude and longitude.');
+    gisInput.value="";
+  }
+}
+
+function validate_project_name()
+{
+  event.preventDefault();
+    var reservedNames = ['con', 'prn', 'aux', 'nul', 'com1', 'com2', 'com3', 'com4', 'com5',
+                      'com6', 'com7', 'com8', 'com9', 'lpt1', 'lpt2', 'lpt3', 'lpt4', 'lpt5',
+                      'lpt6', 'lpt7', 'lpt8', 'lpt9']
+    var project = document.getElementById('Project').value.toLowerCase();                 
+    if (reservedNames.includes(project)){ 
+      alert("The name "+ project +" is a reserved word and cannot be used.");
+      project.value="";
+     }
+   }
+
+//SINGLE FILE UPLOAD
+document.getElementById('singlefileupload').addEventListener('change', function() {
+
+  console.log("singlefileupload");
+  var files = this.files;
+  //var fileName = $(this).val().split("\\").pop();
+  //console.log("files:",files," fileName:",fileName)
+ // $("#singlefilelabel").text(fileName !== "" ? fileName : "No file chosen");
+ var fileListElement = document.getElementById('singlefilelabel');
+
+ // Clear previous file list
+ fileListElement.innerHTML = '';
+
+  console.log("singlefileupload - files:",files,"count:",files.length);
+  var maxFiles = 1;
+  var allowedFormats = ['mp4', 'mkv'];  // Add your allowed video formats
+
+  var clearbtn = document.getElementById('clearbtn');
+  //console.log("clearbtn:",clearbtn)
+  clearbtn.style.display = 'block';
+  clearbtn.hidden=false;
+
+  var fileThreshold= '1 GB';
+  
+
+
+  if (files.length > maxFiles) {
+      alert('You can only upload a maximum of ' + maxFiles + ' files at a time.');
+      this.value = "";
+      return;
+  }
+
+  for (var i = 0; i < files.length; i++) {
+      var fileExtension = files[i].name.split('.').pop().toLowerCase();
+      console.log("fileExtension of file :",i ," ",fileExtension)
+      if (allowedFormats.indexOf(fileExtension) === -1) {
+        
+          alert('Invalid file extension found. Upload valid video files only.');
+          this.value = [];
+          return;
+      }
+      // raise alert if file size 0
+       
+      if (files[i].size == 0) 
+      {
+        alert('File size 0. Add a valid file' );
+        this.value = [];
+        fileListElement.innerHTML = '';
+      }
+       // Add the file name to the list
+      var listItem = document.createElement('li');
+      var addedfilesize = formatFileSize(files[i].size)
+       listItem.textContent = files[i].name + '(' + addedfilesize + ')';
+       fileListElement.appendChild(listItem);
+      console.log("fileThreshold",fileThreshold)
+
+      // check file size within allowed threshold or not //Video_File_Threshold
+       if (validateFileSize(addedfilesize,fileThreshold))
+       {
+        alert('File size exceeded allowed limit of 1 GB. Please upload video file less that 1 GB' );
+        this.value = [];
+        fileListElement.innerHTML = '';
+          return;
+       }
+      
+      
+  }
+});
+
+//CLEAR SINGLE FILE UPLOAD
+function ClearSelected(){
+  var filesInput = document.getElementById('singlefileupload');
+  var files = filesInput.files;
+  console.log("clear files :",files)
+  // Clear existing files from the input 
+    filesInput.value=[];
+
+    var fileListElement = document.getElementById('singlefilelabel');
+    // Clear previous file list
+    fileListElement.innerHTML = '';
+    //filesInput.files = fileList;
+    console.log("clear files :",files)
+  }
+
+//BULK FILE UPLOAD
+document.getElementById('fileupload').addEventListener('change', function() {
+  console.log("")
+  var files = this.files;
+  console.log("Bulk files:",files," count:",files.length);
+  var maxFiles = 10;
+  var allowedFormats = ['mp4', 'mkv'];  // Add your allowed video formats
+  //var fileTableModal = document.getElementById('fileTableModal');
+  
+  
+  var fileTableModal = $('#fileTableModal').DataTable({"dom": 'rt', // r: processing display element, t: table, i: information, p: pagination
+  borderClasses: true,
+  select: 'multi',});
+  var $win = $(window);
+  var calcDataTableHeight = function() {
+    return Math.round($win.height() * 0.58);
+};
+ 
+
+  console.log('fileTableModal',fileTableModal)
+  fileTableModal.clear().draw();
+
+  var modal = document.getElementById('fileModal');
+  modal.style.display = 'block';
+  //var filetable = document.getElementById('fileTable');
+ // var deletebtn = document.getElementById('deletebtn');
+ // filetable.hidden=false;
+ // filetable.style.display = 'block';
+ // deletebtn.hidden = false;
+//  deletebtn.style.display = 'block';
+ // var fileTable = $('#fileTable').DataTable({
+ //   "dom": 'rt', // r: processing display element, t: table, i: information, p: pagination
+ //   borderClasses: true, 
+//  });
+ 
+  // Clear previous file list
+  //fileTable.clear().draw();
+
+  if (files.length > maxFiles) {
+      alert('You can only upload a maximum of ' + maxFiles + ' files at a time.');
+      this.value = "";
+      return;
+  }
+
+  for (var i = 0; i < files.length; i++) {
+      var fileExtension = files[i].name.split('.').pop().toLowerCase();
+      console.log("fileExtension of file :",i ," ",fileExtension)
+      if (allowedFormats.indexOf(fileExtension) === -1) {
+        console.log
+          alert('Invalid file extension found. Upload valid video files only.');
+          this.value = "";
+          return;
+      }
+        // Add the checkbox, file name, and size to the DataTable in the modal
+    fileTableModal.row.add([
+    '<input type="checkbox" class="select-checkbox" data-index="' + i + '">',
+  
+    files[i].name,
+    formatFileSize(files[i].size),
+    '<i class="fa fa-trash delete-icon" data-index="' + i + '"></i>',
+   
+    ]).draw();
+  }
+
+// When the user clicks on <span> (x), close the modal
+  var span = document.getElementsByClassName('close')[0];
+  span.onclick = function () {
+    modal.style.display = 'none';
+  };
+ 
+  // When the user clicks anywhere outside of the modal, close it
+  window.onclick = function (event) {
+    if (event.target == modal) {
+      modal.style.display = 'none';
+    }
+  };
+
+  fileupload.value="";
+
+});
+
+// Assuming you are using jQuery
+$(document).on('click', '.delete-icon', function() {
+  var filetable = document.getElementById('fileTable');
+
+  console.log('Delete icon clicked',filetable);
+  var rowIndex = $(this).data('index');
+  console.log('rowIndexclicked',rowIndex);
+
+  // Add your logic to delete the record based on the rowIndex
+  // Example: Assuming fileTable is your DataTable instance
+  //fileTable.row(rowIndex).remove().draw();
+  fileTable.row($(this).data('index')).remove().draw();
+  
+  // Add additional logic as needed
+});
+
+function formatFileSize(size) {
+  event.preventDefault();
+  if (size < 1024) {
+    return size + ' B';
+  } else if (size < 1024 * 1024) {
+    return (size / 1024).toFixed(2) + ' KB';
+  } else {
+    return (size / (1024 * 1024)).toFixed(2) + ' MB';
+  }
+}
+function deleteFile(event) {
+  event.preventDefault();
+  event.stopPropagation(); // Prevent the default form submission
+  var fileTable = $('#fileTable').DataTable();
+  var filesInput = document.getElementById('fileupload');
+  var files = filesInput.files;
+
+  // Get the index from the data attribute of the button
+  var index = $(event.target).data('index');
+  console.log("selected delete file index:", index);
+
+  // Remove the corresponding row from the DataTable
+  fileTable.row(event.target.closest('tr')).remove().draw();
+
+  // Remove the corresponding file from the files array
+  var newFiles = Array.from(files);
+  newFiles.splice(index, 1);
+  var fileList = arrayToFileList(files);
+  files =fileList
+    // Clear existing files from the input and reassign the updated file list
+    filesInput.value.clear();
+    filesInput.files = fileList;
+}
+
+function deleteSelected() {
+  var fileTable = $('#fileTable').DataTable();
+  var filesInput = document.getElementById('fileupload');
+  var files = filesInput.files;
+
+  // Get all selected checkboxes
+  var checkboxes = $('.file-checkbox:checked');
+
+  // Loop through selected checkboxes and remove corresponding rows and files
+  checkboxes.each(function () {
+    var index = $(this).data('index');
+    fileTable.row($(this).closest('tr')).remove().draw();
+    //convert filelist to array
+     
+      files = Array.from(files);
+      files.splice(index, 1);    
+  
+      console.log("files length after removal",files);
+  });
+
+  // Reassign index to checkboxes
+  $('.file-checkbox').each(function (index) {
+    $(this).data('index', index);
+  });
+  var fileList = arrayToFileList(files);
+  files =fileList;
+   // Clear existing files from the input and reassign the updated file list
+   filesInput.value = '';
+   filesInput.files = fileList;
+
+}
+
+function arrayToFileList(filesArray) {
+  // Create a new DataTransfer object
+  console.log("filesArray:",filesArray);
+  var dataTransfer = new DataTransfer();
+
+  // Add each file from the array to the DataTransfer object
+  filesArray.forEach(function (file) {
+      dataTransfer.items.add(file);
+  });
+   console.log("dataTransfer.files:",dataTransfer.files)
+  // Get the FileList from the DataTransfer object
+  var fileList = dataTransfer.files;
+  console.log("fileList:",fileList)
+  return fileList;  
+}
+
+
+function AnalysistoggleOption() {
+  event.preventDefault();
+  
+  var radioButtons = document.getElementsByName('Trafficchoice'); 
+  var textTType = document.getElementById('TrafficType');
+  if (radioButtons[0].checked) {
+    textTType.value='Through Traffic'
+    
+  } else if (radioButtons[1].checked) {
+    textTType.value='Junction Traffic'
+  }
+  console.log("Trafficchoice",textTType.value);
+} 
+
+
+
+
+
+function toggleOption() {
+  event.preventDefault();
+  var textOption = document.getElementById('urlpath');
+ // console.log("calling toggleOption",textOption);
+  var labelOption = document.getElementById('urlpathlabel');
+  
+  var fileOption = document.getElementById('fileupload');
+  var singleupl = document.getElementById('singlefileupload');
+  var singleuplbl = document.getElementById('singlefilelabel');
+  var uploadlabelOption = document.getElementById('fileuploadlabel');
+  //var buttonlblOption = document.getElementById("submitlabel");
+  var buttonOption = document.getElementById("submit");
+  var radioButtons = document.getElementsByName('choice');
+  var filetable = document.getElementById('fileTable');
+  var deletebtn = document.getElementById('deletebtn');
+  var uploadtypeclass = document.getElementById('uploadtype-id');
+  var clearbtn = document.getElementById('clearbtn');
+  //console.log("selected fileOption :", fileOption)
+
+  if (radioButtons[0].checked) {
+    //console.log("urlpath selected :",textOption)
+    textOption.style.display = 'block';
+    labelOption.style.display = 'block';
+     buttonOption.style.display = 'block';   
+    fileOption.style.display = 'none';
+    uploadlabelOption.style.display = 'none';
+    singleupl.style.display='none';
+    singleuplbl.style.display='none';   
+    //deletebtn.style.display = 'none';
+    uploadtypeclass.style.display = 'none';
+    clearbtn.style.display = 'none';
+    clearbtn.hidden=true;
+    singleupl.value=''
+    singleuplbl.innerHTML = '';
+
+   // filetable.hidden=true;
+   // deletebtn.hidden = true;
+  } else if (radioButtons[1].checked) {
+      //console.log("fileupload selected")
+      textOption.style.display = 'none';
+      textOption.value='';
+      labelOption.style.display = 'none';   
+      fileOption.style.display = 'block';
+      buttonOption.style.display = 'block'; 
+      uploadtypeclass.style.display = 'block';
+      clearbtn.style.display = 'none';
+      clearbtn.hidden=true;
+      singleupl.value=''
+      singleuplbl.innerHTML = '';
+
+  }
+} 
+
+function UploadtoggleOption() {
+  event.preventDefault();
+  var textOption = document.getElementById('urlpath');
+
+  var labelOption = document.getElementById('urlpathlabel');
+  var fileOption = document.getElementById('fileupload');
+  var uploadlabelOption = document.getElementById('fileuploadlabel');
+  var buttonOption = document.getElementById("submit");
+  var radioButtons = document.getElementsByName('uploadtype');
+  var filetable = document.getElementById('fileTable');
+  var deletebtn = document.getElementById('deletebtn');
+  var singleupl = document.getElementById('singlefileupload');
+  var singleuplbl = document.getElementById('singlefilelabel');
+  var clearbtn = document.getElementById('clearbtn');
+
+
+
+  if (radioButtons[0].checked) {
+    console.log("radioButtons - 'singleupload'")
+    textOption.style.display = 'none';
+    textOption.value='';
+    labelOption.style.display = 'none';
+    fileOption.style.display = 'none';
+    uploadlabelOption.style.display = 'none';
+    singleupl.style.display = 'block';
+    singleuplbl.style.display = 'block';
+    buttonOption.style.display = 'block';
+    clearbtn.style.display = 'block';
+    clearbtn.hidden=false;
+    //deletebtn.hidden = true;
+
+  } else if (radioButtons[1].checked) {
+    console.log("radioButtons - 'bulkupload'")
+      textOption.style.display = 'none';
+      textOption.value='';
+      labelOption.style.display = 'none';
+      singleupl.style.display = 'none';
+      singleuplbl.style.display = 'none';
+      singleuplbl.value = '';
+      fileOption.style.display = 'block';
+      uploadlabelOption.style.display = 'block';
+      buttonOption.style.display = 'block';   
+      clearbtn.style.display = 'none';
+      clearbtn.hidden=true;
+      singleupl.value=''
+      singleuplbl.innerHTML = '';
+      
+  }
+} 
+
+function pad2Digits(number) {
+  event.preventDefault();
+  return number < 10 ? '0' + number : number;
+}
+
+function EndDatevalidate(){
+  event.preventDefault();
+  var VSDate = document.getElementById('StartDate');
+  var VEDate = document.getElementById('EndDate');
+  var Vdays = document.getElementById('Ndays');
+  var currentdate = new Date();
+  var year = currentdate.getFullYear();
+  var month = pad2Digits(currentdate.getMonth() + 1); // Months are zero-based
+  var day = pad2Digits(currentdate.getDate());
+
+// Format the date as needed
+  var formattedDate = year + '-' + month + '-' + day;
+  console.log("currentdate :",formattedDate);
+  if (VSDate && VEDate && Vdays) 
+    {
+    console.log("VSDate : ",VSDate.value);
+    console.log("VEDate : ",VEDate.value);
+    console.log("Vdays : ",Vdays.value);
+
+    var VSDate1 = new Date(document.getElementById('StartDate').value);
+    var VEDate1 = new Date(document.getElementById('EndDate').value);
+
+    // Calculate the difference in milliseconds
+    var timeDifference = VEDate1 - VSDate1;
+
+    // Convert the difference to days
+    var daysDifference = timeDifference / (1000 * 60 * 60 * 24);
+    daysDifference = daysDifference + 1;
+    console.log("Difference in days: ", daysDifference,"timeDifference :",timeDifference);
+    if ((VEDate.value <= formattedDate) && (VSDate.value <= formattedDate) ) {
+        console.log("1");
+        if (VEDate.value < VSDate.value) {
+          console.log("2");
+          alert('Video End Date should be greater than or equal to Video Start Date . Please Enter Valid  Date');
+          VSDate.value="" ;
+          VEDate.value="";
+        }
+        else {
+            console.log("3");
+              if ((Vdays.value == 1 ) && (VSDate.value != VEDate.value)){
+                console.log("4");
+                alert(' 1 day video . Please Enter Valid End Date');
+                VSDate.value="" ;
+                VEDate.value="";
+              }
+              else {
+                console.log("5");
+              if ((Vdays.value > 1 ) && (VSDate.value >= VEDate.value))
+              {
+                console.log("6");
+              alert('more than 1 day video . Please Enter Valid End Date');
+              VSDate.value="" ;
+              VEDate.value="";
+              } 
+              else {
+                console.log("7");
+                  if ((Vdays.value > 1 ) && (daysDifference != Vdays.value))
+                  {  console.log("8");
+                     console.log("VEDate.value - VSDate.value :",daysDifference);
+                      alert('start date/end date does match with No.of days.Please Enter Valid Start and End Date');
+                      VSDate.value="" ;
+                      VEDate.value="";
+                    }
+        
+                  }
+              }
+            }
+      
+    }
+    else {console.log("9");
+          alert('Invalid Date -greater than current date. Please enter valid date');
+          VSDate.value="" ;
+          VEDate.value="";
+        }
+      }
+  else {console.log("10");
+        console.error("One or more elements not found");
+        }
+  
+}
+
+
+$('#submit').on('click', (event) => {
+  event.preventDefault(); // Prevent the default form submission
+  console.log("save btn clicked : ")
+   // Create a FormData object to handle file uploads
+   var textTType = document.getElementById('TrafficType');
+   console.log("textTType.value : ",textTType.value)
+
+   var company = document.getElementById('Company');
+   console.log("validation - company",company.value);
+   var project = document.getElementById('Project');
+
+   var location = document.getElementById('Location');
+
+   var gis = document.getElementById('gisInput');
+   var ndays = document.getElementById('Ndays');
+   var vsdate = document.getElementById('StartDate');
+
+   var vedate = document.getElementById('EndDate');
+   console.log("validation - entries",project.value ,"--",location.value,"--", gis.value,"--", ndays.value,"--",vsdate.value ,"--",vedate.value,"--" ,textTType.value);
+
+   console.log("validation starts here");
+   if (company.value.trim() === ""|| company.value === null){
+    console.log("validation - company");
+    alert("Please select Company");
+   }
+   if (project.value.trim() === "" || project.value === null){
+    console.log("validation - project");
+    alert("Please enter project name");
+   } else {console.log("validation - project --else part"); validate_project_name()}
+   if (location.value.trim() === "" || location.value === null){
+    console.log("validation - location");
+    alert("Please enter  location name");
+   }
+
+   //if (gis.value.trim() === "" || gis.value === null){
+    //console.log("validation - gis");
+   // alert("Please enter GIS-latlong");
+  // }
+  // else { console.log("validation - gis -- else part"); GISvalidate()}
+   if (gis.value.trim() !== "" || gis.value !== null){GISvalidate()}
+
+   if (ndays.value.trim() === "" || ndays.value === null){
+    console.log("validation - ndays");
+    alert("Please enter No.of days video");
+   }
+   if (vsdate.value.trim() === "" || vsdate.value === null){
+    console.log("validation - vsdate");
+    alert("Please enter  start date");
+   }
+   if (vedate.value.trim() === "" || vedate.value === null){
+    console.log("validation - enddate");
+    alert("Please enter  end date");
+   } else {console.log("validation - enddate - else part"); EndDatevalidate()}
+   if (textTType.value.trim() === "" || textTType.value === null){
+    console.log("validation - traffic");
+    alert("Please select TrafficType");
+   }
+ 
+   
+
+   if (
+    company.value !== "" &&
+    project.value !== "" &&
+    location.value !== "" &&
+    
+    ndays.value !== "" &&
+    vsdate.value !== "" &&
+    vedate.value !== "" &&
+    textTType.value !== ""
+   )
+   { 
+    console.log("if - condition")
+   
+
+    var textOption = document.getElementById('urlpath');
+   // console.log("calling toggleOption",textOption);
+    var labelOption = document.getElementById('urlpathlabel');
+    
+    //var fileOption = document.getElementById('fileupload');
+    //var uploadlabelOption = document.getElementById('fileuploadlabel');
+    var singlefileupl = document.getElementById('singlefileupload');
+    var singlefileuplbl = document.getElementById('singlefilelabel');
+    var buttonOption = document.getElementById("submit");
+    var radioButtons = document.getElementsByName('choice');
+    var validated = true;
+    // Check if any file is selected
+    if (singlefileupl.files.length > 0) {
+      // Access the first file in the FileList (assuming single file upload)
+      var file = singlefileupl.files[0];
+      var fileName = singlefileupl.files[0].name;
+      var fileSize = singlefileupl.files[0].size;
+      console.log("filename:", fileName);
+    } else {
+      console.log("No file selected");
+    }
+    if (radioButtons[0].checked &&  textOption.value.trim() === "" )
+    {
+      console.log("validation - urlpath" ,textOption.value);
+      alert("Please enter urlpath");
+      validated = false;
+    }
+
+    if (radioButtons[1].checked &&  singlefileupl.value.trim() === "" )
+    {
+       console.log("validation - file upload");
+       alert("Please upload video files");
+       validated = false;
+    }
+
+
+      if (validated === true)
+      { 
+        console.log("validation is true")
+        var form = new FormData(document.getElementById('VideoUpload'));
+        console.log("form",form)
+        $(".progress").show();
+
+
+      $.ajaxSetup({
+        headers: {
+            "X-CSRFToken": document.querySelector('[name=csrfmiddlewaretoken]').value,
+        }
+      });
+      $.ajax({
+        // Add a comma here
+        url: '' , // Add a comma here
+        type: 'POST',
+        dataType: 'json',
+        data: form,
+        processData: false, // Important! Don't process the files
+        contentType: false, // Important! Set content type to false
+        error: function (xhr) { 
+          console.log('Error:', xhr); 
+        alert(xhr.ResponseText);
+        $('#fileupload input').val("");
+        $('#singlefileupload input').val("");
+      },
+        success: function (res) { 
+          if ('error' in res) {
+            alert("Error: " + res.error); 
+          }
+          else {
+             var token=res.access_token
+             var filename=res.filename
+              console.log("start uploading files as chunks");
+              const resumableURI =  initialize_upload(token, filename);
+              console.log("resumableURI:",resumableURI)
+              upl_response=upload_chunks(token,fileSize,file,filename,resumableURI)
+              console.log("upl_response:",upl_response)
+              document.getElementById('singlefileupload').value = [];
+                $(".progress").hide(); // Hide the progress bar when upload is complete
+                $(".pauseButton").prop({disabled: true})
+                $(".resumeButton").prop({disabled: true})
+                $("#submit").prop({disabled: false});
+          }
+         
+        }
+      });
+    }
+    }
+    else {
+      console.log("validation - error");
+      alert("Entry missing");
+    }
+});  
+
+
+
+var currentPosition = 0;
+var isPaused = false;
+var isUploadComplete = false;
+
+
+
+async function upload_chunks(token, filesize,file,filename,resumableURI) {
+  try {
+    
+  console.log("inside upload_chunks - filesize: ",filesize)  
+  while (currentPosition < filesize && !isUploadComplete) {
+    if (isPaused) {
+      // If paused, wait for some event to resume
+      await new Promise((resolve) => setTimeout(resolve, 1000)); // Adjust as needed
+      continue;
+    }
+
+    const chunkSize = 1024 * 1024; // 1 MB (adjust as needed)
+    const endPosition = Math.min(currentPosition + chunkSize, filesize);
+
+    const chunkBlob = file.slice(currentPosition, endPosition);
+    const chunkReader = new FileReader();
+    console.log("chunkBlob:",currentPosition,endPosition,chunkBlob)
+
+    
+
+    chunkReader.onload = async function () {
+      const chunkData = chunkReader.result;
+      const positionInUpload = currentPosition;
+      console.log("calling chunk upload for : ",chunkData)
+      const uploadResponse = await upload_chunk(token, chunkData, positionInUpload, filesize,filename,resumableURI);
+
+      // Handle the upload response if needed
+      //console.log(uploadResponse);
+
+      currentPosition = endPosition;
+      console.log("calling chunk uploaded endPosition : ",endPosition)
+      if (currentPosition >= filesize) {
+        console.log("Upload complete!");
+        isUploadComplete = true; 
+        // Handle completion
+      }
+      else {console.log("next chunk ")
+        isUploadComplete = false; }
+    };
+
+    chunkReader.readAsArrayBuffer(chunkBlob);
+
+    // Wait for the FileReader to finish before moving on to the next chunk
+    await new Promise((resolve) => chunkReader.onloadend = resolve);
+  }
+} catch (error) {
+  console.error("Error occurred:", error);
+  // Pause the upload in case of an error
+  isPaused = true;
+  // You might want to implement error handling and recovery logic here
+}
+}
+async function upload_chunk(token, chunkData, positionInUpload, filesize,filename,resumableURI) {
+  var csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+  const upload_options = {
+    url:'' ,
+    method: "PUT",
+    headers: {
+      "X-CSRFToken": csrfToken,
+      Authorization: `Bearer ${token}`,
+      "Content-Length": chunkData.byteLength,
+      "Content-Range": `bytes ${positionInUpload}-${positionInUpload + chunkData.byteLength - 1}/${filesize}`,
+    },
+    body: chunkData,
+    
+  };
+  try{
+  const uResponse = await fetch(upload_options);
+  console.log("uResponse :",uResponse)
+  const uploadResponse = await uResponse.text();
+  isPaused = true;
+  console.log("uploadResponse :",uploadResponse)
+  return uploadResponse;
+  }
+  catch (error) {
+    console.error("Error occurred chunk upload:", error);
+    // Pause the upload in case of an error
+    isPaused = true;
+    // You might want to implement error handling and recovery logic here
+  }
+}
+
+function initialize_upload(token, fileName) {
+  return new Promise((resolve, reject) => {
+    var xhr = new XMLHttpRequest();
+    var csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value
+    xhr.open(
+      "POST",
+      `https://www.googleapis.com/upload/drive/v3/files?uploadType=resumable`
+    );
+    xhr.onload = function () {
+      console.log("onload fn ", this.responseText);
+      resolve(xhr.getResponseHeader("Location"));
+    };
+    xhr.setRequestHeader("X-CSRFToken", csrfToken);
+    xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+    xhr.setRequestHeader("Authorization", `Bearer ${token}`);
+
+    xhr.send(
+      JSON.stringify({
+        name: fileName,
+        mimeType: ["video/mp4"],
+        parents: ['1-gc5Tv09ponupCxQu2pOE73EKk8OxUVC'],
+      })
+    );
+
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState == 4 && xhr.status != 200) {
+        console.error('Error:', xhr.status, xhr.statusText);
+        console.log('Response:', xhr.responseText);
+        reject(new Error("Failed to initialize upload"));
+
+      }
+      if (xhr.readyState == 4 && xhr.status == 200) {
+        // Get the raw header string
+        var headers = xhr.getAllResponseHeaders();
+    
+        // Convert the header string into an array
+        // of individual headers
+        var arr = headers.trim().split(/[\r\n]+/);
+    
+        // Create a map of header names to values
+        var headerMap = {};
+        arr.forEach(function (line) {
+          var parts = line.split(": ");
+          var header = parts.shift();
+          var value = parts.join(": ");
+          headerMap[header] = value;
+        });
+        const resumableURI = headerMap.location
+        console.log("resumableURI:",resumableURI)
+        return(resumableURI);
+      }
+    };
+  });
+}
+
+function initialize_upload11(token,fileName){
+  var xhr = new XMLHttpRequest();
+  
+ // var apiKey='AIzaSyBkbZQ9_WQDx9bvahysxFnERDjBrMQ2biw'
+  
+  xhr.open(
+    "POST",
+    `https://www.googleapis.com/upload/drive/v3/files?uploadType=resumable`
+  );
+  xhr.onload = function () {
+    console.log('onload fn ',this.responseText);
+  };
+ 
+ xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+ xhr.setRequestHeader("Authorization", `Bearer ${token}`);
+  
+  xhr.send(
+    JSON.stringify({
+      name: fileName,
+      mimeType: ["video/mp4"], // Mime type of the file you're uploading
+      parents: ['1-gc5Tv09ponupCxQu2pOE73EKk8OxUVC'], // Optionally, you can specify a parent folder for the file to be uploaded in.  Feel free to remove this
+    })
+  );
+  
+  xhr.onreadystatechange = function () {
+    //if (this.readyState == this.HEADERS_RECEIVED) {
+    if (xhr.readyState == 4 && xhr.status == 200) {
+      // Get the raw header string
+      var headers = xhr.getAllResponseHeaders();
+  
+      // Convert the header string into an array
+      // of individual headers
+      var arr = headers.trim().split(/[\r\n]+/);
+  
+      // Create a map of header names to values
+      var headerMap = {};
+      arr.forEach(function (line) {
+        var parts = line.split(": ");
+        var header = parts.shift();
+        var value = parts.join(": ");
+        headerMap[header] = value;
+      });
+      const resumableURI = headerMap.location
+      console.log("resumableURI:",resumableURI)
+      return(resumableURI);
+    }
+  };
+
+
+}
+
+$(document).ready(function () {
+
+
+  var table = $('#fileTableModal').DataTable({"dom": 'rt'});
+  var checkedRows = [];
+ // $('#deleteButton').click(function () {
+  //    table.rows('.selected').remove().draw(false);
+ // });
+
+  $('#fileTableModal tbody').on('click', 'tr', function () {
+      $(this).toggleClass('selected');
+  });
+
+   // Handle "Select All" checkbox click
+   $('#selectAllCheckbox').click(function () {
+    $(':checkbox', table.rows().nodes()).prop('checked', this.checked);
+    updateCheckedRows();
+    
+  });
+
+  // Function to update the array of selected rows
+function updateCheckedRows() {
+  checkedRows = [];
+  $('.select-checkbox:checked', table.rows().nodes()).each(function () {
+      checkedRows.push($(this).closest('tr').index());
+  });
+
+  // Update the "Select All" checkbox
+  $('#selectAllCheckbox').prop('checked', checkedRows.length === table.rows().count());
+}
+ // Handle individual checkbox click
+ $('#fileTableModal tbody').on('click', '.select-checkbox', function () {
+  if (!this.checked) {
+    console.log("unchecked row",this)
+      $('#selectAllCheckbox').prop('checked', false);
+  } else {
+      var allChecked = true;
+      $('.select-checkbox', table.rows().nodes()).each(function () {
+          if (!this.checked) {
+              allChecked = false;
+              return false; // Break out of the loop
+          }
+      });
+      console.log("allchecked:",allChecked)
+      $('#selectAllCheckbox').prop('checked', allChecked);
+  }
+});
+
+$('#deleteButton').click(function () {
+console.log("deletebutton click");
+console.log("checkedRows.length:",checkedRows.length);
+if (checkedRows.length > 0) {
+  // Create an array of row indices to delete
+  var rowsToDelete = checkedRows.map(function (index) {
+      return table.row(index).index();
+  });
+
+  // Remove the selected rows and redraw the DataTable
+  table.rows(rowsToDelete).remove().draw(false);
+  console.log("all checked rows deleted");
+  // Clear the checkedRows array and deselect all checkboxes
+  checkedRows = [];
+  //table.rows().deselect();
+  console.log("cleared check box selection");
+  $('#selectAllCheckbox').prop('checked', false);
+} else {
+  console.log("No rows selected");
+}
+
+});
+
+$('#fileTableModal tbody').on('click', 'tr', function () {
+  $(this).toggleClass('selected');
+});
+// Handle delete button click for each row
+$('#fileTableModal tbody').on('click', '.delete-icon', function () {
+  var row = $(this).closest('tr');
+  table.row(row).remove().draw(false);
+});
+
+// Add button click event to add data to DataTable
+$('#addButton').click(function () {
+  var input = document.getElementById('fileInput');
+  var file = input.files[0];
+
+  if (file) {
+      // Add a new row to DataTable
+      i=table.rows().count()
+      console.log("table.rows().count():",table.rows().count())
+      table.row.add([
+        '<input type="checkbox" class="select-checkbox" data-index="' + i + '">',
+      
+          file.name, // File Name
+          formatFileSize(file.size), // File Size
+        '<i class="fa fa-trash delete-icon" data-index="' + i + '"></i>',
+       
+      ]).draw();
+  }
+  input.value = "";
+});
+
+
+
+$('#fileTableModal tbody').on('change', 'input[type="checkbox"].select-checkbox', function () {
+    var checkbox = $(this);
+    var rowIndex = checkbox.data('index'); // Assuming you have a data-index attribute
+    console.log("selected rows checking")
+    if (checkbox.prop('checked')) {
+      console.log("selected rows checked")
+        checkedRows.push(rowIndex);
+    } else {
+        // Remove the index if the checkbox is unchecked
+        console.log("selected rows unchecked")
+        var indexToRemove = checkedRows.indexOf(rowIndex);
+        console.log("indexToRemove",indexToRemove)
+        if (indexToRemove !== -1) {
+            checkedRows.splice(indexToRemove, 1);
+        }
+    }
+    console.log("checkedRows:",checkedRows)
+});
+function formatFileSize(size, decimals = 2) {
+  event.preventDefault();
+  if (size === 0) return '0 Bytes';
+  const k = 1024;
+  const dm = decimals < 0 ? 0 : decimals;
+  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+  const i = Math.floor(Math.log(size) / Math.log(k));
+
+  return parseFloat((size / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+}
+
+
+
+
+});
+
+function validateFileSize(fileSizeStr, maxSizeStr) {
+  // Convert file sizes to bytes
+  console.log("provided values :",maxSizeStr,fileSizeStr)
+  const fileSizeBytes = convertToBytes(fileSizeStr);
+  const maxSizeBytes = convertToBytes(maxSizeStr);
+  console.log("return values :",maxSizeBytes,fileSizeBytes)
+  // Compare file size with the maximum size
+  return fileSizeBytes > maxSizeBytes;
+}
+
+
+
+function convertToBytes(fileSizeStr) {
+  // Extract numeric value and unit from the file size string
+  const [size, unit] = fileSizeStr.split(' ');
+
+  // Convert to bytes
+  let sizeBytes = parseFloat(size);
+  if (unit.toUpperCase() === 'KB') {
+      sizeBytes *= 1024;
+  } else if (unit.toUpperCase() === 'MB') {
+      sizeBytes *= 1024 * 1024;
+  } else if (unit.toUpperCase() === 'GB') {
+      sizeBytes *= 1024 * 1024 * 1024;
+  }
+
+  return sizeBytes;
+}
+
+
+</script>
+{% endblock %}

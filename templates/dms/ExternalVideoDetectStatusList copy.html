@@ -1,0 +1,117 @@
+
+{% extends 'templates/main_base.html' %}
+
+{% load static %}
+
+{% block title %} External Videos Detection Status List{% endblock %}
+<script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+<script src='https://code.jquery.com/jquery-3.2.1.min.js'></script>
+<script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js'></script>
+
+<script javascript>
+
+
+</script>
+
+
+{% block content %}
+
+<div class="container-fluid">
+    <h1>External Videos Detection Status List</h1>
+    {% csrf_token %}
+    
+    <div class="row" > 
+      <div class="col-md-8">
+        
+        {% if all_Videos  %}
+        <table id="videosTable" name="videosTable" class="table table-striped">
+          <thead>
+            <tr>
+              <th>CompanyName</th>
+              <th>ProjectName</th>
+              <th>StationName</th>
+              <th>VideoTakenDate</th>
+              <th>VideoStartTime</th>
+              <th>VideoEndime</th>
+              <th>VideoFormat</th>             
+              <th>FileName</th>
+              <th>VideoFile</th>
+              <th>Remarks</th>
+              {% if custom_user.user_roles.id != 3 %}
+              <th>Detected Video Path</td>
+              <th>Detected Report Path</td>
+                {% endif %}
+              <th>Detectionstatus</th>
+              <th>View Report</th>              
+              <th>Download Report</td>
+              <!-- <th>Save</th> -->
+              
+            </tr>
+          </thead>
+          <tbody>
+            
+            {% for video in all_Videos %}
+            <form name="Videoform" id="{{id}}">
+              <tr name="videolist" id="{{video.id}}">
+                
+                <td class="companyName videoData" name="CompanyName">{{video.CompanyName}}</td>
+                <td class="ProjectName videoData" name="ProjectName">{{video.ProjectName}}</td>
+                <td class="StationName videoData" name="StationName">{{video.StationName}}</td>
+                <td class="VideoTakenDate videoData" name="VideoTakenDate">{{video.VideoTakenDate}}</td>
+                <td class="VideoStartTime videoData" name="VideoStartTime">{{video.VideoStartTime}}</td>
+                <td class="VideoEndTime videoData" name="VideoEndTime">{{video.VideoEndTime}}</td>
+                <td class="VideoFormat videoData" name="VideoFormat">{{video.VideoFormat}}</td>
+                <td class="name videoData" name="name">{{video.name}}</td>
+                <td class="existingPath videoData" name="existingPath"> 
+                 <video autoplay="autoplay" controls muted   height="100px"> <source src= "{{DRIVE}}{{video.existingPath}}"/> </video> </td>
+                
+                <td class="Remarks videoData" name="Remarks">{{video.Remarks}}</td>
+                {% if custom_user.user_roles.id != 3 %}
+                <td class="detectedvideopath videoData" name="DetectedVideoPath">{{video.DetectedVideoPath}}</td> 
+                {% comment %} <td> <a href="{% url 'redirect_to_folder' folder_path=video.DetectedVideoPath %}">DetectedVideoPath</a></td> {% endcomment %}
+                <td class="detectionReportpath videoData" name="detectionReportpath">{{video.detectionReportpath}}</td>
+                {% endif %}
+                <td class="detectionstatus videoData" id="detectionstatus" name="detectionstatus"> {{video.videostatus}}</td>
+                <td > <a href="{% url 'ReportExtVideo' video.id %}">Report </a></td>
+                <td > <a href="{% url 'ReportDownload' video.id %}" download>Download </a></td> 
+                {% comment %} <td > <a href="{{ file_path }}" download="{{ file_name }}">
+                  Click here to download the file
+              </a></td> {% endcomment %}
+                           
+                </select>
+                
+               
+              </tr>
+
+            </form>
+            {% endfor %}  
+         
+          </tbody>
+ 
+        </table>
+        
+        {% else %}
+          <span> No Detection Reports available</span> 
+        {% endif %}
+      </div>
+    </div>
+    
+  </div>
+  {%endblock%}
+
+  {% block script %}
+ 
+  <script javascript >
+
+    
+    
+  </script>
+ 
+<script>
+ 
+ </script>
+ 
+ 
+   
+ {% endblock %}
+ 

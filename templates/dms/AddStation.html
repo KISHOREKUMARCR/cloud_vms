@@ -1,0 +1,55 @@
+{% extends 'templates/main_base.html' %}
+{% load static %}
+
+{% block title %}Add Station{% endblock %}
+<script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+<script src='https://code.jquery.com/jquery-3.2.1.min.js'></script>
+<script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js'></script>
+{% block content %}
+
+    
+<div class="container">
+    <h1>  Add Station </h1>
+    <div class="form-group">
+      <form method="POST" class="myform">
+        <fieldset>
+          <legend>New Station to be added</legend>
+          {% csrf_token %}
+          <div class="form-group">
+            {{ form.project.label_tag }}<br>
+            {{ form.project }}
+          </div>
+          <div class="form-group">
+            {{ form.name.label_tag }}<br>
+            {{ form.name }}
+          </div><br>
+          &nbsp&nbsp   <button type="submit" class="btn btn-primary">Submit</button>&nbsp &nbsp &nbsp        <input type="button" value="reset" class="btn btn-secondary" id="resetBtn" onClick="this.form.reset()" />
+        </fieldset>
+      </form>
+  </div>
+    
+</div>
+<style>
+  myform{
+    margin-top: 60px;
+    display: flex;
+  }
+  .form-group  {
+    width: 85%;
+  
+    padding: 6px 12px;
+    margin: 8px 0;
+    box-sizing: border-box;
+  }
+  select {
+  width: 26%;
+  
+  padding: 6px 12px;
+  margin: 8px 0;
+  box-sizing: border-box;
+}
+
+
+</style>
+    
+{%endblock%}

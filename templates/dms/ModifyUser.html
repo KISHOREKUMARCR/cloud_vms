@@ -1,0 +1,61 @@
+{% extends 'templates/main_base.html' %}
+{% load static %}
+
+{% block title %} User Profile Update{% endblock %}
+<script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+<script src='https://code.jquery.com/jquery-3.2.1.min.js'></script>
+<script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js'></script>
+{% block content %}
+
+<div class="container">
+
+  <form method="POST" action=""> 
+    <fieldset>
+        <legend>User List</legend>
+        {% csrf_token %} 
+         
+
+        <div class="row" > 
+          <div class="col-md-8">
+            <h3>Existing users</h3>
+            {% if all_users  %}
+            <table id="userTable" class="table table-striped" >
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th> LoginID </th>
+                  <th> password</th>
+                  <th >phone</th>
+                  <th>email</th>
+                  <th>company</th>
+                  <th>role</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody >
+                {% for user in all_users %}
+                  <tr id="user-{{user.id}}">
+                  <td class="userName userData" name="name">{{user.name}}</td>
+                  <td class="userLogin userData" name="LoginID">{{user.loginID}}</td>
+                  <td class="userpassword userData" name="password">{{user.password}}</td>
+                  <td class="userphone userData" name="phone">{{user.phone}}</td>
+                  <td class="useremail userData" name="email">{{user.email}}</td>
+                  <td class="usercompany userData" name="company">{{user.company}}</td>
+                  <td class="userrole userData" name="role">{{user.role}}</td>
+                  <td > <a href="{% url 'UpdateUserProfile' user.id%}"   > Edit </a></td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+       
+        {% else %}
+          <span> No users </span> 
+        {% endif %}
+      </div>
+    </div>
+  </fieldset>
+  </form>
+  </div>
+  {%endblock%}
+
+ 

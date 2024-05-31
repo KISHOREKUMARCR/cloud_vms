@@ -1,0 +1,77 @@
+{% extends 'templates/main_base.html' %}
+{% load static %}
+
+{% block title %}View Label Dataset Information{% endblock %}
+<script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+<script src='https://code.jquery.com/jquery-3.2.1.min.js'></script>
+<script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js'></script>
+{% block content %}
+<div class="container">
+    <div class="row" > 
+      <div class="col-md-8">
+        <h3>Label Dataset Information</h3>
+         {% if all_labels  %}
+            <table id="LabelTable" class="table table-striped" >
+              <thead>
+                <tr>
+                  <th>Label Name</th>
+                  <th> Three Wheeler Count </th>
+                  <th> Bus Count </th>
+                  <th> Car Count </th>
+                  <th> LCV Count </th>
+                  <th> Minibus Count </th>
+                  <th> Two Wheeler Count </th>
+                  <th> MultiAxle Count </th>
+                  <th> 3Axle Count </th>
+                  <th> 4Axle Count </th>
+                  <th> 6Axle Count </th>
+                  <th> Tractor Count </th>
+                  <th> Tractor Trailer Count </th>
+                  <th> Truck 2A Count </th>
+                  <th> Van Count </th>
+                  <th> Eicher Count </th>
+                  <th> Others(Earth Movers) Count </th>
+                  <th> Instance Count </th>
+                  <th> Image Count </th>
+                  <th> Dataset Location </th>
+
+                </tr>
+              </thead>
+              <tbody >
+                {% for labellist in all_labels %}
+                  <tr id="label-{{labellist.id}}">
+                  <td class="LName labelData" name="LName">{{labellist.LName}}</td>
+                  <td class="Threewheelercnt labelData" name="LightCdn">{{labellist.Threewheelercnt}}</td>
+                  <td class="Buscnt labelData" name="LightCdn">{{labellist.Buscnt}}</td>
+                  <td class="Carcnt labelData" name="LightCdn">{{labellist.Carcnt}}</td>                  
+                  <td class="Lcvcnt labelData" name="LightCdn">{{labellist.Lcvcnt}}</td>
+                  <td class="MiniBuscnt labelData" name="LightCdn">{{labellist.MiniBuscnt}}</td>
+                  <td class="Twowheelercnt labelData" name="LightCdn">{{labellist.Twowheelercnt}}</td>
+                  <td class="MultiAxlecnt labelData" name="LightCdn">{{labellist.MultiAxlecnt}}</td>                  
+                  <td class="Axle3cnt labelData" name="LightCdn">{{labellist.Axle3cnt}}</td>
+                  <td class="Axle4cnt labelData" name="LightCdn">{{labellist.Axle4cnt}}</td>
+                  <td class="Axle6cnt labelData" name="LightCdn">{{labellist.Axle6cnt}}</td>
+                  <td class="Tractorcnt labelData" name="LightCdn">{{labellist.Tractorcnt}}</td>
+                  <td class="TTrailercnt labelData" name="LightCdn">{{labellist.TTrailercnt}}</td>
+                  <td class="Truck2Acnt labelData" name="LightCdn">{{labellist.Truck2Acnt}}</td>
+                  <td class="Vancnt labelData" name="LightCdn">{{labellist.Vancnt}}</td>
+                  <td class="Echiercnt labelData" name="LightCdn">{{labellist.Echiercnt}}</td>
+                  <td class="Otherscnt labelData" name="LightCdn">{{labellist.Otherscnt}}</td>
+                  <td class="AnnotationCnt labelData" name="AnnotationCnt">{{labellist.AnnotationCnt}}</td>
+                  <td class="ImageCnt labelData" name="ImageCnt">{{labellist.ImageCnt}}</td>
+                  <td class="DatasetLocation labelData" name="ImageCnt">{{labellist.DatasetLocation}}</td>
+                
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+         {% else %}
+          <span> No Label information  </span> 
+        {% endif %}
+      </div>
+    </div>
+    
+  </div>
+  {%endblock%}
+
+ 

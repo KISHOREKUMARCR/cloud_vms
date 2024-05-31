@@ -1,0 +1,26 @@
+{% extends 'main_base.html' %}
+
+
+{% block head %}
+<title>Profile</title>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+	
+    <h1>Profile</h1>
+	
+	<p>Username: {{ user }}</p>
+	<p>First name: {{ user.name }}</p>
+	<p>Last name: {{ user.user_name }}</p>
+	<p>Email: {{ user.user_email }}</p>
+	<p>Description: {{ user.user_description }}</p>
+	<p>Phone: {{ user.user_mobile }}</p>
+	
+	{% if user.user_image %}
+	<img src="{{ user.user_image.url }}" width="240">
+	{% endif %}
+	
+</div>
+
+{% endblock %}

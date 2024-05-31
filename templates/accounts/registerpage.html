@@ -1,0 +1,749 @@
+{% load static %}
+<!DOCTYPE html>
+
+<html
+  lang="en"
+  class="light-style customizer-hide"
+  dir="ltr"
+  data-theme="theme-default"
+  data-assets-path="{% static 'assets/' %}"
+  data-template="horizontal-menu-template"
+>
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
+    />
+
+    <title>Register Pages</title>
+
+    <meta name="description" content="" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{% static 'assets/img/favicon/favicon.ico' %}"/>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Rubik:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="{% static 'assets/vendor/fonts/boxicons.css' %}" />
+    <link rel="stylesheet" href="{% static 'assets/vendor/fonts/fontawesome.css' %}" />
+    <link rel="stylesheet" href="{% static 'assets/vendor/fonts/flag-icons.css' %}" />
+
+    <!-- Core CSS -->
+    <link rel="stylesheet" href="{% static 'assets/vendor/css/rtl/core.css' %}" class="template-customizer-core-css" />
+    <link rel="stylesheet" href="{% static 'assets/vendor/css/rtl/theme-default.css' %}" class="template-customizer-theme-css" />
+    <link rel="stylesheet" href="{% static 'assets/css/demo.css' %}" />
+	<link rel="stylesheet" href="{% static 'assets/css/customcaptcha.css' %}" />
+	<link rel="stylesheet" href="{% static 'assets/css/customgooglesigninbutton.css' %}" />
+    <link rel="stylesheet" href="{% static 'assets/css/customG+.css' %}" />
+
+
+    <!-- Vendors CSS -->
+    <link rel="stylesheet" href="{% static 'assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css' %}" />
+    <link rel="stylesheet" href="{% static 'assets/vendor/libs/typeahead-js/typeahead.css' %}" />
+    <!-- Vendor -->
+    <link rel="stylesheet" href="{% static 'assets/vendor/libs/formvalidation/dist/css/formValidation.min.css' %}" />
+
+    <!-- Page CSS -->
+    <!-- Page -->
+    <link rel="stylesheet" href="{% static 'assets/vendor/css/pages/page-auth.css' %}" />
+    <!-- Helpers -->
+    <script src="{% static 'assets/vendor/js/helpers.js' %}"></script>
+
+    <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
+    <!--? Template customizer: To hide customizer set displayCustomizer value false in config.js.  -->
+    <script src="{% static 'assets/vendor/js/template-customizer.js' %}"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.2.0/sweetalert2.min.css">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.2.0/sweetalert2.all.min.js"></script>
+   
+	<!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
+    <script src="{% static 'assets/js/config.js' %}"></script>
+  </head>
+
+  <body>
+    <!-- Content -->
+
+    <div class="authentication-wrapper authentication-cover">
+      <div class="authentication-inner row m-0">
+        <!-- /Left Text -->
+        <div class="d-none d-lg-flex col-lg-7 col-xl-8 align-items-center">
+          <div class="flex-row text-center mx-auto">
+            <img
+              src="{% static 'assets/img/pages/register-light.png"
+              alt="Auth Cover Bg color"
+              width="520"
+              class="img-fluid authentication-cover-img"
+              data-app-light-img="pages/register-light.png"
+              data-app-dark-img="pages/register-dark.png"
+            />
+            <div class="mx-auto">
+              <h3>A few clicks to get started 🚀</h3>
+              <p>
+                Let’s get started with your 14 days free trial and <br />
+                start building your application today.
+              </p>
+            </div>
+          </div>
+        </div>
+        <!-- /Left Text -->
+
+        <!-- Register -->
+        <div class="d-flex col-12 col-lg-5 col-xl-4 align-items-center authentication-bg p-sm-5 p-4">
+          <div class="w-px-400 mx-auto">
+            <!-- Logo -->
+            <div class="app-brand">
+                <img src="{% static 'assets/svg/cosai_logo.svg' %}" class="navbar-logo" alt="logo" width="50px" height="50px">
+                
+                <span class="app-brand-text demo h3 mb-0 fw-bold">COS AI</span>
+				
+             </div>
+            <!-- /Logo -->
+            <h4 class="mb-2">Registration starts here 🚀</h4>
+            
+			{% include './messages.html' %}
+
+
+            <form  class="mb-3" action="" method="POST">
+
+
+              {% if messages %}
+                  {% for message in messages %}
+                      <div class="alert alert-success" role="alert">
+                          {{ message }}
+                      </div>
+                  {% endfor %}
+              {% endif %}
+
+
+                                  
+			  {% csrf_token %}
+              <div class="mb-3">
+                <label for="username" class="form-label">Name</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="name"
+                  name="name"
+                  placeholder="Enter your name"
+                  required
+                />
+				<span id="WrongNameError" class="error"></span>
+              </div>
+			  
+			  <div class="mb-3">
+                <label for="CompanyName" class="form-label">Name of the Company</label>
+                <input required type="text" class="form-control" id="companyname" name="companyname" placeholder="Enter your company name" required/>
+				<span id="WrongCompanyError" class="error"></span>
+              </div>
+			  <div class="mb-3">
+                <label for="businesstype" class="form-label">Type of the Business</label>
+				  <select type="select" class="form-select" id="busitype" name="busitype" required>
+					<option value="0">----</option>
+					<option value="Consultant/Firm">Consultant/Firm</option>
+					<option value="Concessionarie/Contractor">Concessionarie/Contractor</option>
+					<option value="Government Officials">Government Officials</option>
+					<option value="Others">Others</option>
+				  </select>
+				<span id="WrongBustypeError" class="error"></span>
+			  </div>
+			  
+              <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input required type="text" class="form-control" id="email" name="email" placeholder="Enter your email id" />
+				<span id="WrongEmailError" class="error"></span>
+              </div>
+			  
+			  <div class="mb-3">
+                <label for="mobile" class="form-label">Mobile</label>
+                <input required type="number" class="form-control" id="mobile" name="mobile"  placeholder="Enter your mobile number" />
+				<span id="WrongMobileError" class="error"></span>
+              </div>
+			  
+			  <div class="mb-3">
+                <label for="username" class="form-label">Username</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="username"
+                  name="username"
+                  placeholder="Enter your username"
+                  maxlength = "20"
+				  required
+                />
+				<label id="UNmsg1" class="form-label">Username must be more than 8 characters.</label>
+				<span id="WrongUsernameError" class="error"></span>
+              </div>
+              <div class="mb-3 form-password-toggle">
+                <label class="form-label" for="password">Password</label>
+                <div class="input-group input-group-merge">
+                  <input
+                    type="password"
+                    id="password"
+                    class="form-control"
+                    name="password"
+				
+                    placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
+                    aria-describedby="password"
+					required
+                  />
+                  <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
+                </div>
+				<span>
+				<label id="PWmsg1" class="form-label">Password must be 8 characters with 1 </label>
+				<label id="PWmsg2" class="form-label">upper case and </label>
+				<label id="PWmsg3" class="form-label">number.</label></span>
+				
+				
+              </div>
+			  
+			  <div class="mb-3 form-password-toggle">
+                <label class="form-label" for="password">Confirm Password</label>
+                <div class="input-group input-group-merge">
+                  <input
+                    type="password"
+                    id="confirm_password"
+                    class="form-control"
+                    name="confirm_password"
+                    placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
+                    aria-describedby="confirm_password"
+					required
+                  />
+                  <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
+                </div>
+				<span id="WrongCPError" class="error"></span>
+              </div>
+		<!-- 	  
+			  <div class="mb-3">
+                
+                <div class='CaptchaWrap'>
+                    <div id="CaptchaImageCode" >
+                        <canvas id="CapCode" class="capcode" ></canvas>
+                    </div> 
+                    <input type="button" class="ReloadBtn" onclick='CreateCaptcha();'>
+                </div>
+	
+				<input
+                    type="text"
+                    id="captchaval"
+                    class="form-control"
+                    
+                    placeholder='Enter Captcha - Case Sensitive'
+                    aria-describedby="password"
+					required
+                  />
+                
+                <span id="WrongCaptchaError" class="error"></span>
+              
+              </div> -->
+
+              <!-- <div class="mb-3">
+                <div class="form-check">
+                  <input checked class="form-check-input" type="checkbox" id="terms-conditions" name="terms"/>
+                  <label class="form-check-label" for="terms-conditions">
+                    I agree to
+                      <a href="https://www.privacypolicies.com/live/634f5cee-eccc-4de2-9738-7e1d6d44c5de">privacy policy & terms</a>
+                    <a href="{% url 'terms_conditions' %}">privacy policy & terms</a>
+                  </label>
+                </div>
+				<span id="WrongCheckedError" class="error"></span>
+              </div> -->
+              <button class="btn btn-primary d-grid w-100" >Sign up</button>
+            </form>
+
+            <p class="text-center">
+              <span>Already have an account?</span>
+              <a href="{% url 'loginprocess' %}">
+                <span>Sign in instead</span>
+              </a>
+            </p>
+
+            <!-- <div class="divider my-4">
+              <div class="divider-text">or</div>
+            </div> -->
+
+			
+            <!--<div class="d-flex justify-content-center">
+              <a href="javascript:;" class="btn btn-icon btn-label-facebook me-3">
+                <i class="tf-icons bx bxl-facebook"></i>
+              </a>
+
+              <a href="javascript:;" class="btn btn-icon btn-label-google-plus me-3">
+                <i class="tf-icons bx bxl-google-plus"></i>
+              </a>
+
+              <a href="javascript:;" class="btn btn-icon btn-label-twitter">
+                <i class="tf-icons bx bxl-twitter"></i>
+              </a>
+            </div>-->
+          </div>
+        </div>
+        <!-- /Register -->
+      </div>
+    </div>
+
+    <!-- / Content -->
+
+    <!-- Core JS -->
+    <!-- build:js assets/vendor/js/core.js -->
+    <script src="{% static 'assets/vendor/libs/jquery/jquery.js' %}"></script>
+    <script src="{% static 'assets/vendor/libs/popper/popper.js' %}"></script>
+    <script src="{% static 'assets/vendor/js/bootstrap.js' %}"></script>
+    <script src="{% static 'assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js' %}"></script>
+
+    <script src="{% static 'assets/vendor/libs/hammer/hammer.js' %}"></script>
+
+    <script src="{% static 'assets/vendor/libs/i18n/i18n.js' %}"></script>
+    <script src="{% static 'assets/vendor/libs/typeahead-js/typeahead.js' %}"></script>
+
+    <script src="{% static 'assets/vendor/js/menu.js' %}"></script>
+    <!-- endbuild -->
+
+    <!-- Vendors JS -->
+    <script src="{% static 'assets/vendor/libs/formvalidation/dist/js/FormValidation.min.js' %}"></script>
+    <script src="{% static 'assets/vendor/libs/formvalidation/dist/js/plugins/Bootstrap5.min.js' %}"></script>
+    <script src="{% static 'assets/vendor/libs/formvalidation/dist/js/plugins/AutoFocus.min.js' %}"></script>
+
+    <!-- Main JS -->
+    <script src="{% static 'assets/js/main.js' %}"></script>
+
+    <!-- Page JS -->
+    <script src="{% static 'assets/js/pages-auth.js' %}"></script>
+	
+	<script>
+        var cd,vuser,vemail,vmobile,vpass,vcpass,vcheck,vcap,vcompname,vbtype,viseamil,temp = 0,aa = 0;
+		var upperCase= new RegExp('[A-Z]');
+		var numbers = new RegExp('[0-9]');
+		
+		function CreateCaptcha() {
+          //$('#InvalidCapthcaError').hide();
+          var alpha = new Array('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9');
+                            
+          var i;
+          for (i = 0; i < 6; i++) {
+            var a = alpha[Math.floor(Math.random() * alpha.length)];
+            var b = alpha[Math.floor(Math.random() * alpha.length)];
+            var c = alpha[Math.floor(Math.random() * alpha.length)];
+            var d = alpha[Math.floor(Math.random() * alpha.length)];
+            var e = alpha[Math.floor(Math.random() * alpha.length)];
+            var f = alpha[Math.floor(Math.random() * alpha.length)];
+          }
+          cd = a + ' ' + b + ' ' + c + ' ' + d + ' ' + e + ' ' + f;
+          $('#CaptchaImageCode').empty().append('<canvas id="CapCode" class="capcode" width="330" height="40"></canvas>')
+          
+          var c = document.getElementById("CapCode"),
+              ctx=c.getContext("2d"),
+              x = c.width / 2,
+			  
+              img = new Image();
+
+          img.src = "https://pixelsharing.files.wordpress.com/2010/11/salvage-tileable-and-seamless-pattern.jpg";
+          img.onload = function () {
+              var pattern = ctx.createPattern(img, "repeat");
+              ctx.fillStyle = pattern;
+              ctx.fillRect(0, 0, c.width, c.height);
+              ctx.font="26px Roboto Slab";
+              ctx.fillStyle = '#ccc';
+              ctx.textAlign = 'center';
+              //ctx.setTransform (1, -0.12, 0, 1, 0, 5);
+              ctx.fillText(cd,x,28);
+          };
+          
+          
+        }
+		
+		// validate Username
+
+        // Validate Captcha
+        function ValidateCaptcha() {
+          var string1 = removeSpaces(cd);
+          var string2 = removeSpaces($('#captchaval').val());
+          if (string1 == string2) {
+			vcap = "true";
+            return true;
+          }
+          else {
+			vcap = "false";
+            return false;
+          }
+        }
+
+        // Remove Spaces
+        function removeSpaces(string) {
+          return string.split(' ').join('');
+        }
+		
+		
+		function validateusername(){
+			$("#username").keyup(function () {
+			  var username = $(this).val();
+		 
+			  $.ajax({
+				url: 'validate_username',
+				data: {
+				  'username': username
+				},
+				dataType: 'json',
+				success: function (data) {
+				  if (data.is_username) {
+					vuser = "true"
+					//alert("A user with this username already exists.");
+					$('#UNmsg1').text("A user with this username already exists.").show();
+					$('#UNmsg1').css('color','red');
+					
+				  }else{
+					
+					
+					if(username.length >= 1 && username.length <= 6){
+						$('#UNmsg1').text("Username must be more than 6 characters").show();
+						$('#UNmsg1').css('color','red');}
+						else{
+							vuser = "false"
+							$('#UNmsg1').text("Available").show();
+							$('#UNmsg1').css('color','green'); }
+						
+					//$('#WrongUsernameError').fadeOut(100);}
+				  }
+				}
+			  });
+		 
+			});
+			
+		}
+			
+			function validateemail(){
+				$(document).ready(function(){
+					$("#email").keyup(function () {
+						var email = $(this).val();
+					 
+						  $.ajax({
+							url: 'validate_username',
+							data: {
+							  'email': email
+							},
+							dataType: 'json',
+							success: function (data) {
+							  if(IsEmail(email)){
+								  if (data.is_manualemail) {
+									vemail = "true";
+									$('#WrongEmailError').text("A user with this Emailid already exists.").show();
+								  }else{vemail = "false";$('#WrongEmailError').fadeOut(100);}
+							  }else{
+								vemail = "true";
+								$('#WrongEmailError').text("please Enter the valid email address").show();}
+							  
+						  }
+					  });
+					});			
+						
+				});  
+			}
+			
+			function IsEmail(email) {
+				var regex = /^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+				if (!regex.test(email)) {
+					//visemail = "false";
+					return false;
+				}
+				else {
+					return true;//visemail = "true";
+				}
+			}
+			
+			function validatecompanyname(){
+				//    console.log('company name : ',$("#companyname").val())
+				   if($("#companyname").val() == "" || $("#companyname").val() == null || $("#companyname").val() == "undefined") {vcompname = "false";// && $(this).val().length <= 6){
+					 //$('#WrongCompanyError').text("Please Enter the Company Name").show();
+					}else{vcompname = "true";$('#WrongCompanyError').fadeOut(100);}
+				
+			}
+			
+			
+			function validatemobile(){
+				$("#mobile").keyup(function() {
+				   if($(this).val().length > 10){vmobile = "false";// && $(this).val().length <= 6){
+					 $('#WrongMobileError').text("Mobile number must be 10 digits.").show();
+					}
+					if (!$(this).val().match(numbers)){
+						vmobile = "false";// && $(this).val().length <= 6){
+					 $('#WrongMobileError').text("please enter numbers only").show();
+					}
+					
+					else{vmobile = "true";$('#WrongMobileError').fadeOut(100);}
+				});
+			}
+			
+			function passwordvalidation(){
+				if( $("#password").val().length >= 8 && $("#password").val().match(upperCase) && $("#password").val().match(numbers)){
+						vpass = "true";
+					}else{vpass = "false";}
+			}
+		
+			function validatepassword(){
+			  $("#password").keyup(function() {
+					if(($(this).val().length >= 0 && $(this).val().length <= 7)){
+						$('#PWmsg1').css('color','red');
+						$('#PWmsg2').css('color','red');
+						$('#PWmsg3').css('color','red');
+						}
+						
+					if($(this).val().match(upperCase) ){$('#PWmsg2').css('color','green');}
+							
+					if($(this).val().match(numbers) ){$('#PWmsg3').css('color','green');}
+					
+					if(($(this).val().length >= 8)){$('#PWmsg1').css('color','green');}
+				});
+			}
+			
+			// password and confirm password matching
+			function arePasswordsMatching() {
+				console.log($("#password").val(),'--',$("#confirm_password").val());
+				return $("#password").val() === $("#confirm_password").val();
+			}
+			
+			function validateconfirmpassword(){
+			  $("#confirm_password").keyup(function() {
+				if(arePasswordsMatching()){$('#WrongCPError').text("Password Confirmed.").show();$('#WrongCPError').css('color','green');vcpass = "true";}
+				else{$('#WrongCPError').text("Please Enter the same password.").show();vcpass = "false";}
+			  });
+			}
+			
+			function validatecaptcha(){
+				$("#captchaval").keyup(function() {
+				//var result = 
+				if(ValidateCaptcha()){
+					$('#WrongCaptchaError').text("valid.").show();
+					$('#WrongCaptchaError').css('color','green');
+					}else{
+						if($(this).val().length == 6){$('#WrongCaptchaError').text("Invalid.").show();$('#WrongCaptchaError').css('color','red');}
+						else{ $('#WrongCaptchaError').text("Please Enter the valid Captcha").show();$('#WrongCaptchaError').css('color','red');}}
+				});
+			}
+			function validatecheck(){
+				if( !$("#terms-conditions").is(":checked") )
+					{
+					  console.log("checkbox checked or not")
+					  $('#WrongCheckedError').text("Please accept the terms and conditions..").show();
+					  vcheck = "false"
+					}
+				else{console.log("checkbox else")
+					$('#WrongCheckedError').fadeOut(100);vcheck = "true"}
+			}
+			
+			function validatename(){
+				if($("#name").val() == "" || $("#name").val() == null || $("#name").val() == "undefined") {vname = "false";// && $(this).val().length <= 6){
+					 $('#WrongNameError').text("Please Enter the your Name").show();alert("vnameif");
+				}else{vname = "true";$('#WrongNameError').fadeOut(100);}
+			}
+			
+			// function validatecompanyname(){
+			// 	console.log('Companyname: ',$("#companyname").val())
+			// 	if($("#companyname").val() == "" || $("#companyname").val() == null || $("#companyname").val() == "undefined") {vcompname = "false";// && $(this).val().length <= 6){
+			// 		 $('#WrongCompanyError').text("Please Enter the Company Name").show();alert("vcompnameif");
+			// 	}else{vcompname = "true";$('#WrongCompanyError').fadeOut(100);}
+			// }
+			
+			function validatebustype(){
+				if($("#busitype").val() == "0" || $("#busitype").val() == "" || $("#busitype").val() == null || $("#busitype").val() == "undefined") {vbtype = "false";// && $(this).val().length <= 6){
+					 $('#WrongBustypeError').text("Please select the type of business").show();alert("vbtypeif");
+				}else{vbtype = "true";$('#WrongBustypeError').fadeOut(100);}
+			}		
+			
+        $(function(){
+		  
+		  // CreateCaptcha();
+		  validateusername();
+		  validateemail();
+		  validatemobile();
+		  validatepassword();
+		  validatecompanyname();
+		  validateconfirmpassword();
+		  // validatecaptcha();
+		  // validatecheck();
+		  
+		  $(document).ready(function(){
+			$("button").click(function(e){
+				if((vcap == "true") && (vcpass == "true") && ($("#password").val().length >= 8) && ($("#password").val().match(numbers)) && ($("#password").val().match(upperCase)) && (vuser == "false" ) && (vmobile == "true") && (vemail == "false") ){
+						temp = 1;}
+						
+				if(temp == 0 ){
+					temp = 1
+					
+					if($("#name").val() == "" || $("#name").val() == null || $("#name").val() == "undefined") {vname = "false";// && $(this).val().length <= 6){
+					 $('#WrongNameError').text("Please Enter the your Name").show();
+					}else{vname = "true";$('#WrongNameError').fadeOut(100);}
+					
+					if($("#companyname").val() == "" || $("#companyname").val() == null || $("#companyname").val() == "undefined") {vcompname = "false";// && $(this).val().length <= 6){
+					 $('#WrongCompanyError').text("Please Enter the Company Name").show();
+					}else{vcompname = "true";$('#WrongCompanyError').fadeOut(100);}
+					
+					if($("#busitype").val() == "0" || $("#busitype").val() == "" || $("#busitype").val() == null || $("#busitype").val() == "undefined") {vbtype = "false";// && $(this).val().length <= 6){
+					 $('#WrongBustypeError').text("Please select the type of business").show();
+					}else{vbtype = "true";$('#WrongBustypeError').fadeOut(100);}
+					
+					
+					
+					if(vcheck == "false"){ $('#terms-conditions').focus();vcheck == "true";}
+
+					if(vcap == "false"){ $('#captchaval').focus();temp = 0;}
+					if(vcpass == "false"){ $('#confirm_password').focus();temp = 0 ;}
+					if( !$("#password").val().length >= 8){ $('#password').focus();temp = 0 ;}
+					if(!$("#password").val().match(numbers) ){ $('#password').focus();temp = 0 ;}
+					if(!($("#password").val().match(upperCase))){ $('#password').focus();temp = 0 ;}
+					//if(vpass == "false"){ $('#password').focus();temp = 0 ;}
+					if (vuser == "true" ){ $('#username').focus();temp = 0 ;}
+					if($("#mobile").val().length < 10){vmobile = "false";// && $(this).val().length <= 6){
+					 $('#WrongMobileError').text("Mobile number must be 10 digits.").show();
+					}
+					if (vmobile == "false" ){ $('#mobile').focus(); temp = 0; }
+					//if (visemail == "false" ){ $('#email').focus();temp = 0 ;}
+					if (vemail == "true" ){ $('#email').focus();temp = 0 ;}
+					if (vbtype == "false" ){ $('#busitype').focus();temp = 0 ;}
+					if (vcompname == "false" ){ $('#companyname').focus();temp = 0 ;}
+					if (vname == "false" ){ $('#name').focus();temp = 0 ;}
+						  
+					console.log("Error")
+					console.log(vname,'--',vcompname,'--',vcheck,'--',vcap,'--',vcpass,'--',vuser,'--',vmobile,'--',vemail,'--',vbtype)
+					//e.preventDefault();
+					return false;
+				}
+				else{//if(temp == 1){alert(temp);
+					console.log("success")
+					
+
+          Swal.fire({
+            icon: 'success',
+            title: 'Registered',
+            text: 'User Registered successfully',
+            confirmButtonText: 'OK'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = "{% url 'loginprocess' %}";
+                }
+            });
+
+						/*if(aa == 0){
+							swal(
+								'Info!',
+								'Please ensure the given details..If you want to register click <b style="color:green;">Sign up</b> button again!',
+								'info'
+							)
+							aa += 1;
+						}else{
+							swal(
+								'Success',
+								'Registered Successfully!',
+								'success'
+							)}*/
+					
+					} 
+			});
+		  });
+	  });
+		   
+
+		 
+		  
+		  /*
+		  $(document).ready(function(){
+			$("form").submit(function (e) {
+				e.preventDefault();
+				var validateusername = validateusername();
+				$.ajax({
+					url: '/vali_register/',
+					
+					dataType: 'json',
+					success: function () {
+					  if (($('#UNmsg1').css('color','green')) ){ alert("user name validated");}
+					  else{alert("user name not validated");}
+					}
+				});
+			});
+			
+		  });
+		   */
+		  
+		//});
+		//closing function  
+		  /*
+		  
+		  */
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+		  
+          
+        
+		
+		
+		
+		
+		
+        // Create Captcha
+        
+
+        // Check Captcha
+		//function CheckCaptcha() {
+         // var result = ValidateCaptcha();
+		
+		
+		/*
+        function CheckCaptcha() {
+          var result = ValidateCaptcha();
+		  var passvalid = passwordvalidation();
+		  var unamevalid = usernamevalidation();
+		  var passmatch = arePasswordsMatching();
+		  
+		  $("#username").keyup(function() {
+			   if($(this).val().length <= 6){
+			     $('#WrongCaptchaError').text('Username must be more than 6 characters').show();}
+			});
+
+		  
+		  if($("#name").val() == "" || $("#name").val() == null || $("#name").val() == "undefined") {
+			 alert('Please entry the valid name.');}
+		  if($("#email").val() == "" || $("#email").val() == null || $("#email").val() == "undefined") {
+			 alert('Please entry the valid email id.');}
+		  if($("#mobile").val() == "" || $("#mobile").val() == null || $("#mobile").val() == "undefined") {
+			 alert('Please entry the valid mobile number.');}
+          if($("#username").val() == "" || $("#username").val() == null || $("#username").val() == "undefined") {
+			 alert('Please entry the valid username.');}
+		  if($("#password").val() == "" || $("#password").val() == null || $("#password").val() == "undefined") {
+			 alert('Please entry the valid Password');}
+		  if($("#confirm_password").val() == "" || $("#confirm_password").val() == null || $("#confirm_password").val() == "undefined") {
+			 alert('Please entry the valid confirm_Password');}
+		  if(unamevalid == false){alert('Please entry the valid Username');}
+		  if(passvalid == false){alert('Please entry the valid Password');}
+		  if(passmatch == false){alert('Please entry the valid confirm_Password');}
+		 //passvalid == false || unamevalid == false || passmatch == false ||
+          if(result == false || $("#captchaval").val() == "" || $("#captchaval").val() == null || $("#captchaval").val() == "undefined") {
+            $("form").submit(function (e) {
+					//location.reload(true);
+					
+					
+					
+					
+				});
+              CreateCaptcha();
+			  alert('Please entry the valid captcha.');
+          } 
+		  
+		  
+
+        }
+		*/
+    </script>
+	
+  </body>
+</html>

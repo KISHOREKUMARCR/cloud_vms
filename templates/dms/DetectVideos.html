@@ -1,0 +1,106 @@
+{% extends 'templates/main_base.html' %}
+{% load static %}
+
+{% block title %} Videos List{% endblock %}
+{% comment %} <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script> {% endcomment %}
+<script src='https://code.jquery.com/jquery-3.2.1.min.js'></script>
+<script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js'></script>
+{% block content %}
+ <!-- Content wrapper -->
+ <div class="content-wrapper">
+  <!-- Content -->
+
+  <div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="py-3 breadcrumb-wrapper mb-4"><span class="text-muted fw-light">Videos /</span> Detection</h4>
+    <form method="get" id="videoForm"> 
+    {{ VideoDetect.form}} 
+    
+   
+      <button class="btn btn-primary" type="submit">  Search </button>
+         
+
+  
+    <div class="row">
+      <div class="col-md-12">
+        <input type="button" id="submit" class="btn btn-primary" value="submit" style="float: right;">
+      </div>
+    </div>
+
+    <!-- DataTable with Buttons -->
+    <div class="card">
+      <div class="card-datatable table-responsive pt-0">
+       
+        <table class="datatables-basic table table-bordered">
+          <thead>
+            <tr>         
+              <th>id</th>
+              <th>Company</th>
+              <th>Project</th>
+              <th>Location</th>              
+              <th>Video Date</th>
+              <th>Remarks</th>
+              <th> <input type="checkbox" id="check_all" name="check_all" /> Detect All</th>
+            </tr>
+          </thead>
+          {% if all_Videos  %}
+          <tbody>
+            {% for video in all_Videos %}
+            <tr>
+              <td>{{video.id}}</td>
+              <td>{{video.CompanyName}}</td>
+              <td>{{video.ProjectName}}</td>
+              <td>{{video.StationName}}</td>
+              <td>{{video.VideoTakenDate}}</td>              
+              <td>{{video.Remarks}}</td>
+              <td><input type="checkbox" class="row_check" data-video-id="{{ video.id }}"></td>
+            </tr>
+            {% endfor %}
+          </tbody>
+          {% endif %}
+        </table>
+      </div>
+    </div>
+  
+    {% endblock %}
+  </form>  
+    {% block script %}
+    <script>
+      $('#check_all').change(function () {
+        $('tbody tr td input[type="checkbox"]').prop('checked', $(this).prop('checked'));
+      });
+     
+      $('#submit').on('click', function () {
+        var selectedVideos = [];
+        var selectedProjects = [];
+        var selectedStations =[];
+        $('.row_check:checked').each(function() {
+          selectedVideos.push($(this).data('video-id'));
+          selectedProjects.push($(this).data('ProjectName'))
+          selectedStations.push($(this).data('StationName'))
+          console.log("selected_videos:",selected_videos);
+        });
+     
+
+        // Update the hidden input with selected video IDs
+        $('#videoForm').append('<input type="hidden" name="selected_videos" value="' + selectedVideos.join(',') + '">');
+        
+        // Submit the form
+        $('#videoForm').submit();
+       
+  
+      });
+      {% comment %} $.ajax({
+        xhr: function () {
+          console.log("inside ajax");
+            var xhr = new XMLHttpRequest();
+            url:  "{% url 'DetectVideos' %}",
+            type: 'POST',
+            dataType: 'json',
+            cache: false,
+            processData: false,
+            contentType: false,
+            data: videoForm
+        }
+      }); {% endcomment %}
+    </script>
+    {% endblock %}

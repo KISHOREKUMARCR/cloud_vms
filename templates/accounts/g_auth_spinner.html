@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% load static %}
+
+<!-- tile tag -->
+{% block title %}{% endblock %}
+
+<!-- link stylesheet tag -->
+{% block stylesheet  %}
+<style>
+#button{
+  display:block;
+  margin:20px auto;
+  padding:10px 30px;
+  background-color:#eee;
+  border:solid #ccc 1px;
+  cursor: pointer;
+}
+#overlay{	
+  position: fixed;
+  top: 0;
+  z-index: 100;
+  width: 100%;
+  height:100%;
+  display: none;
+  background: rgba(0,0,0,0.6);
+}
+.cv-spinner {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;  
+}
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px #ddd solid;
+  border-top: 4px #2e93e6 solid;
+  border-radius: 50%;
+  animation: sp-anime 0.8s infinite linear;
+}
+@keyframes sp-anime {
+  100% { 
+    transform: rotate(360deg); 
+  }
+}
+.is-hide{
+  display:none;
+}
+</style>
+{% endblock %}
+
+<!-- content tag -->
+{% block content %}
+<button id="button" type="button">Click</button>
+
+<div id="overlay">
+  <div class="cv-spinner">
+    <span class="spinner"></span>
+  </div>
+</div>
+
+{% endblock %}
+
+ <!-- script tag -->
+{% block script %}
+<script>
+
+jQuery(function($){
+  $(document).ajaxSend(function() {
+    $("#overlay").fadeIn(300);　
+  });
+		
+  $('#button').click(function(){
+    $.ajax({
+      type: 'GET',
+      success: function(data){
+        console.log(data);
+      }
+    }).done(function() {
+      setTimeout(function(){
+        $("#overlay").fadeOut(300);
+      },500);
+    });
+  });	
+});
+
+</script>
+
+{% endblock %}

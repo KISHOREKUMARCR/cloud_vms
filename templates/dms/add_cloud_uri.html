@@ -1,0 +1,187 @@
+{% extends 'templates/main_base.html' %}
+{% load static %}
+{% block title %}Add Video File{% endblock %}
+{% comment %} <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script> {% endcomment %}
+<script src='https://code.jquery.com/jquery-3.2.1.min.js'></script>
+<script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js'></script>
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+<script src="https://apis.google.com/js/api.js"></script>
+<script src="https://apis.google.com/js/platform.js"></script>
+
+<link rel="stylesheet" href="{% static 'assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css' %}" />
+<link rel="stylesheet" href="{% static 'assets/vendor/libs/typeahead-js/typeahead.css' %}" />
+<link rel="stylesheet" href="{% static 'assets/vendor/libs/datatables-bs5/datatables.bootstrap5.css' %}" />
+<link rel="stylesheet" href="{% static 'assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css' %}" />
+<link rel="stylesheet" href="{% static 'assets/vendor/libs/datatables-select-bs5/select.bootstrap5.css' %}" />
+<link rel="stylesheet" href="{% static 'assets/vendor/libs/datatables-checkboxes-jquery/datatables.checkboxes.css' %}" />
+<link rel="stylesheet" href="{% static 'assets/vendor/libs/datatables-fixedcolumns-bs5/fixedcolumns.bootstrap5.css' %}" />
+<link rel="stylesheet" href="{% static 'assets/vendor/libs/datatables-fixedheader-bs5/fixedheader.bootstrap5.css' %}" />
+
+{% comment %} <script src="assests/vendor/libs/datatables/jquery.dataTables.min.js"></script> {% endcomment %}
+{% block content %}
+
+
+<div class="container-xxl flex-grow-1 container-p-y">
+  
+  
+    <form class="browser-default-validation" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <h4 class="py-3 breadcrumb-wrapper mb-4"><span class="text-muted fw-light">COS AI - VMS APP /</span> Add Cloud URI </h4>
+      	<div class="row">
+      		 <div class="col-md-12">
+	  		 	  <div class="card mb-4">
+	  		 	  	<h5 class="card-header">Add Video URL</h5>
+						<div class="card-body">
+							<div class="form-group">  
+									{% if form.errors %}
+									<ul class="alert alert-danger" >
+									    {% for field, errors in form.errors.items %}
+									    <li >{{ field }}: {{ errors }}</li>
+									    {% endfor %}
+									</ul>
+									{% endif %}
+
+                                  {% if messages %}
+                                      {% for message in messages %}
+                                          <div class="alert alert-success" role="alert">
+                                              {{ message }}
+                                          </div>
+                                      {% endfor %}
+                                  {% endif %}
+
+
+
+
+
+								<div class="col-md-6">    
+								    <div class="mb-3">
+								        <label class="form-label">Company Name</label>
+								        <select id="company_name" name="company_name" class="form-control">
+								        	<option value="" disabled selected>Select Company</option>
+								            {% for company in company_list %}
+								                <option value="{{ company.name }}">{{ company.name }}</option>
+								            {% endfor %}
+								        </select>
+								        <input type="hidden" id="userid" name="userid" value="{{ userid }}" />
+								    </div>
+								</div>
+								<div class="col-md-6">    
+								    <div class="mb-3">
+								        <label class="form-label">Project Name</label>
+								        <select id="project_name" name="project_name" class="form-control">
+								        	 <option value="" disabled selected>Select Project</option>
+
+								            {% for project in projects_list %}
+								                <option value="{{ project.name }}">{{ project.name }}</option>
+								            {% endfor %}
+								        </select>
+								    </div>
+								</div>
+
+
+
+							    <div class="col-md-6" >    
+							      <div class="mb-3">
+							        <label  class="form-label">Location Name</label>											    
+							        <input type="text" id="location_name" name="location_name" class="form-control"/>
+							      </div>
+							    </div>
+
+							    <div class="col-md-6" >    
+							      <div class="mb-3">
+							        <label  class="form-label">Camera Angle</label>											    
+							        <input type="text" id="camera_angle" name="camera_angle" class="form-control"/>
+							      </div>
+							    </div>
+
+							    <div class="col-md-6" >    
+							      <div class="mb-3">
+							        <label  class="form-label">One Drive video URL</label>											    
+							        <input type="text" id="onedrive_url" name="onedrive_url" class="form-control"/>
+							      </div>
+							    </div>
+
+							 <!-- Bootstrap 4 -->
+							    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+							    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+							    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
+							    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+
+							    <!-- Font Awesome -->
+							    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+
+							    <!-- Moment.js -->
+							    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.23.0/moment.min.js" integrity="sha256-VBLiveTKyUZMEzJd6z2mhfxIqz3ZATCuVMawPZGzIfA=" crossorigin="anonymous"></script>
+
+							    <!-- Tempus Dominus Bootstrap 4 -->
+							    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.1.2/css/tempusdominus-bootstrap-4.min.css" integrity="sha256-XPTBwC3SBoWHSmKasAk01c08M6sIA5gF5+sRxqak2Qs=" crossorigin="anonymous" />
+							    <script src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.1.2/js/tempusdominus-bootstrap-4.min.js" integrity="sha256-z0oKYg6xiLq3yJGsp/LsY9XykbweQlHl42jHv2XTBz4=" crossorigin="anonymous"></script>
+
+
+							    <div class="col-md-6">
+							    	<div class="mb-3">
+							    		<label class="form-label">Video Start Time </label>
+							    		<div class="input-group date" id="datetimepicker1" data-target-input="nearest">
+										      <input type="text" id="video_start_time" name="video_start_time" class="form-control datetimepicker-input" data-target="#datetimepicker1"/>
+										      <div class="input-group-append" data-target="#datetimepicker1" data-toggle="datetimepicker">
+										        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+										      </div>
+										    </div>
+							    	</div>
+							    </div>
+
+							    <div class="col-md-6">
+							    	<div class="mb-3">
+							    		<label class="form-label">Video Stop Time </label>
+							    		<div class="input-group date" id="datetimepicker2" data-target-input="nearest">
+										      <input type="text" id="video_end_time" name="video_end_time" class="form-control datetimepicker-input" data-target="#datetimepicker2"/>
+										      <div class="input-group-append" data-target="#datetimepicker2" data-toggle="datetimepicker">
+										        <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+										      </div>
+										    </div>
+							    	</div>
+							    </div>
+
+
+
+
+							   <!--  <div class="col-md-10">
+							    	<div class="row">
+							    		<div class="col-md-3">
+								    		 <div class="mb-3">
+							                    <label class="form-label">Video Start Time </label>
+							                    <input type="time" id="video_start_time" name="video_start_time" class="form-control"  />
+						                	  </div>
+							    		</div>
+								    	<div class="col-md-3">
+								    		 <div class="mb-3">
+							                    <label  class="form-label">Video Start Time </label>
+							                    <input type="time" id="video_end_time" name="video_end_time" class="form-control"  />
+							                </div>
+							    		</div>
+							    	</div>
+				            	</div> -->
+																		       
+
+							</div> 
+							<button class="btn btn-success col-md-2"  type="submit">Submit</button>
+						</div>
+				  </div>
+      		 </div>
+      	</div>
+
+	   <!--  {{ form.as_p }} -->
+    </form>
+</div>
+
+    <script>
+      $(function () {
+        $("#datetimepicker1").datetimepicker();
+        $("#datetimepicker2").datetimepicker();
+
+      });
+
+    </script>
+{%endblock%}
+
+

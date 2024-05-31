@@ -1,0 +1,308 @@
+{% extends "templates/main_base.html" %}
+{% load static %}
+
+<!-- tile tag -->
+{% block title %}{% endblock %}
+
+<!-- link stylesheet tag -->
+{% block stylesheet  %}
+<link rel="stylesheet" href="{% static 'assets/vendor/libs/typeahead-js/typeahead.css' %}" />
+<link rel="stylesheet" href="{% static 'assets/vendor/libs/typeahead-js/typeahead.css' %}" />
+<link rel="stylesheet" href="{% static 'assets/vendor/libs/select2/select2.css' %}" />
+<link rel="stylesheet" href="{% static 'assets/vendor/libs/formvalidation/dist/css/formValidation.min.css' %}" />
+<link rel="stylesheet" href="{% static 'assets/vendor/libs/animate-css/animate.css' %}" />
+<link rel="stylesheet" href="{% static 'assets/vendor/libs/sweetalert2/sweetalert2.css' %}" />
+
+<link rel="stylesheet" href="{% static 'assets/vendor/libs/datatables-bs5/datatables.bootstrap5.css' %}" />
+<link rel="stylesheet" href="{% static 'assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css' %}" />
+<link rel="stylesheet" href="{% static 'assets/vendor/libs/datatables-checkboxes-jquery/datatables.checkboxes.css' %}" />
+
+<!-- Page CSS -->
+<link rel="stylesheet" href="{% static 'assets/vendor/css/pages/page-profile.css' %}" />
+{% endblock %}
+
+<!-- content tag -->
+{% block content %}
+<!-- Content -->
+	<form class="mb-3" action="" method="POST" enctype="multipart/form-data">>
+            {% csrf_token %}
+            <div class="container-xxl flex-grow-1 container-p-y">
+              <h4 class="py-3 breadcrumb-wrapper mb-4">
+                <span class="text-muted fw-light">Edit User Profile /</span> Account
+              </h4>
+
+              <div class="row">
+                <div class="col-md-12">
+                  <ul class="nav nav-pills flex-column flex-md-row mb-3">
+                    <li class="nav-item">
+                      <a class="nav-link active" href="javascript:void(0);"><i class="bx bx-user me-1"></i> Profile</a>
+                    </li>
+                    {% if user.user_social_provider == 'manual' %}
+                    <li class="nav-item">
+                      <a class="nav-link" href="{% url 'profile_edit_security' %}"
+                      ><i class="bx bx-lock-alt me-1"></i> Security</a>
+                    </li>
+            
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'profile_edit_account_delete' %}"
+                          ><i class="bx bx-link-alt me-1"></i> Account</a>
+                    </li>
+                    {% endif %}
+                  </ul> 
+                  <div class="card mb-4">
+                    <h5 class="card-header">Profile Details</h5>
+                    <!-- Account -->
+                    <div class="card-body">
+                      <div class="d-flex align-items-start align-items-sm-center gap-4">
+						{% if user.user_image %}
+							<img
+							  src="{{ user.user_image.url }}"
+							  alt="user-avatar"
+							  class="d-block rounded"
+							  height="100"
+							  width="100"
+							  id="uploadedAvatar"
+							/>
+						{% elif user.user_image_url %}
+							<img
+							  src="{{ user.user_image_url }}"
+							  alt="user-avatar"
+							  class="d-block rounded"
+							  height="100"
+							  width="100"
+							  id="uploadedAvatar"
+							/>
+						{% elif img_save_path %}
+							<img
+							  src="{{ img_save_path }}"
+							  alt="user-avatar"
+							  class="d-block rounded"
+							  height="100"
+							  width="100"
+							  id="uploadedAvatar"
+							/>
+							
+						{% else %}
+							<img
+							  
+							  src="{% static 'media/user_icon.png' %}"
+							  alt="user-avatar"
+							  class="d-block rounded"
+							  height="100"
+							  width="100"
+							  id="uploadedAvatar"
+							/>
+						
+						{% endif %}	
+						
+            {% if user.user_social_provider == 'manual' %}
+							<div class="button-wrapper">
+							  <label for="upload" class="btn btn-primary me-2 mb-4" tabindex="0">
+								<span class="d-none d-sm-block">Browse</span>
+								<i class="bx bx-upload d-block d-sm-none"></i>
+								<input
+								  type="file"
+								  id="upload"
+								  name="upload_img"
+								  
+								  hidden
+								  accept="image/png, image/jpeg"
+								/>
+							  </label>
+							  
+							  <p class="mb-0">Allowed JPG, GIF or PNG. Max size 20 to 50 KB per image.</p>
+							</div>
+						{% endif %}
+                      </div>
+                    </div>
+                    <hr class="my-0" />
+                    <div class="card-body">
+                      <form id="formAccountSettings" method="POST" onsubmit="return false">
+                        <div class="row">
+                          <div class="mb-3 col-md-6">
+                            <label for="firstName" class="form-label">Name</label>
+                            <input required
+                              class="form-control"
+                              type="text"
+                              id="name"
+                              name="name"
+                              value="{{user.name}}"
+                              autofocus
+                            />
+                          </div>
+                          <div class="mb-3 col-md-6">
+                            <label for="lastName" class="form-label">User Name</label>
+                            <input required class="form-control" type="text" name="username" id="username" value="{{user.user_name}}" />
+                          </div>
+                          <div class="mb-3 col-md-6">
+                            <label for="email" class="form-label">E-mail</label>
+                            <input required
+                              class="form-control"
+                              type="text"
+                              id="email"
+                              name="email"
+                              value="{{user.user_email}}"
+                              placeholder="john.doe@example.com"
+                            />
+                          </div>
+                          <div class="mb-3 col-md-6">
+                            <label for="organization" class="form-label">Name of the Company</label>
+                            <input required
+                              type="text"
+                              class="form-control"
+                              id="compname"
+                              name="compname"
+                              value="{{user.user_company_name}}"
+                            />
+                          </div>
+						  
+                          <div class="mb-3 col-md-6">
+                            <label class="form-label" for="phoneNumber">Phone Number</label>
+                            <div class="input-group input-group-merge">
+                              <!--<span class="input-group-text">US (+1)</span>-->
+                              <input required
+                                type="text"
+                                id="mobile"
+                                name="mobile"
+                                class="form-control"
+                                value="{{user.user_mobile}}"
+                              />
+                            </div>
+                          </div>
+                          
+                          <div class="mb-3 col-md-6">
+                            <label class="form-label" for="country">Country</label>
+                            <input required class="form-control" type="text" id="country" name="country" value="{{user.user_country}}" />
+                          </div>
+						  
+                          <!--<div class="mb-3 col-md-6">
+                            <label class="form-label" for="country">Country</label>
+                            <select id="country" class="select2 form-select">
+                              <option value="{{user.user_country}}">{{user.user_country}}</option>
+                              <option value="Australia">Australia</option>
+                              <option value="Bangladesh">Bangladesh</option>
+                              <option value="Belarus">Belarus</option>
+                              <option value="Brazil">Brazil</option>
+                              <option value="Canada">Canada</option>
+                              <option value="China">China</option>
+                              <option value="France">France</option>
+                              <option value="Germany">Germany</option>
+                              <option value="India">India</option>
+                              <option value="Indonesia">Indonesia</option>
+                              <option value="Israel">Israel</option>
+                              <option value="Italy">Italy</option>
+                              <option value="Japan">Japan</option>
+                              <option value="Korea">Korea, Republic of</option>
+                              <option value="Mexico">Mexico</option>
+                              <option value="Philippines">Philippines</option>
+                              <option value="Russia">Russian Federation</option>
+                              <option value="South Africa">South Africa</option>
+                              <option value="Thailand">Thailand</option>
+                              <option value="Turkey">Turkey</option>
+                              <option value="Ukraine">Ukraine</option>
+                              <option value="United Arab Emirates">United Arab Emirates</option>
+                              <option value="United Kingdom">United Kingdom</option>
+                              <option value="United States">United States</option>
+                            </select>
+                          </div>-->
+						  
+						  <div class="mb-3 col-md-6">
+                            <label for="state" class="form-label">State</label>
+                            <input required class="form-control" type="text" id="state" name="state" value="{{user.user_state}}" />
+                          </div>
+						  
+						  <div class="mb-3 col-md-6">
+                            <label for="city" class="form-label">City</label>
+                            <input required class="form-control" type="text" id="city" name="city" value="{{user.user_city}}" />
+                          </div>
+						  <div class="mb-3 ">
+                            <label for="description" class="form-label">Description</label>
+                            <input required class="form-control" type="text" name="description" id="description" value="{{user.user_description}}" />
+                          </div>
+                        </div> 
+                        <div class="mt-2">
+                          <button type="submit" id="save" class="btn btn-primary me-2">Save changes</button>
+                          <!--<button type="reset" id="cancel" class="btn btn-primary">Cancel</button>-->
+                        </div>
+                      </form>
+                    </div>
+                    <!-- /Account -->
+                  </div>
+                  <!--<div class="card">
+                    <h5 class="card-header">Delete Account</h5>
+                    <div class="card-body">
+                      <div class="mb-3 col-12 mb-0">
+                        <div class="alert alert-warning">
+                          <h6 class="alert-heading mb-1">Are you sure you want to delete your account?</h6>
+                          <p class="mb-0">Once you delete your account, there is no going back. Please be certain.</p>
+                        </div>
+                      </div>
+                      <form id="formAccountDeactivation" onsubmit="return false">
+                        <div class="form-check mb-3">
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            name="accountActivation"
+                            id="accountActivation"
+                          />
+                          <label class="form-check-label" for="accountActivation"
+                            >I confirm my account deactivation</label
+                          >
+                        </div>
+                        <button type="submit" class="btn btn-danger deactivate-account">Deactivate Account</button>
+                      </form>
+                    </div>
+                  </div>-->
+                </div>
+              </div>
+            </div>
+            <!--/ Content -->
+	</form>
+
+
+{% endblock %}
+
+{% block script %} 
+<script src="{% static 'assets/vendor/libs/hammer/hammer.js' %}"></script>
+
+<script src="{% static 'assets/vendor/libs/i18n/i18n.js' %}"></script>
+<script src="{% static 'assets/vendor/libs/typeahead-js/typeahead.js' %}"></script>
+
+
+<!-- endbuild -->
+
+<!-- Vendors JS -->
+<script src="{% static 'assets/vendor/libs/select2/select2.js' %}"></script>
+<script src="{% static 'assets/vendor/libs/formvalidation/dist/js/FormValidation.min.js' %}"></script>
+<script src="{% static 'assets/vendor/libs/formvalidation/dist/js/plugins/Bootstrap5.min.js' %}"></script>
+<script src="{% static 'assets/vendor/libs/formvalidation/dist/js/plugins/AutoFocus.min.js' %}"></script>
+<script src="{% static 'assets/vendor/libs/cleavejs/cleave.js' %}"></script>
+<script src="{% static 'assets/vendor/libs/cleavejs/cleave-phone.js' %}"></script>
+<script src="{% static 'assets/vendor/libs/sweetalert2/sweetalert2.js' %}"></script>
+
+
+
+<!-- Page JS -->
+<script src="{% static 'assets/js/pages-account-settings-account.js' %}"></script>
+
+<script>
+	$(document).ready(() => {
+		$("#upload").change(function () {
+			const file = this.files[0];
+			if (file) {
+				let reader = new FileReader();
+				reader.onload = function (event) {
+					$("#uploadedAvatar")
+					  .attr("src", event.target.result);
+				};
+				reader.readAsDataURL(file);
+			}
+		});
+		
+		
+			
+	});
+</script>
+{% endblock %}          
+
+        
