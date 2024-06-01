@@ -3,3 +3,7 @@ django-filter >= 23.3
 psycopg2>=2.9.9
 gunicorn==22.0.0
 requests==2.31.0
+dj-database-url==2.2.0
+decorator==4.4.2
+whitenoise==6.6.0
+python-decouple==3.8
