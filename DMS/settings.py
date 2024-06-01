@@ -13,8 +13,6 @@ import os
 from pathlib import Path
 from .config import *
 import django_heroku
-import dj_database_url
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -26,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-nouq*g&rwq0!df8w@)p*=34l$p(g%+!zf1g@sg_@zns^aa!vx-"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 # DEBUG = False
 
 # DEPLOY = not DEBUG ## Turn off debug mode in production
@@ -37,8 +35,6 @@ CONFIG = get_config(HOST)
 ALLOWED_HOSTS = ['*']
 DEFAULT_HASHING_ALGORITHM='sha1'
 SILENCED_SYSTEM_CHECKS = ['captcha.recaptcha_test_key_error']
-
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Application definition
 
@@ -69,8 +65,6 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    'whitenoise.middleware.WhiteNoiseMiddleware',
-
 ]
 
 ROOT_URLCONF = "DMS.urls"
@@ -112,11 +106,6 @@ WSGI_APPLICATION = "DMS.wsgi.application"
 #         # "NAME": BASE_DIR / "db.sqlite3",
 #     }
 # }
-
-
-# db_from_env = dj_database_url.config(conn_max_age=600)
-# DATABASES['default'].update(db_from_env)
-
 
 database_name = 'vms_db' 
 

@@ -1,1 +1,1 @@
-web: gunicorn DMS.wsgi --log-file -
+web: gunicorn cloud_vms.wsgi --log-file -
