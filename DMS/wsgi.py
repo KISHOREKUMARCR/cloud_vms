@@ -14,3 +14,7 @@ from django.core.wsgi import get_wsgi_application
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "DMS.settings")
 
 application = get_wsgi_application()
+
+# Apply WhiteNoise to the WSGI application
+from whitenoise import WhiteNoise
+application = WhiteNoise(application, root=os.path.join(BASE_DIR, 'staticfiles'))
