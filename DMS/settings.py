@@ -22,7 +22,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
+
 SECRET_KEY = config("SECRET_KEY")
+#SECRET_KEY = "django-insecure-nouq*g&rwq0!df8w@)p*=34l$p(g%+!zf1g@sg_@zns^aa!vx-"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config("DEBUG",cast=bool)
@@ -34,7 +36,7 @@ HOST = False
 CONFIG = get_config(HOST)
 
 ALLOWED_HOSTS = config("ALLOWED_HOSTS").split(",")
-
+# ALLOWED_HOSTS = ["*"]
 DEFAULT_HASHING_ALGORITHM='sha1'
 SILENCED_SYSTEM_CHECKS = ['captcha.recaptcha_test_key_error']
 
@@ -61,11 +63,13 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
+    "django.contrib.staticfiles.middleware.StaticFilesMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
@@ -109,19 +113,19 @@ WSGI_APPLICATION = "DMS.wsgi.application"
 #     }
 # }
 
-# database_name = 'vms_db' 
+database_name = 'vms_db' 
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': database_name,
-#         # 'NAME': 'tms_product5',
-#         'USER': 'postgres',
-#         'PASSWORD': '123456',
-#         'HOST': '127.0.0.1',
-#         'PORT': '5432',
-#     }
-# }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': database_name,
+        # 'NAME': 'tms_product5',
+        'USER': 'postgres',
+        'PASSWORD': '123456',
+        'HOST': '127.0.0.1',
+        'PORT': '5432',
+    }
+}
 
 DATABASES['default'] = dj_database_url.parse(config('DATABASE_URL'))
 
@@ -153,20 +157,13 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
-
-STATIC_URL = 'static/'
+STATIC_URL = "/static/"
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static/')]
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles') # for deployment
 
 
-# STATIC_URL = "/static/"
-# STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static/')]
 
-
-# if not DEBUG:
-
-#     STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-#     STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 
 
