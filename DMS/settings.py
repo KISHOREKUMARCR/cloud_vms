@@ -163,16 +163,35 @@ USE_TZ = False
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 
-
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
 STATIC_URL = '/static/'
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
+# STORAGES = {
+#     # ...
+#     "staticfiles": {
+#         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+#     },
+# }
+# STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 
-if not DEBUG:
-    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-    
+# PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
+
+
+
+
+
+# if not DEBUG:
+#     STATIC_ROOT = os.path.join(PROJECT_DIR, 'staticfiles')
+#     STORAGES = {
+#         "staticfiles": {
+#             "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+#         },
+#     }
+
     
 
     
