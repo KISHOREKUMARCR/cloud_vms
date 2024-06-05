@@ -26,7 +26,6 @@ SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG =  config('DEBUG',cast=bool)
-AGE= config('AGE',cast=int)
 # DEBUG = False
 
 # DEPLOY = not DEBUG ## Turn off debug mode in production
