@@ -40,7 +40,7 @@
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label class="form-label">Select Company</label>
-                                <select id="company" name="company" class="form-control">
+                                <select id="company"required name="company" class="form-control">
                                     <option value="" disabled selected>Select Company</option>
                                     {% for company in company_list %}
                                         <option value="{{ company.name }}">{{ company.name }}</option>

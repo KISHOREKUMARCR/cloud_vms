@@ -50,7 +50,6 @@ from google.auth.transport.requests import Request
 ###
 from googleapiclient.http import MediaFileUpload
 from django.shortcuts import render
-from django.http import JsonResponse
 # from google.oauth2.credentials import Credentials
 # from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
@@ -71,6 +70,10 @@ from django.contrib import messages
 from datetime import datetime
 import pandas as pd
 
+from django.http import (HttpResponse, HttpResponseBadRequest, 
+                         HttpResponseForbidden)
+
+from django.db.models.functions import TruncDate
 
 def upload_cloud_uri(request):
     if request.method == 'POST':
@@ -89,7 +92,7 @@ def upload_cloud_uri(request):
             required_columns = [ 'company_name', 'project_name', 'location_name', 'video_start_time', 'video_end_time', 'onedrive_url', 'userid', 'camera_angle']
 
             # Check if all required columns are in the DataFrame
-            if not all(column in df.columns for column in required_columns):
+            if not all(column.strip()  in df.columns for column in required_columns):
                 missing_columns = [column for column in required_columns if column not in df.columns]
                 messages.error(request, f"Missing required columns: {', '.join(missing_columns)}")
                 return render(request, 'templates/dms/upload_excel_data.html')
@@ -113,8 +116,6 @@ def upload_cloud_uri(request):
             messages.error(request, f"Error processing file: {str(e)}")
 
     return render(request, 'templates/dms/upload_excel_data.html')
-
-
 
 
 def add_cloud_uri_view(request):
@@ -152,10 +153,93 @@ def add_cloud_uri_view(request):
 
 
 
+def filter_cloud_uri(request):
+    if request.method == 'POST':
+        print("*******************request post method data is :", request.POST)
+        userid = request.session.get('user_id')
+        if not userid:
+            return HttpResponseBadRequest("User not authenticated")
+
+        company_name = request.POST.get('company')
+        project_name = request.POST.get('project')
+        location = request.POST.get('location')
+        camera_angle = request.POST.get('cameraAngle')
+        video_start_time = request.POST.get('videoStartTime')
+        print("***************************video_start_time", video_start_time)
+
+        # Build the filter dictionary
+        filtercolumn = {'userid': userid}
+
+        if company_name:
+            filtercolumn['company_name'] = company_name
+        if project_name:
+            filtercolumn['project_name'] = project_name
+        if location:
+            filtercolumn['location_name'] = location
+        if camera_angle:
+            filtercolumn['camera_angle'] = camera_angle
+
+        # Filter the CloudURI objects based on the filter dictionary
+        filtered_data = CloudURI.objects.filter(**filtercolumn)
+
+        if video_start_time:
+            filtered_data = filtered_data.annotate(
+                video_start_date=TruncDate('video_start_time')
+            ).filter(video_start_date=video_start_time)
+
+        # Convert the filtered data to a list of dictionaries
+        filtered_data_json = list(filtered_data.values(
+            'company_name', 'project_name', 'location_name',
+            'camera_angle', 'video_start_time', 'video_end_time', 'onedrive_url'
+        ))
+
+        print("row data . . . . . . . . . .", filtered_data_json)
+        return JsonResponse(filtered_data_json, safe=False)
+    else:
+        return HttpResponseBadRequest("Invalid request")
+
+
+
+
+def fetch_cloud_uri(request):
+    if request.method == 'GET':
+        userid = request.session.get('user_id')
+        company_name = request.GET.get('company_name')
+        project_name = request.GET.get('project_name')
+        location = request.GET.get('location')
+        camera_angle = request.GET.get('cameraangle')
+        video_start_time = request.GET.get('video_start_time')
+
+        response_data = {}
+        if company_name:
+            projects_list = Project.objects.filter( userid=userid,company_name=company_name).values_list('name', flat=True)
+            response_data['projects'] = list(projects_list)
+
+        if project_name:
+            locations_list = CloudURI.objects.filter( userid=userid,project_name=project_name).values_list('location_name', flat=True)
+            response_data['locations'] = list(locations_list)
+
+        if location:
+            camera_angles_list = CloudURI.objects.filter( userid=userid,location_name=location).values_list('camera_angle', flat=True)
+            response_data['cameraangle'] = list(camera_angles_list)
+
+        if camera_angle:
+            video_start_time = CloudURI.objects.filter( userid=userid,camera_angle=camera_angle).values_list('video_start_time', flat=True)
+            print("**********************",video_start_time)
+            response_data['video_start_time'] = list(video_start_time)
+
+        return JsonResponse(response_data)
+    else:
+        return HttpResponseBadRequest("Invalid request")
+
+
 def view_cloud_uri(request):  
   user_id = request.session.get('user_id')
-  data = CloudURI.objects.filter(userid=user_id)
-  return render(request, 'templates/dms/view_cloud_uri.html' ,{'data' : data})
+  data = CloudURI.objects.filter(userid=user_id).order_by('-id')[:10]
+  company_list = Company.objects.filter(userid=user_id)   
+  return render(request, 'templates/dms/view_cloud_uri.html' ,{'data' : data,'company_list':company_list})
+
+  
 
 
 
@@ -241,11 +325,7 @@ def my_form(request):
   return render(request, 'templates/dms/AddCompany.html', {'form': form,'userid':userid})
 
 
-
-
-
 ## listing company details
-
 class ListCompany(View):  
   def get(self,request,*args,**kwargs): 
     user_id = request.session.get('user_id')
@@ -279,6 +359,12 @@ def Company_delete(request, pk_id):
 
     if request.method == 'GET':
         company = get_object_or_404(Company, id=pk_id)
+
+
+        projects_to_delete = Project.objects.filter(userid=user_id, company_name=company.name)
+        projects_to_delete.delete()
+
+
         company.delete()
         return JsonResponse({'success': f"Company '{company.name}' has been deleted successfully."})
 

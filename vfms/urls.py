@@ -19,6 +19,11 @@ urlpatterns = [
     path('add-cloud-uri/', views.add_cloud_uri_view, name='AddcloudURI'),
     path('view-cloud-uri/', views.view_cloud_uri, name="ViewcloudURI"),
     path('upload-cloud-uri/',views.upload_cloud_uri, name="UploadcloudURI"),
+    path('fetch-projects/',views.fetch_cloud_uri, name="FetchcloudURI"),
+    path('filter-data/',views.filter_cloud_uri, name="filter_cloud_uri"),
+
+
+
 
     #company crud operation
     path('AddCompany', views.my_form, name='AddCompany'),

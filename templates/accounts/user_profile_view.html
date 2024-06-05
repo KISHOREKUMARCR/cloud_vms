@@ -72,9 +72,9 @@
                               </li>
                             </ul>
                           </div>
-                          <a href="{% url 'profile_edit_final' %}" class="btn btn-primary text-nowrap">
+                          <!-- <a href="{% url 'profile_edit_final' %}" class="btn btn-primary text-nowrap">
                             <i class="bx bx-user-check"></i> Edit Profile
-                          </a>
+                          </a> -->
                         </div>
                       </div>
                     </div>
@@ -122,6 +122,10 @@
                           <i class="bx bx-user"></i><span class="fw-semibold mx-2">User Name:</span>
                           <span>{{ user.user_name }}</span>
                         </li>
+                         <li class="d-flex align-items-center mb-3">
+                          <i class="bx bx-key"></i><span class="fw-semibold mx-2">User Id:</span> <span>{{ user.id }}</span>
+                        </li>
+
                         <li class="d-flex align-items-center mb-3">
                           <i class="bx bx-check"></i><span class="fw-semibold mx-2">Status:</span> <span>Active</span>
                         </li>
@@ -169,7 +173,7 @@
                   </div>
                   <!--/ About User -->
                   <!-- Profile Overview -->
-                  <div class="card mb-4">
+                  <!-- <div class="card mb-4">
                     <div class="card-body">
                       <small class="text-muted text-uppercase">Overview</small>
                       <ul class="list-unstyled mt-3 mb-0">
@@ -187,7 +191,7 @@
                         </li>
                       </ul>
                     </div>
-                  </div>
+                  </div> -->
                   <!--/ Profile Overview -->
                 </div>
                 <div class="col-xl-8 col-lg-7 col-md-7">

@@ -1,26 +1,17 @@
 {% extends 'templates/main_base.html' %}
 {% load static %}
 {% block title %}Add Video File{% endblock %}
-{% comment %} <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script> {% endcomment %}
-<script src='https://code.jquery.com/jquery-3.2.1.min.js'></script>
-<script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js'></script>
-<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
-<script src="https://apis.google.com/js/api.js"></script>
-<script src="https://apis.google.com/js/platform.js"></script>
 
-<link rel="stylesheet" href="{% static 'assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css' %}" />
-<link rel="stylesheet" href="{% static 'assets/vendor/libs/typeahead-js/typeahead.css' %}" />
-<link rel="stylesheet" href="{% static 'assets/vendor/libs/datatables-bs5/datatables.bootstrap5.css' %}" />
-<link rel="stylesheet" href="{% static 'assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css' %}" />
-<link rel="stylesheet" href="{% static 'assets/vendor/libs/datatables-select-bs5/select.bootstrap5.css' %}" />
-<link rel="stylesheet" href="{% static 'assets/vendor/libs/datatables-checkboxes-jquery/datatables.checkboxes.css' %}" />
-<link rel="stylesheet" href="{% static 'assets/vendor/libs/datatables-fixedcolumns-bs5/fixedcolumns.bootstrap5.css' %}" />
-<link rel="stylesheet" href="{% static 'assets/vendor/libs/datatables-fixedheader-bs5/fixedheader.bootstrap5.css' %}" />
 
-{% comment %} <script src="assests/vendor/libs/datatables/jquery.dataTables.min.js"></script> {% endcomment %}
 {% block content %}
 
-
+<style type="text/css">
+	.card-header1 {
+    padding: .75rem 1.25rem ;
+    margin-bottom: 0 ;
+    color: inherit ;
+}
+</style>
 <div class="container-xxl flex-grow-1 container-p-y">
   
   
@@ -30,7 +21,7 @@
       	<div class="row">
       		 <div class="col-md-12">
 	  		 	  <div class="card mb-4">
-	  		 	  	<h5 class="card-header">Add Video URL</h5>
+	  		 	  	<h5 class="card-header1">Add Video URL</h5>
 						<div class="card-body">
 							<div class="form-group">  
 									{% if form.errors %}
@@ -41,22 +32,19 @@
 									</ul>
 									{% endif %}
 
-                                  {% if messages %}
-                                      {% for message in messages %}
-                                          <div class="alert alert-success" role="alert">
-                                              {{ message }}
-                                          </div>
-                                      {% endfor %}
-                                  {% endif %}
-
-
-
+									{% if messages %}
+									{% for message in messages %}
+									<div class="alert alert-success" role="alert">
+									{{ message }}
+									</div>
+									{% endfor %}
+									{% endif %}
 
 
 								<div class="col-md-6">    
 								    <div class="mb-3">
 								        <label class="form-label">Company Name</label>
-								        <select id="company_name" name="company_name" class="form-control">
+								        <select id="company_name" required name="company_name" class="form-control">
 								        	<option value="" disabled selected>Select Company</option>
 								            {% for company in company_list %}
 								                <option value="{{ company.name }}">{{ company.name }}</option>
@@ -69,11 +57,7 @@
 								    <div class="mb-3">
 								        <label class="form-label">Project Name</label>
 								        <select id="project_name" name="project_name" class="form-control">
-								        	 <option value="" disabled selected>Select Project</option>
-
-								            {% for project in projects_list %}
-								                <option value="{{ project.name }}">{{ project.name }}</option>
-								            {% endfor %}
+								        	 <option value="" selected>Select Project</option>
 								        </select>
 								    </div>
 								</div>
@@ -97,12 +81,13 @@
 							    <div class="col-md-6" >    
 							      <div class="mb-3">
 							        <label  class="form-label">One Drive video URL</label>											    
-							        <input type="text" id="onedrive_url" name="onedrive_url" class="form-control"/>
+							        <input type="text"  required id="onedrive_url" name="onedrive_url" class="form-control"/>
 							      </div>
 							    </div>
 
 							 <!-- Bootstrap 4 -->
 							    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+
 							    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 							    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
 							    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
@@ -178,9 +163,37 @@
       $(function () {
         $("#datetimepicker1").datetimepicker();
         $("#datetimepicker2").datetimepicker();
-
       });
+      $(document).ready(function(){
 
+      	function fetchData(params, successCallback) {
+	        $.ajax({
+	            url: '/vfms/fetch-projects/',
+	            type: 'GET',
+	            data: params,
+	            success: successCallback,
+	            error: function(xhr, status, error) {
+	                console.error(xhr.responseText);
+	            }
+	        });
+	    }
+
+      	$('#company_name').change(function() {
+		        var companyName = $(this).val();
+		        fetchData({ 'company_name': companyName }, function(data) {
+		            var uniqueProjects = [...new Set(data.projects)];
+		            console.log("uniqueProjects ",uniqueProjects)
+		            $('#project_name').empty().append('<option value="" selected>Select Project</option>');
+		            uniqueProjects.forEach(function(project) {
+		                $('#project_name').append('<option value="' + project + '">' + project + '</option>');
+		            });
+
+		        });
+		    });
+
+
+														      	
+      });
     </script>
 {%endblock%}
 

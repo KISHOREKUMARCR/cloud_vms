@@ -1,41 +1,16 @@
 from django.db import models
-from django.core.validators import MinValueValidator, MaxValueValidator
-from django.core.validators import FileExtensionValidator
+from django.core.validators import MinValueValidator, MaxValueValidator, FileExtensionValidator
 from django.core.exceptions import ValidationError
 from django.utils import timezone
-
 from django.conf import settings
 from pathlib import Path
 import os,datetime,time
 from django.core.files.storage import FileSystemStorage
 from django.utils import timezone
 
-# from django.core.validators import FileExtensionValidator
-# from django.core.exceptions import ValidationError
-
-# Create your models here.
-#company model
-
-class Cloud_File(models.Model):
-    file = models.FileField(upload_to="excel")
-    uploaded_at = models.DateTimeField(auto_now_add=True)  # Adding a timestamp field
-
-class CloudURI(models.Model):
-    userid = models.CharField(max_length=200, null=True)  
-
-    company_name = models.CharField(max_length=255)
-    project_name = models.CharField(max_length=255)
-    location_name = models.CharField(max_length=255)
-    video_start_time = models.DateTimeField()
-    video_end_time = models.DateTimeField()
-    camera_angle = models.CharField(max_length=255, null=True)
-    onedrive_url = models.URLField()          
-
-    def __str__(self):
-        return self.company_name
-
 
 class Company(models.Model):
+
     userid = models.CharField(max_length=200, null=True)  # New field for user_id
 
     name=models.CharField(max_length=200,null=True)
@@ -50,10 +25,36 @@ class Company(models.Model):
     date_created=models.DateTimeField(auto_now_add=True)
     date_updated=models.DateField(auto_now=True)
     
-    
-
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.name
+
+
+#User  Roles
+class Role(models.Model):
+    name=models.CharField(max_length=200,null=True)
+    date_created=models.DateTimeField(auto_now_add=True)
+    date_updated=models.DateField(auto_now=True)
+
+
+    #function to display acutal customer/company name 
+    def __str__(self):
+        return self.name
+
+        
+#User  model
+class User(models.Model):
+    name=models.CharField(max_length=200,null=True)
+    loginID=models.CharField(max_length=200,null=True)
+    password=models.CharField(max_length=200,null=True)
+    phone=models.CharField(max_length=200,null=True)
+    email=models.EmailField(null=True)
+    company=models.ForeignKey(Company,on_delete=models.CASCADE, null=True)
+    role=models.ForeignKey(Role,on_delete=models.CASCADE,null=True)
+    date_created=models.DateTimeField(auto_now_add=True)
+    date_updated=models.DateField(auto_now=True)
 
 
     #function to display acutal customer/company name 
@@ -62,34 +63,32 @@ class Company(models.Model):
 
 
 
+
 #Project  model
 class Project(models.Model):
     userid = models.CharField(max_length=200, null=True)  # New field for user_id
     name=models.CharField(max_length=200,null=True)
-    company=models.ForeignKey(Company,on_delete=models.PROTECT, null=True)
+    company = models.ForeignKey(Company, on_delete=models.CASCADE, null=True)  # Change on_delete to CASCADE
+
     date_created=models.DateTimeField(auto_now_add=True)
     date_updated=models.DateField(auto_now=True)
     company_name=models.CharField(max_length=200,null=True)
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-    #function to display acutal project name 
+   
     def __str__(self):
         return self.name
-
-
-
 
 
 #Location  model
 class Location(models.Model):
     name=models.CharField(max_length=200,null=True)
-    project=models.ForeignKey(Project,on_delete=models.PROTECT,null=True)
+    project=models.ForeignKey(Project,on_delete=models.CASCADE,null=True)
     date_created=models.DateTimeField(auto_now_add=True)
     date_updated=models.DateField(auto_now=True)
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-#function to display acutal location name 
     def __str__(self):
         return self.name
 
@@ -105,6 +104,25 @@ class CameraModel(models.Model):
     def __str__(self):
         return self.name
 
+class Cloud_File(models.Model):
+    file = models.FileField(upload_to="excel")
+    uploaded_at = models.DateTimeField(auto_now_add=True)  # Adding a timestamp field
+
+class CloudURI(models.Model):
+    userid = models.CharField(max_length=200, null=True)  
+    company_name = models.CharField(max_length=255)
+    project_name = models.CharField(max_length=255)
+    location_name = models.CharField(max_length=255)
+    video_start_time = models.DateTimeField()
+    video_end_time = models.DateTimeField()
+    camera_angle = models.CharField(max_length=255, null=True)
+    onedrive_url = models.URLField()          
+
+    def __str__(self):
+        return self.company_name
+
+
+
 
 
 #Camera Position  types   model
@@ -119,33 +137,9 @@ class CameraPosition(models.Model):
     def __str__(self):
         return (str(self.CHeight) + "__" + str(self.Cview))
 
-#User  Roles
-class Role(models.Model):
-    name=models.CharField(max_length=200,null=True)
-    date_created=models.DateTimeField(auto_now_add=True)
-    date_updated=models.DateField(auto_now=True)
 
 
-    #function to display acutal customer/company name 
-    def __str__(self):
-        return self.name
 
-#User  model
-class User(models.Model):
-    name=models.CharField(max_length=200,null=True)
-    loginID=models.CharField(max_length=200,null=True)
-    password=models.CharField(max_length=200,null=True)
-    phone=models.CharField(max_length=200,null=True)
-    email=models.EmailField(null=True)
-    company=models.ForeignKey(Company,on_delete=models.PROTECT, null=True)
-    role=models.ForeignKey(Role,on_delete=models.PROTECT,null=True)
-    date_created=models.DateTimeField(auto_now_add=True)
-    date_updated=models.DateField(auto_now=True)
-
-
-    #function to display acutal customer/company name 
-    def __str__(self):
-        return self.name
 
 #Video File format  types   
 class VideoFF(models.Model):
