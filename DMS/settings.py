@@ -135,7 +135,7 @@ DATABASES = {
 #     )
 # }
 
-DATABASES['default']=dj_database_url.parse(config("DATABASES_URL"))
+DATABASES['default']=dj_database_url.parse("postgres://videomanagement_user:ocPBcSfmrwlYyngZFxzUX87CkVwXKrFZ@dpg-cpdfvrvsc6pc739061o0-a.oregon-postgres.render.com/videomanagement")
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
 
