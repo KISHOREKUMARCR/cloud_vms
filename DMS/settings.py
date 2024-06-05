@@ -77,7 +77,7 @@ ROOT_URLCONF = "DMS.urls"
 # adding project_root to simplify migration to another system
 PROJECT_ROOT=os.path.abspath(os.path.dirname(__file__))
 
-TEMPKATES_DIR=(os.path.join(PROJECT_ROOT,'../templates'),)
+TEMPLATES_DIR=(os.path.join(PROJECT_ROOT,'../templates'),)
 
 TEMPLATES = [
     {
