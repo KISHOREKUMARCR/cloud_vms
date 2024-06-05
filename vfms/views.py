@@ -3651,7 +3651,8 @@ def get_service_Account_Storage_information(drive_service):
 # service initation
 def get_drive_service():
     print("get_drive_service ")
-    GWSRoot='/datavolume/Servershare/meenakshi/DMS-latest/GWS'
+    # GWSRoot='/datavolume/Servershare/meenakshi/DMS-latest/GWS'
+    GWSRoot=''
     SERVICE_ACCOUNT_FILE = GWSRoot + '/vmsweb-407206-217e8e5bab3b.json' #settings.GDRIVE_ROOT + '/vmsweb-407206-217e8e5bab3b.json'
     print("SERVICE_ACCOUNT_FILE: ",SERVICE_ACCOUNT_FILE)
     credentials = service_account.Credentials.from_service_account_file(

@@ -1,4 +1,4 @@
-#!/datavolume/Servershare/meenakshi/cloud_vms/cvms/bin/python
+#!//Servershare/meenakshi/cloud_vms/cvms/bin/python
 # -*- coding: utf-8 -*-
 import re
 import sys
