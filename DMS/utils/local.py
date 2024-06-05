@@ -7,3 +7,4 @@
 # EXTERNAL_BASEDIR = '\\10.0.0.2\servershare\vms_demo'
 
 # EXTERNAL_BASEDIR ='/datavolume/Servershare/meenakshi/DMS-latest'
+EXTERNAL_BASEDIR =''
