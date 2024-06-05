@@ -13,7 +13,7 @@ import os
 from pathlib import Path
 from .config import *
 import dj_database_url
-
+from decouple import config
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -22,10 +22,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-nouq*g&rwq0!df8w@)p*=34l$p(g%+!zf1g@sg_@zns^aa!vx-"
+SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG =  config('DEBUG',cast=bool)
+AGE= config('AGE',cast=int)
 # DEBUG = False
 
 # DEPLOY = not DEBUG ## Turn off debug mode in production
@@ -33,7 +34,8 @@ DEBUG = True
 HOST = False
 CONFIG = get_config(HOST)
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = config('ALLOWED_HOSTS').split(",")
+
 DEFAULT_HASHING_ALGORITHM='sha1'
 SILENCED_SYSTEM_CHECKS = ['captcha.recaptcha_test_key_error']
 
@@ -126,14 +128,15 @@ DATABASES = {
 }
 
 # Replace the SQLite DATABASES configuration with PostgreSQL:
-DATABASES = {
-    'default': dj_database_url.config(
-        # Replace this value with your local database's connection string.
-        default='postgresql://postgres:postgres@localhost:5432/DMS',
-        conn_max_age=600
-    )
-}
+# DATABASES = {
+#     'default': dj_database_url.config(
+#         # Replace this value with your local database's connection string.
+#         default='postgresql://postgres:postgres@localhost:5432/DMS',
+#         conn_max_age=600
+#     )
+# }
 
+DATABASES['default']=dj_database_url.parse(config("DATABASES_URL"))
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
 
