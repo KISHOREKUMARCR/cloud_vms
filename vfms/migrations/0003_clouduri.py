@@ -17,11 +17,10 @@ class Migration(migrations.Migration):
                 ('company_name', models.CharField(max_length=255)),
                 ('project_name', models.CharField(max_length=255)),
                 ('location_name', models.CharField(max_length=255)),
+                ('camera_angle', models.CharField(max_length=255)),
                 ('video_start_time', models.DateTimeField(default=django.utils.timezone.now)),
                 ('video_end_time', models.DateTimeField(default=django.utils.timezone.now)),
                 ('cloud_uri', models.URLField()),
             ],
         ),
     ]
-
-
