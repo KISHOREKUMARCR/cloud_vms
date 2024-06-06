@@ -36,7 +36,6 @@ class UserSocialAccount(models.Model):
     
 
 
-
 class UserAccount(models.Model):
 
     name = models.CharField(max_length=60,)
@@ -51,9 +50,10 @@ class UserAccount(models.Model):
     # date_joined = models.DateField(auto_now_add=True)
     # last_login = models.DateTimeField(auto_now_add=True)
     
-    date_joined = models.DateTimeField(default=datetime.now(tz=timezone.utc))
-    last_login = models.DateTimeField(default=datetime.now(tz=timezone.utc))
-    
+    # date_joined = models.DateTimeField(default=datetime.now(tz=timezone.utc))
+    # last_login = models.DateTimeField(default=datetime.now(tz=timezone.utc))
+    last_login = models.DateTimeField(default=datetime.utcnow().replace(tzinfo=timezone.utc))
+    date_joined = models.DateTimeField(default=datetime.utcnow().replace(tzinfo=timezone.utc))
     
     
     user_status = models.BooleanField(default=True)
