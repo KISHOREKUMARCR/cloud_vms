@@ -166,7 +166,7 @@ def filter_cloud_uri(request):
         camera_angle = request.POST.get('cameraAngle')
         video_start_time = request.POST.get('videoStartTime')
         print("***************************video_start_time", video_start_time)
-
+        print("*")
         # Build the filter dictionary
         filtercolumn = {'userid': userid}
 
