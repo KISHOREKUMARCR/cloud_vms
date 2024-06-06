@@ -1,4 +1,4 @@
-
+from datetime import datetime, timezone
 from django.db import models
 
 # Create your models here.
@@ -36,6 +36,7 @@ class UserSocialAccount(models.Model):
     
 
 
+
 class UserAccount(models.Model):
 
     name = models.CharField(max_length=60,)
@@ -47,8 +48,14 @@ class UserAccount(models.Model):
     user_company_name = models.CharField(max_length=100,null=True)
     user_business_type = models.CharField(max_length=100,null=True)
     #user_confirm_password = models.CharField(max_length=20)
-    date_joined = models.DateField(auto_now_add=True)
-    last_login = models.DateTimeField(auto_now_add=True)
+    # date_joined = models.DateField(auto_now_add=True)
+    # last_login = models.DateTimeField(auto_now_add=True)
+    
+    date_joined = models.DateTimeField(default=datetime.now(tz=timezone.utc))
+    last_login = models.DateTimeField(default=datetime.now(tz=timezone.utc))
+    
+    
+    
     user_status = models.BooleanField(default=True)
     
     user_image = models.ImageField(upload_to='profile_image', blank=True)

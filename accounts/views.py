@@ -25,6 +25,7 @@ from django.template.loader import render_to_string
 from django.core.exceptions import ObjectDoesNotExist
 from PIL import Image 
 from django.contrib.auth import logout
+import datetime
 
 #global values 
 social_image_url = ""
@@ -644,8 +645,13 @@ def registration(request):
         busi_type = request.POST.get('busitype')
         print("\n\n\n\n busitype : ",busi_type)
         password = urlsafe_base64_encode(force_bytes(pwd))
-        last_login = datetime.datetime.now(tz=timezone.utc)
-        date_joined = datetime.datetime.now(tz=timezone.utc)
+        # last_login = datetime.datetime.now(tz=timezone.utc)
+        # date_joined = datetime.datetime.now(tz=timezone.utc)
+    
+        
+        # last_login = models.DateTimeField(default=datetime.now(tz=timezone.utc))
+        # date_joined = models.DateTimeField(default=datetime.now(tz=timezone.utc))
+    
         print(name,email,mobile,uname,pwd,password,comp_name,busi_type)
         uprofile = UserAccount.objects.create(name=name,user_name = uname,user_email=email,user_mobile=mobile,user_password=password,date_joined=date_joined,last_login=last_login,user_roles_id=3,user_company_name=comp_name,user_business_type=busi_type,user_social_provider='manual')
         print(uprofile)
