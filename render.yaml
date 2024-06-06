@@ -12,11 +12,11 @@ services:
     buildCommand: "./build.sh"
     startCommand: "python -m gunicorn DMS.asgi:application -k uvicorn.workers.UvicornWorker"
     envVars:
-      - key: DATABASE_URL
+      - key: "postgres://videomanagement_user:ocPBcSfmrwlYyngZFxzUX87CkVwXKrFZ@dpg-cpdfvrvsc6pc739061o0-a.oregon-postgres.render.com/videomanagement"
         fromDatabase:
           name: mysitedb
           property: connectionString
-      - key: SECRET_KEY
+      - key: "django-insecure-nouq*g&rwq0!df8w@)p*=34l$p(g%+!zf1g@sg_@zns^aa!vx-"
         generateValue: true
       - key: WEB_CONCURRENCY
         value: 4
