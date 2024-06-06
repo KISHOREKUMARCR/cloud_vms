@@ -7,6 +7,7 @@ from pathlib import Path
 import os,datetime,time
 from django.core.files.storage import FileSystemStorage
 from django.utils import timezone
+import datetime
 
 
 class Company(models.Model):
@@ -108,6 +109,19 @@ class Cloud_File(models.Model):
     file = models.FileField(upload_to="excel")
     uploaded_at = models.DateTimeField(auto_now_add=True)  # Adding a timestamp field
 
+# class CloudURI(models.Model):
+#     userid = models.CharField(max_length=200, null=True)  
+#     company_name = models.CharField(max_length=255)
+#     project_name = models.CharField(max_length=255)
+#     location_name = models.CharField(max_length=255)
+#     video_start_time = models.DateTimeField()
+#     video_end_time = models.DateTimeField()
+#     camera_angle = models.CharField(max_length=255, null=True)
+#     onedrive_url = models.URLField()          
+
+#     def __str__(self):
+#         return self.company_name
+
 class CloudURI(models.Model):
     userid = models.CharField(max_length=200, null=True)  
     company_name = models.CharField(max_length=255)
@@ -121,7 +135,11 @@ class CloudURI(models.Model):
     def __str__(self):
         return self.company_name
 
-
+    def save(self, *args, **kwargs):
+        # Adjusting the video_start_time and video_end_time by subtracting one day
+        self.video_start_time = self.video_start_time - datetime.timedelta(days=1)
+        self.video_end_time = self.video_end_time - datetime.timedelta(days=1)
+        super(CloudURI, self).save(*args, **kwargs)
 
 
 
