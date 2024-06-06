@@ -734,7 +734,10 @@ def loginprocess_func(uname,pwd,request):
         print("role_id",role_id)
         uprofile = UserAccount.objects.get(user_name = uname)
         uprofile.pre_last_login = uprofile.last_login
-        uprofile.last_login = datetime.datetime.now(tz=timezone.utc)
+        uprofile.last_login = datetime.datetime.utcnow().replace(tzinfo=datetime.timezone.utc)
+
+
+
         uprofile.save()
         messages.success(request, 'Login successful!')
         return 'AdminMenu'

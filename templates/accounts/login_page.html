@@ -187,50 +187,11 @@
                 </div>
               </div>
               
-                {% comment %} <ul class="list-unstyled mb-0">
-                  <li class="mb-3">
-                    <div class="d-flex align-items-center">
-                      <div class="d-flex align-items-start">
-                        <!-- <div class="avatar me-3">
-                          <img src="../../assets/img/icons/brands/support-label.png" alt="Avatar" class="rounded-circle">
-                        </div> -->
-                        <div id="CaptchaImageCode" class="me-3">
-                            <canvas id="CapCode" class="capcode" ></canvas>
-                        </div>
-                      </div>
-                      <div class="me-3">
-                        <span class="ReloadBtn" onclick="CreateCaptcha();" ><i class="fa-solid fa-rotate"></i></span>
-                      </div>
-                    </div>
-                  </li>
-                </ul>
-                <div class="mb-3">
-                  <input type="text" id="captchaval" class="form-control" placeholder="Enter Captcha - Case Sensitive" aria-describedby="password" required="">
-                  <span id="WrongCaptchaError" class="error"></span>
-
-                </div> {% endcomment %}
+              
               
 
-              <!-- <div class="mb-3">
-              <div class="CaptchaWrap">
-                <div id="CaptchaImageCode" >
-                    <canvas id="CapCode" class="capcode" ></canvas>
-                </div> 
-                <span class="ReloadBtn" onclick="CreateCaptcha();" ><i class="fa-solid fa-rotate"></i></span>
-              </div>
-              <br>
-              <input type="text" id="captchaval" class="form-control" placeholder="Enter Captcha - Case Sensitive" aria-describedby="password" required="">
-              <span id="WrongCaptchaError" class="error"></span>
-              </div> -->
-              <!-- <div class="mb-3">
-                <div class="form-check">
-                  <input class="form-check-input" type="checkbox" id="remember-me" />
-                  <label class="form-check-label" for="remember-me"> Remember Me </label>
-                </div>
-              </div> -->
-              <button class="btn btn-primary d-grid w-100" onclick="CheckCaptcha();">Sign in</button>
-             {% comment %} <br><br>
-              <button class="btn btn-primary d-grid w-100" onclick="redirect()">Upload</button> {% endcomment %}
+              <button class="btn btn-primary d-grid w-100" >Sign in</button>
+           
             </form>
 
             <p class="text-center">
@@ -318,26 +279,11 @@
 		
 		
         $(function(){
-          CreateCaptcha();
+     
 		  validateusername();
-		  //validateloginprocess();
 		  validatepassword();
-		  validatecaptcha();
-		  //login();
-		  //validatelogin();	
-
-		  /*$('#password').on('keypress', function(e) { 
-                var s = String.fromCharCode( e.which );
-                if ( (s.toUpperCase() === s && !e.shiftKey) || 
-                        (s.toLowerCase() === s && e.shiftKey) ) {
-                    $('#CapError').text("\n CapsLock is ON.").show();
-
-                } else {
-                    $('#CapError').fadeOut(100);
-
-                }
-                  
-            });*/
+	
+		  
 			
 		  input.addEventListener("keyup", function(event) {
 
@@ -410,20 +356,7 @@
 						'success'
 					)
 				}
-				/*
-				if(temp == 1){
-					//var data = JSON.parse("{{data|escapejs}}");
-					//alert(data);
-					if((vlogin == "true") && (vcap == "true") && ($("#password").val().length >= 8) && ($("#password").val().match(numbers)) && ($("#password").val().match(upperCase)) && (vuser == "true" )){
-						temp = 1;
-						swal(
-							'Success',
-							'Login Successfully!',
-							'success'
-						)}else{temp = 0;}
-						return true;
-				}	
-				*/	 
+				 
 			});
 		 });
 		  
@@ -435,24 +368,6 @@
 		}); 
 
 
-		//function validatelogin(){
-			
-			//var a = json_parse('{{ data | safe }}');
-			//alert(a);
-		  
-		//}
-		
-		function validatecaptcha(){
-			$("#captchaval").keyup(function() {
-			//var result = 
-			if(ValidateCaptcha()){
-				$('#WrongCaptchaError').text("valid.").show();
-				$('#WrongCaptchaError').css('color','green');
-				}else{
-					if($(this).val().length == 6){$('#WrongCaptchaError').text("Invalid.").show();$('#WrongCaptchaError').css('color','red');}
-					else{ $('#WrongCaptchaError').text("Please Enter the valid Captcha").show();$('#WrongCaptchaError').css('color','red');}}
-			});
-		}
 		
 		
 
@@ -485,37 +400,7 @@
 				});
 			});
 		}
-		/*
-		function validatestatus(){
-			$(document).ready(function(){
-				$("#username").keyup(function () {
-				  var username = $(this).val();
-			 
-				  $.ajax({
-					url: 'validate_username',
-					data: {
-					  'username': username
-					},
-					dataType: 'json',
-					success: function (data) {
-					  if (!data.is_status) {
-						
-						vuser="false"
-						//alert(data.is_email);
-						$('#WrongUsernameError').text("No registered user with this username.").show();
-						$('#WrongUsernameError').css('color','red');
-						
-					  }else{
-						vuser = "true"
-						$('#WrongUsernameError').fadeOut(100);}
-					  
-					}
-				  });
-			 
-				});
-			});
-		}
-		*/
+	
 		function validateloginprocess(){
 		  $(document).ready(function(){
 			$("#password").keyup(function () {
@@ -570,61 +455,7 @@
 		}
 		
 
-		
-        // Create Captcha
-  //       function CreateCaptcha() {
-  //         //$('#InvalidCapthcaError').hide();
-  //         var alpha = new Array('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9');
-                            
-  //         var i;
-  //         for (i = 0; i < 6; i++) {
-  //           var a = alpha[Math.floor(Math.random() * alpha.length)];
-  //           var b = alpha[Math.floor(Math.random() * alpha.length)];
-  //           var c = alpha[Math.floor(Math.random() * alpha.length)];
-  //           var d = alpha[Math.floor(Math.random() * alpha.length)];
-  //           var e = alpha[Math.floor(Math.random() * alpha.length)];
-  //           var f = alpha[Math.floor(Math.random() * alpha.length)];
-  //         }
-  //         cd = a + ' ' + b + ' ' + c + ' ' + d + ' ' + e + ' ' + f;
-  //         $('#CaptchaImageCode').empty().append('<canvas id="CapCode" class="capcode" width="330" height="40"></canvas>')
-          
-  //         var c = document.getElementById("CapCode"),
-  //             ctx=c.getContext("2d"),
-  //             x = c.width / 2,
-			  
-  //             img = new Image();
-
-  //         img.src = "https://pixelsharing.files.wordpress.com/2010/11/salvage-tileable-and-seamless-pattern.jpg";
-  //         img.onload = function () {
-  //             var pattern = ctx.createPattern(img, "repeat");
-  //             ctx.fillStyle = pattern;
-  //             ctx.fillRect(0, 0, c.width, c.height);
-  //             ctx.font="26px Roboto Slab";
-  //             ctx.fillStyle = '#ccc';
-  //             ctx.textAlign = 'center';
-  //             //ctx.setTransform (1, -0.12, 0, 1, 0, 5);
-  //             ctx.fillText(cd,x,28);
-  //         };
-          
-          
-  //       }
-		
-		// // validate Username
-
-  //       // Validate Captcha
-  //       function ValidateCaptcha() {
-  //         var string1 = removeSpaces(cd);
-  //         var string2 = removeSpaces($('#captchaval').val());
-  //         if (string1 == string2) {
-		// 	vcap = "true";
-  //           return true;
-  //         }
-  //         else {
-		// 	vcap = "false";
-  //           return false;
-  //         }
-  //       }
-
+	
         // Remove Spaces
         function removeSpaces(string) {
           return string.split(' ').join('');
