@@ -217,7 +217,7 @@ def profile_edit_security(request):
     
     if request.method == "POST":
         pwd = request.POST.get('newPassword')
-        new_password = urlsafe_base64_encode(force_bytes(pwd))
+        new_password =pwd
         user.user_password = new_password
         user.save()
         
@@ -556,7 +556,7 @@ def auth_password_confirm(request,uidb64,token):
             else:
                 
                 #uprofile.user_confirm_password = confirm_password
-                uprofile.user_password = urlsafe_base64_encode(force_bytes(new_password))
+                uprofile.user_password =new_password
                 uprofile.save()
                 return redirect('loginprocess')
     
@@ -644,7 +644,8 @@ def registration(request):
         comp_name = request.POST.get('companyname')
         busi_type = request.POST.get('busitype')
         print("\n\n\n\n busitype : ",busi_type)
-        password = urlsafe_base64_encode(force_bytes(pwd))
+        # password = urlsafe_base64_encode(force_bytes(pwd))
+        password = pwd
         # last_login = datetime.datetime.now(tz=timezone.utc)
         # date_joined = datetime.datetime.now(tz=timezone.utc)
     
@@ -772,7 +773,9 @@ def loginprocess(request):
     if request.method == 'POST':
         uname=request.POST.get('username')
         pwd=request.POST.get('password')
-        pwd = urlsafe_base64_encode(force_bytes(pwd))        
+        pwd = pwd     
+
+
         a= loginprocess_func(uname,pwd,request)        
         return redirect(a)
               
@@ -846,7 +849,6 @@ def validate_username(request):
         is_is_status = UserAccount.objects.get(user_name=username).user_status
     email = request.GET.get('email', None)
     password = request.GET.get('password', None)
-    print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA : ",is_is_status,email,username,password,urlsafe_base64_encode(force_bytes(password)),UserAccount.objects.filter(user_email = email,user_social_provider='manual').exists(),UserAccount.objects.filter(user_name=username,user_password=urlsafe_base64_encode(force_bytes(password))).exists())
     
     
     
@@ -854,30 +856,14 @@ def validate_username(request):
         'is_username': UserAccount.objects.filter(user_name=username).exists(),
         'is_email': UserAccount.objects.filter(user_email=email).exists(),
         'is_manualemail' : UserAccount.objects.filter(user_email = email,user_social_provider='manual').exists(),
-        'is_password': UserAccount.objects.filter(user_password=urlsafe_base64_encode(force_bytes(password))).exists(),
-        'is_user' : UserAccount.objects.filter(user_name=username,user_password=urlsafe_base64_encode(force_bytes(password))).exists(),
+        'is_password': UserAccount.objects.filter(user_password=password).exists(),
+        'is_user' : UserAccount.objects.filter(user_name=username,user_password=password).exists(),
         'is_status' : UserAccount.objects.filter(user_name=username,user_status=True).exists()
         
     }
     print(data)
     return JsonResponse(data)
-'''   
-def validate_password(request):
-    username = request.GET.get('username', None)
-    #email = request.GET.get('email', None)
-    password = request.POST.get('password', None)
-    print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA : ",username,password,urlsafe_base64_encode(force_bytes(password)),UserAccount.objects.filter(user_name=username,user_password=urlsafe_base64_encode(force_bytes(password))).exists())
-    
-    
-    data = {
-        'is_username': UserAccount.objects.filter(user_name=username).exists(),
-        #'is_email': UserAccount.objects.filter(user_email=email).exists(),
-        'is_password': UserAccount.objects.filter(user_password=urlsafe_base64_encode(force_bytes(password))).exists(),
-        'is_user' : UserAccount.objects.filter(user_name=username,user_password=urlsafe_base64_encode(force_bytes(password))).exists()
-        
-    }
-    return JsonResponse(data)
-'''
+
 class DeleteUser(View):
 
     def get(self, request):
