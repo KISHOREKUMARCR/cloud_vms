@@ -22,18 +22,20 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config('SECRET_KEY')
+# SECRET_KEY = config('SECRET_KEY')
+SECRET_KEY = "django-insecure-nouq*g&rwq0!df8w@)p*=34l$p(g%+!zf1g@sg_@zns^aa!vx-"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG =  config('DEBUG',cast=bool)
-# DEBUG = False
+#DEBUG =  config('DEBUG',cast=bool)
+DEBUG = False
 
 # DEPLOY = not DEBUG ## Turn off debug mode in production
 # HOST = True
 HOST = False
 CONFIG = get_config(HOST)
 
-ALLOWED_HOSTS = config('ALLOWED_HOSTS').split(",")
+# ALLOWED_HOSTS = config('ALLOWED_HOSTS').split(",")
+ALLOWED_HOSTS = ['127.0.0.1', '*','cloud-vms.onrender.com']
 
 DEFAULT_HASHING_ALGORITHM='sha1'
 SILENCED_SYSTEM_CHECKS = ['captcha.recaptcha_test_key_error']
