@@ -1,6 +1,7 @@
 from datetime import datetime, timezone
 from django.db import models
 
+import django.utils.timezone
 # Create your models here.
 class Roles(models.Model):
 
@@ -52,8 +53,8 @@ class UserAccount(models.Model):
     
     # date_joined = models.DateTimeField(default=datetime.now(tz=timezone.utc))
     # last_login = models.DateTimeField(default=datetime.now(tz=timezone.utc))
-    last_login = models.DateTimeField(default=datetime.utcnow().replace(tzinfo=timezone.utc))
-    date_joined = models.DateTimeField(default=datetime.utcnow().replace(tzinfo=timezone.utc))
+    last_login = models.DateTimeField(default=django.utils.timezone.now)
+    date_joined = models.DateTimeField(default=django.utils.timezone.now)
     
     
     user_status = models.BooleanField(default=True)
