@@ -182,10 +182,19 @@ def filter_cloud_uri(request):
         # Filter the CloudURI objects based on the filter dictionary
         filtered_data = CloudURI.objects.filter(**filtercolumn)
 
-        if video_start_time:
+
+        if video_start_time == "ALL":
+           filtered_data = CloudURI.objects.all()
+            
+        else:
             filtered_data = filtered_data.annotate(
                 video_start_date=TruncDate('video_start_time')
             ).filter(video_start_date=video_start_time)
+
+        # if video_start_time:
+        #     filtered_data = filtered_data.annotate(
+        #         video_start_date=TruncDate('video_start_time')
+        #     ).filter(video_start_date=video_start_time)
 
         # Convert the filtered data to a list of dictionaries
         filtered_data_json = list(filtered_data.values(

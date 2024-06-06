@@ -260,6 +260,8 @@ $(document).ready(function() {
             var uniqueDates = Array.from(new Set(formattedVideoStartDates));
             // Populate the dropdown with unique dates
             $('#videoStartTime').empty().append('<option value="" selected>Select Video Start Date</option>');
+            $('#videoStartTime').append('<option value="ALL">ALL</option>');
+
             uniqueDates.forEach(function(date) {
                 $('#videoStartTime').append('<option value="' + date + '">' + date + '</option>');
             });
