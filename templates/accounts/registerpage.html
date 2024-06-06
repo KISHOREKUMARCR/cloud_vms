@@ -480,7 +480,7 @@
 			}
 			
 			function passwordvalidation(){
-				if( $("#password").val().length >= 8 && $("#password").val().match(upperCase) && $("#password").val().match(numbers)){
+				if( $("#password").val().length >= 18 && $("#password").val().match(upperCase) && $("#password").val().match(numbers)){
 						vpass = "true";
 					}else{vpass = "false";}
 			}
@@ -497,7 +497,7 @@
 							
 					if($(this).val().match(numbers) ){$('#PWmsg3').css('color','green');}
 					
-					if(($(this).val().length >= 8)){$('#PWmsg1').css('color','green');}
+					if(($(this).val().length >= 18)){$('#PWmsg1').css('color','green');}
 				});
 			}
 			
@@ -569,7 +569,7 @@
 		  
 		  $(document).ready(function(){
 			$("button").click(function(e){
-				if((vcap == "true") && (vcpass == "true") && ($("#password").val().length >= 8) && ($("#password").val().match(numbers)) && ($("#password").val().match(upperCase)) && (vuser == "false" ) && (vmobile == "true") && (vemail == "false") ){
+				if((vcap == "true") && (vcpass == "true") && ($("#password").val().length >= 18) && ($("#password").val().match(numbers)) && ($("#password").val().match(upperCase)) && (vuser == "false" ) && (vmobile == "true") && (vemail == "false") ){
 						temp = 1;}
 						
 				if(temp == 0 ){
@@ -593,7 +593,7 @@
 
 					if(vcap == "false"){ $('#captchaval').focus();temp = 0;}
 					if(vcpass == "false"){ $('#confirm_password').focus();temp = 0 ;}
-					if( !$("#password").val().length >= 8){ $('#password').focus();temp = 0 ;}
+					if( !$("#password").val().length >= 18){ $('#password').focus();temp = 0 ;}
 					if(!$("#password").val().match(numbers) ){ $('#password').focus();temp = 0 ;}
 					if(!($("#password").val().match(upperCase))){ $('#password').focus();temp = 0 ;}
 					//if(vpass == "false"){ $('#password').focus();temp = 0 ;}
