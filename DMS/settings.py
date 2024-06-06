@@ -27,7 +27,7 @@ SECRET_KEY = "django-insecure-nouq*g&rwq0!df8w@)p*=34l$p(g%+!zf1g@sg_@zns^aa!vx-
 
 # SECURITY WARNING: don't run with debug turned on in production!
 #DEBUG =  config('DEBUG',cast=bool)
-DEBUG = False
+DEBUG = True
 
 # DEPLOY = not DEBUG ## Turn off debug mode in production
 # HOST = True
