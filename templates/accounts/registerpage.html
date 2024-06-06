@@ -317,7 +317,7 @@
     <script src="{% static 'assets/js/pages-auth.js' %}"></script>
 	
 	<script>
-        var cd,vemail,vmobile,vpass,vcpass,vcheck,vcap,vcompname,vbtype,viseamil,temp = 0,aa = 0;
+        var cd,vuser,vemail,vmobile,vpass,vcpass,vcheck,vcap,vcompname,vbtype,viseamil,temp = 0,aa = 0;
 		var upperCase= new RegExp('[A-Z]');
 		var numbers = new RegExp('[0-9]');
 		
@@ -392,6 +392,7 @@
 				dataType: 'json',
 				success: function (data) {
 				  if (data.is_username) {
+					vuser = "true"
 					//alert("A user with this username already exists.");
 					$('#UNmsg1').text("A user with this username already exists.").show();
 					$('#UNmsg1').css('color','red');
@@ -403,6 +404,7 @@
 						$('#UNmsg1').text("Username must be more than 6 characters").show();
 						$('#UNmsg1').css('color','red');}
 						else{
+							vuser = "false"
 							$('#UNmsg1').text("Available").show();
 							$('#UNmsg1').css('color','green'); }
 						
@@ -567,7 +569,7 @@
 		  
 		  $(document).ready(function(){
 			$("button").click(function(e){
-				if((vcap == "true") && (vcpass == "true") && ($("#password").val().length >= 8) && ($("#password").val().match(numbers)) && ($("#password").val().match(upperCase)) &&  (vmobile == "true") && (vemail == "false") ){
+				if((vcap == "true") && (vcpass == "true") && ($("#password").val().length >= 8) && ($("#password").val().match(numbers)) && ($("#password").val().match(upperCase)) && (vuser == "false" ) && (vmobile == "true") && (vemail == "false") ){
 						temp = 1;}
 						
 				if(temp == 0 ){
@@ -595,6 +597,7 @@
 					if(!$("#password").val().match(numbers) ){ $('#password').focus();temp = 0 ;}
 					if(!($("#password").val().match(upperCase))){ $('#password').focus();temp = 0 ;}
 					//if(vpass == "false"){ $('#password').focus();temp = 0 ;}
+					if (vuser == "true" ){ $('#username').focus();temp = 0 ;}
 					if($("#mobile").val().length < 10){vmobile = "false";// && $(this).val().length <= 6){
 					 $('#WrongMobileError').text("Mobile number must be 10 digits.").show();
 					}
@@ -606,6 +609,7 @@
 					if (vname == "false" ){ $('#name').focus();temp = 0 ;}
 						  
 					console.log("Error")
+					console.log(vname,'--',vcompname,'--',vcheck,'--',vcap,'--',vcpass,'--',vuser,'--',vmobile,'--',vemail,'--',vbtype)
 					//e.preventDefault();
 					return false;
 				}
