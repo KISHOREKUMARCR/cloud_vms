@@ -329,7 +329,9 @@ def filter_cloud_uri(request):
 
         if video_start_time == "ALL":
            # filtered_data = CloudURI.objects.all()
-           filtered_data = NewCloudURI.objects.all()
+           # filtered_data = NewCloudURI.objects.all()
+           filtered_data = NewCloudURI.objects.filter(userid=userid, location_name=location)
+
             
         else:
             filtered_data = filtered_data.annotate(
