@@ -270,9 +270,12 @@ $(document).ready(function() {
             // Populate the dropdown with unique dates
             $('#videoStartTime').empty().append('<option value="" selected>Select Video Start Date</option>');
             $('#videoStartTime').append('<option value="ALL">ALL</option>');
-
+            
             uniqueDates.forEach(function(date) {
-                $('#videoStartTime').append('<option value="' + date + '">' + date + '</option>');
+                if (date !== '2021-04-15') {
+                    $('#videoStartTime').append('<option value="' + date + '">' + date + '</option>');
+                }
+                
             });
 
         });
