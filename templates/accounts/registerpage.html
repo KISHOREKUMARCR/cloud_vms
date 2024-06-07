@@ -400,31 +400,16 @@
           }else{
           
           
-          // if(username.length >= 1 && username.length <= 6){
-          //   $('#UNmsg1').text("Username must be more than 6 characters").show();
-          //   $('#UNmsg1').css('color','red');
-          // }
-          //   else{
-          //     vuser = "false"
-          //     $('#UNmsg1').text("Available").show();
-          //     $('#UNmsg1').css('color','green'); }
-            
-          // //$('#WrongUsernameError').fadeOut(100);}
-          // }
-
-          if (username.length < 5) {
-            $('#UNmsg1').text("Username must be at least 5 characters long").show();
-              $('#UNmsg1').css('color', 'red');
-              vuser = "false"; // You might want to add this line to indicate validation failure
-          } else {
+          if(username.length >= 1 && username.length <= 6){
+            $('#UNmsg1').text("Username must be more than 6 characters").show();
+            $('#UNmsg1').css('color','red');}
+            else{
+              vuser = "false"
               $('#UNmsg1').text("Available").show();
-              $('#UNmsg1').css('color', 'green');
-              vuser = "true"; // You might want to add this line to indicate validation success
+              $('#UNmsg1').css('color','green'); }
+            
+          //$('#WrongUsernameError').fadeOut(100);}
           }
-          
-
-
-
         }
         });
      
