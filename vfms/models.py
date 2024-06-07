@@ -127,19 +127,14 @@ class CloudURI(models.Model):
     company_name = models.CharField(max_length=255)
     project_name = models.CharField(max_length=255)
     location_name = models.CharField(max_length=255)
-    video_start_time = models.DateTimeField()
-    video_end_time = models.DateTimeField()
+    video_start_time = models.DateTimeField(auto_now_add=True)
+    video_end_time = models.DateTimeField(auto_now_add=True)
     camera_angle = models.CharField(max_length=255, null=True)
     onedrive_url = models.URLField()          
 
     def __str__(self):
         return self.company_name
 
-    def save(self, *args, **kwargs):
-        # Adjusting the video_start_time and video_end_time by subtracting one day
-        self.video_start_time = self.video_start_time - datetime.timedelta(days=1)
-        self.video_end_time = self.video_end_time - datetime.timedelta(days=1)
-        super(CloudURI, self).save(*args, **kwargs)
 
 
 

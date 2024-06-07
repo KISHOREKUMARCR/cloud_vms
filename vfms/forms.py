@@ -4,12 +4,15 @@ from django.core.validators import RegexValidator
 from django.core.exceptions import ValidationError
 
 
-
+class CloudURIForm(forms.ModelForm):
+    class Meta:
+        model = CloudURI
+        exclude = ['video_start_time', 'video_end_time']
  
 class CloudURIForm(forms.ModelForm):
     class Meta:
         model = CloudURI
-        fields = ['company_name', 'project_name', 'location_name', 'onedrive_url', 'video_start_time', 'video_end_time','userid','camera_angle'] 
+        fields = ['company_name', 'project_name', 'location_name', 'onedrive_url','userid','camera_angle'] 
        
 
 class MyForm(forms.ModelForm): #company model form
