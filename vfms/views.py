@@ -75,6 +75,48 @@ from django.http import (HttpResponse, HttpResponseBadRequest,
 
 from django.db.models.functions import TruncDate
 
+# def upload_cloud_uri(request):
+#     if request.method == 'POST':
+#         try:
+#             file = request.FILES['file']
+
+#             # Check the file extension
+#             if file.name.endswith('.xlsx') or file.name.endswith('.xls'):
+#                 df = pd.read_excel(file, dtype=str)
+#             elif file.name.endswith('.csv'):
+#                 df = pd.read_csv(file, dtype=str)
+#             else:
+#                 messages.error(request, "Unsupported file type")
+#                 return render(request, 'templates/dms/upload_excel_data.html')
+
+#             required_columns = [ 'company_name', 'project_name', 'location_name', 'video_start_time', 'video_end_time', 'onedrive_url', 'userid', 'camera_angle']
+
+#             # Check if all required columns are in the DataFrame
+#             if not all(column.strip()  in df.columns for column in required_columns):
+#                 missing_columns = [column for column in required_columns if column not in df.columns]
+#                 messages.error(request, f"Missing required columns: {', '.join(missing_columns)}")
+#                 return render(request, 'templates/dms/upload_excel_data.html')
+
+#             # Iterate over rows in the DataFrame and create CloudURI instances
+#             for index, row in df.iterrows():
+#                 CloudURI.objects.create(
+#                     userid=row.get('userid'),
+#                     company_name=row.get('company_name'),
+#                     project_name=row.get('project_name'),
+#                     location_name=row.get('location_name'),
+#                     video_start_time=row.get('video_start_time'),
+#                     video_end_time=row.get('video_end_time'),
+#                     camera_angle=row.get('camera_angle'),
+#                     onedrive_url=row.get('onedrive_url'),
+#                 )
+
+#             messages.success(request, "Data has been successfully uploaded to the CloudURI model")
+
+#         except Exception as e:
+#             messages.error(request, f"Error processing file: {str(e)}")
+
+#     return render(request, 'templates/dms/upload_excel_data.html')
+
 def upload_cloud_uri(request):
     if request.method == 'POST':
         try:
@@ -99,7 +141,17 @@ def upload_cloud_uri(request):
 
             # Iterate over rows in the DataFrame and create CloudURI instances
             for index, row in df.iterrows():
-                CloudURI.objects.create(
+                # CloudURI.objects.create(
+                #     userid=row.get('userid'),
+                #     company_name=row.get('company_name'),
+                #     project_name=row.get('project_name'),
+                #     location_name=row.get('location_name'),
+                #     video_start_time=row.get('video_start_time'),
+                #     video_end_time=row.get('video_end_time'),
+                #     camera_angle=row.get('camera_angle'),
+                #     onedrive_url=row.get('onedrive_url'),
+                # )
+                NewCloudURI.objects.create(
                     userid=row.get('userid'),
                     company_name=row.get('company_name'),
                     project_name=row.get('project_name'),
@@ -108,8 +160,7 @@ def upload_cloud_uri(request):
                     video_end_time=row.get('video_end_time'),
                     camera_angle=row.get('camera_angle'),
                     onedrive_url=row.get('onedrive_url'),
-                )
-
+                    )
             messages.success(request, "Data has been successfully uploaded to the CloudURI model")
 
         except Exception as e:
@@ -117,8 +168,41 @@ def upload_cloud_uri(request):
 
     return render(request, 'templates/dms/upload_excel_data.html')
 
+# def add_cloud_uri_view(request):
+#     userid = request.session.get('user_id')
+#     if request.method == 'POST':
+#         print("****************************",request.POST)
+#         video_start_time_str = request.POST.get('video_start_time')
+#         video_end_time_str = request.POST.get('video_end_time')
+
+#         video_start_time = datetime.strptime(video_start_time_str, '%m/%d/%Y %I:%M %p')
+#         video_end_time = datetime.strptime(video_end_time_str, '%m/%d/%Y %I:%M %p')
+
+#         # Create a mutable copy of request.POST
+#         mutable_post = request.POST.copy()
+
+#         # Update the mutable copy with converted date/time values
+#         mutable_post['video_start_time'] = video_start_time.strftime('%Y-%m-%d %H:%M:%S')
+#         mutable_post['video_end_time'] = video_end_time.strftime('%Y-%m-%d %H:%M:%S')
+#         form = CloudURIForm(mutable_post)
+         
+    
+#         if form.is_valid():     
+#             print(form.cleaned_data,"<<<<<<<<<<<<<<<<<<<<<<<<<<")    
+#             form.save()
+#             messages.success(request, 'Video URI Added successfully.')            
+#     else:
+#         form = CloudURIForm()
+    
+#     company_list = Company.objects.filter(userid=userid)
+#     projects_list=Project.objects.filter(userid=userid)
+#     context={'form': form ,'userid':userid,'projects_list':projects_list,'company_list':company_list}       
+#     return render(request, 'templates/dms/add_cloud_uri.html', context=context)
 
 def add_cloud_uri_view(request):
+
+
+
     userid = request.session.get('user_id')
     if request.method == 'POST':
         print("****************************",request.POST)
@@ -134,15 +218,16 @@ def add_cloud_uri_view(request):
         # Update the mutable copy with converted date/time values
         mutable_post['video_start_time'] = video_start_time.strftime('%Y-%m-%d %H:%M:%S')
         mutable_post['video_end_time'] = video_end_time.strftime('%Y-%m-%d %H:%M:%S')
-        form = CloudURIForm(mutable_post)
-         
+        # form = CloudURIForm(mutable_post)
+        form = NewCloudURIForm(mutable_post)
     
         if form.is_valid():     
             print(form.cleaned_data,"<<<<<<<<<<<<<<<<<<<<<<<<<<")    
             form.save()
             messages.success(request, 'Video URI Added successfully.')            
     else:
-        form = CloudURIForm()
+        # form = CloudURIForm()
+        form = NewCloudURIForm()
     
     company_list = Company.objects.filter(userid=userid)
     projects_list=Project.objects.filter(userid=userid)
@@ -150,6 +235,64 @@ def add_cloud_uri_view(request):
     return render(request, 'templates/dms/add_cloud_uri.html', context=context)
 
 
+
+
+
+
+
+# def filter_cloud_uri(request):
+#     if request.method == 'POST':
+#         print("*******************request post method data is :", request.POST)
+#         userid = request.session.get('user_id')
+#         if not userid:
+#             return HttpResponseBadRequest("User not authenticated")
+
+#         company_name = request.POST.get('company')
+#         project_name = request.POST.get('project')
+#         location = request.POST.get('location')
+#         camera_angle = request.POST.get('cameraAngle')
+#         video_start_time = request.POST.get('videoStartTime')
+#         print("***************************video_start_time", video_start_time)
+#         print("*")
+#         # Build the filter dictionary
+#         filtercolumn = {'userid': userid}
+
+#         if company_name:
+#             filtercolumn['company_name'] = company_name
+#         if project_name:
+#             filtercolumn['project_name'] = project_name
+#         if location:
+#             filtercolumn['location_name'] = location
+#         if camera_angle:
+#             filtercolumn['camera_angle'] = camera_angle
+
+#         # Filter the CloudURI objects based on the filter dictionary
+#         filtered_data = CloudURI.objects.filter(**filtercolumn)
+
+
+#         if video_start_time == "ALL":
+#            filtered_data = CloudURI.objects.all()
+            
+#         else:
+#             filtered_data = filtered_data.annotate(
+#                 video_start_date=TruncDate('video_start_time')
+#             ).filter(video_start_date=video_start_time)
+
+#         # if video_start_time:
+#         #     filtered_data = filtered_data.annotate(
+#         #         video_start_date=TruncDate('video_start_time')
+#         #     ).filter(video_start_date=video_start_time)
+
+#         # Convert the filtered data to a list of dictionaries
+#         filtered_data_json = list(filtered_data.values(
+#             'company_name', 'project_name', 'location_name',
+#             'camera_angle', 'video_start_time', 'video_end_time', 'onedrive_url'
+#         ))
+
+#         print("row data . . . . . . . . . .", filtered_data_json)
+#         return JsonResponse(filtered_data_json, safe=False)
+#     else:
+#         return HttpResponseBadRequest("Invalid request")
 
 
 
@@ -165,8 +308,7 @@ def filter_cloud_uri(request):
         location = request.POST.get('location')
         camera_angle = request.POST.get('cameraAngle')
         video_start_time = request.POST.get('videoStartTime')
-        print("***************************video_start_time", video_start_time)
-        print("*")
+
         # Build the filter dictionary
         filtercolumn = {'userid': userid}
 
@@ -180,21 +322,20 @@ def filter_cloud_uri(request):
             filtercolumn['camera_angle'] = camera_angle
 
         # Filter the CloudURI objects based on the filter dictionary
-        filtered_data = CloudURI.objects.filter(**filtercolumn)
+        
 
+        filtered_data = NewCloudURI.objects.filter(**filtercolumn)
+        # filtered_data = CloudURI.objects.filter(**filtercolumn)
 
         if video_start_time == "ALL":
-           filtered_data = CloudURI.objects.all()
+           # filtered_data = CloudURI.objects.all()
+           filtered_data = NewCloudURI.objects.all()
             
         else:
             filtered_data = filtered_data.annotate(
                 video_start_date=TruncDate('video_start_time')
             ).filter(video_start_date=video_start_time)
 
-        # if video_start_time:
-        #     filtered_data = filtered_data.annotate(
-        #         video_start_date=TruncDate('video_start_time')
-        #     ).filter(video_start_date=video_start_time)
 
         # Convert the filtered data to a list of dictionaries
         filtered_data_json = list(filtered_data.values(
@@ -209,6 +350,45 @@ def filter_cloud_uri(request):
 
 
 
+# def fetch_cloud_uri(request):
+#     if request.method == 'GET':
+#         userid = request.session.get('user_id')
+#         company_name = request.GET.get('company_name')
+#         project_name = request.GET.get('project_name')
+#         location = request.GET.get('location')
+#         camera_angle = request.GET.get('cameraangle')
+#         video_start_time = request.GET.get('video_start_time')
+
+#         response_data = {}
+#         if company_name:
+#             projects_list = Project.objects.filter( userid=userid,company_name=company_name).values_list('name', flat=True)
+#             response_data['projects'] = list(projects_list)
+
+#         if project_name:
+#             locations_list = CloudURI.objects.filter( userid=userid,project_name=project_name).values_list('location_name', flat=True)
+#             response_data['locations'] = list(locations_list)
+
+#         if location:
+#             camera_angles_list = CloudURI.objects.filter( userid=userid,location_name=location).values_list('camera_angle', flat=True)
+#             response_data['cameraangle'] = list(camera_angles_list)
+
+#         if camera_angle:
+#             video_start_time = CloudURI.objects.filter( userid=userid,camera_angle=camera_angle).values_list('video_start_time', flat=True)
+#             print("**********************",video_start_time)
+#             response_data['video_start_time'] = list(video_start_time)
+
+#         return JsonResponse(response_data)
+#     else:
+#         return HttpResponseBadRequest("Invalid request")
+
+
+# def view_cloud_uri(request):  
+#   user_id = request.session.get('user_id')
+#   data = CloudURI.objects.filter(userid=user_id).order_by('-id')[:10]
+#   company_list = Company.objects.filter(userid=user_id)   
+#   return render(request, 'templates/dms/view_cloud_uri.html' ,{'data' : data,'company_list':company_list})
+
+  
 
 def fetch_cloud_uri(request):
     if request.method == 'GET':
@@ -218,22 +398,38 @@ def fetch_cloud_uri(request):
         location = request.GET.get('location')
         camera_angle = request.GET.get('cameraangle')
         video_start_time = request.GET.get('video_start_time')
-
+        print("***************************video_start_time(for all check)",video_start_time)
         response_data = {}
         if company_name:
             projects_list = Project.objects.filter( userid=userid,company_name=company_name).values_list('name', flat=True)
             response_data['projects'] = list(projects_list)
 
         if project_name:
-            locations_list = CloudURI.objects.filter( userid=userid,project_name=project_name).values_list('location_name', flat=True)
+            # locations_list = CloudURI.objects.filter( userid=userid,project_name=project_name).values_list('location_name', flat=True)
+            locations_list = NewCloudURI.objects.filter( userid=userid,project_name=project_name).values_list('location_name', flat=True)
             response_data['locations'] = list(locations_list)
 
         if location:
-            camera_angles_list = CloudURI.objects.filter( userid=userid,location_name=location).values_list('camera_angle', flat=True)
+            camera_angles_list = NewCloudURI.objects.filter( userid=userid,location_name=location).values_list('camera_angle', flat=True)
+            # camera_angles_list = CloudURI.objects.filter( userid=userid,location_name=location).values_list('camera_angle', flat=True)
             response_data['cameraangle'] = list(camera_angles_list)
+        # if camera_angle:
+        #     video_start_time_query = CloudURI.objects.filter(userid=userid, camera_angle=camera_angle)
 
+        #     if location:
+        #         video_start_time_query = video_start_time_query.filter(location_name=location)
+
+        #     if project_name:
+        #         video_start_time_query = video_start_time_query.filter(project_name=project_name)
+
+        #     video_start_times = video_start_time_query.values_list('video_start_time', flat=True)
+        #     print("**********************", video_start_times)
+        #     response_data['video_start_time'] = list(video_start_times)
+            
+            
         if camera_angle:
-            video_start_time = CloudURI.objects.filter( userid=userid,camera_angle=camera_angle).values_list('video_start_time', flat=True)
+            video_start_time = NewCloudURI.objects.filter( userid=userid,camera_angle=camera_angle).values_list('video_start_time', flat=True)
+            # video_start_time = CloudURI.objects.filter( userid=userid,camera_angle=camera_angle).values_list('video_start_time', flat=True)
             print("**********************",video_start_time)
             response_data['video_start_time'] = list(video_start_time)
 
@@ -244,12 +440,11 @@ def fetch_cloud_uri(request):
 
 def view_cloud_uri(request):  
   user_id = request.session.get('user_id')
-  data = CloudURI.objects.filter(userid=user_id).order_by('-id')[:10]
+  # data = CloudURI.objects.filter(userid=user_id).order_by('-id')[:10]
+  data = NewCloudURI.objects.filter(userid=user_id).order_by('-id')[:10]
+
   company_list = Company.objects.filter(userid=user_id)   
   return render(request, 'templates/dms/view_cloud_uri.html' ,{'data' : data,'company_list':company_list})
-
-  
-
 
 
 class Add_project(View):

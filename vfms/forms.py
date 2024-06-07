@@ -14,7 +14,12 @@ class CloudURIForm(forms.ModelForm):
         model = CloudURI
         fields = ['company_name', 'project_name', 'location_name', 'onedrive_url','userid','camera_angle'] 
        
-
+class NewCloudURIForm(forms.ModelForm):
+   class Meta:
+        model = NewCloudURI
+        fields = ['company_name', 'project_name', 'location_name', 'onedrive_url', 'video_start_time', 'video_end_time','userid','camera_angle']
+        
+        
 class MyForm(forms.ModelForm): #company model form
   class Meta:
     model = Company

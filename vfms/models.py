@@ -135,7 +135,18 @@ class CloudURI(models.Model):
     def __str__(self):
         return self.company_name
 
+class NewCloudURI(models.Model):
+    userid = models.CharField(max_length=200, null=True)  
+    company_name = models.CharField(max_length=255)
+    project_name = models.CharField(max_length=255)
+    location_name = models.CharField(max_length=255)
+    video_start_time = models.DateTimeField()
+    video_end_time = models.DateTimeField()
+    camera_angle = models.CharField(max_length=255, null=True)
+    onedrive_url = models.URLField()          
 
+    def __str__(self):
+        return self.company_name
 
 
 #Camera Position  types   model
