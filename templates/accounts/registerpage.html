@@ -254,7 +254,7 @@
                 </div>
         <span id="WrongCheckedError" class="error"></span>
               </div> -->
-              <button id="signupButton" class="btn btn-primary d-grid w-100" >Sign up</button>
+              <button class="btn btn-primary d-grid w-100" >Sign up</button>
             </form>
 
             <p class="text-center">
@@ -317,13 +317,6 @@
     <script src="{% static 'assets/js/pages-auth.js' %}"></script>
   
   <script>
-
-    const signupButton = document.getElementById('signupButton');
-
-// Add a double-click event listener
-signupButton.addEventListener('dblclick', function() {
-    // This function will be called on double click.
-    // You can add your logic here
         var cd,vuser,vemail,vmobile,vpass,vcpass,vcheck,vcap,vcompname,vbtype,viseamil,temp = 0,aa = 0;
     var upperCase= new RegExp('[A-Z]');
     var numbers = new RegExp('[0-9]');
@@ -616,6 +609,7 @@ signupButton.addEventListener('dblclick', function() {
           if (vname == "false" ){ $('#name').focus();temp = 0 ;}
               
           console.log("Error")
+          setTimeout(check, 1000);
           console.log(vname,'--',vcompname,'--',vcheck,'--',vcap,'--',vcpass,'--',vuser,'--',vmobile,'--',vemail,'--',vbtype)
           //e.preventDefault();
           return false;
@@ -750,9 +744,6 @@ signupButton.addEventListener('dblclick', function() {
 
         }
     */
-
-        });
-
     </script>
   
   </body>
