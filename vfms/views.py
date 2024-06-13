@@ -538,7 +538,7 @@ def download_cloud_data_excel(request):
     for item in filtered_data:
         ws.append([
             item['id'], item['company_name'], item['project_name'], 
-            item['location_name'], item['video_start_time'], item['video_end_time'], 
+            item['location_name'], str(item['video_start_time']), str(item['video_end_time']), 
             item['onedrive_url'], item['userid'], item['camera_angle']
         ])
     
