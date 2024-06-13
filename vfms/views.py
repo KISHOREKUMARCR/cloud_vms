@@ -74,7 +74,9 @@ from django.http import (HttpResponse, HttpResponseBadRequest,
                          HttpResponseForbidden)
 
 from django.db.models.functions import TruncDate
+import io
 
+from openpyxl import Workbook
 # def upload_cloud_uri(request):
 #     if request.method == 'POST':
 #         try:
@@ -392,6 +394,57 @@ def filter_cloud_uri(request):
 
   
 
+# def fetch_cloud_uri(request):
+#     if request.method == 'GET':
+#         userid = request.session.get('user_id')
+#         company_name = request.GET.get('company_name')
+#         project_name = request.GET.get('project_name')
+#         location = request.GET.get('location')
+#         camera_angle = request.GET.get('cameraangle')
+#         video_start_time = request.GET.get('video_start_time')
+#         print("***************************video_start_time(for all check)",video_start_time)
+#         response_data = {}
+#         if company_name:
+#             projects_list = Project.objects.filter( userid=userid,company_name=company_name).values_list('name', flat=True)
+#             response_data['projects'] = list(projects_list)
+
+#         if project_name:
+#             # locations_list = CloudURI.objects.filter( userid=userid,project_name=project_name).values_list('location_name', flat=True)
+#             locations_list = NewCloudURI.objects.filter( userid=userid,project_name=project_name).values_list('location_name', flat=True)
+#             response_data['locations'] = list(locations_list)
+
+#         if location:
+#             camera_angles_list = NewCloudURI.objects.filter( userid=userid,location_name=location).values_list('camera_angle', flat=True)
+#             # camera_angles_list = CloudURI.objects.filter( userid=userid,location_name=location).values_list('camera_angle', flat=True)
+#             response_data['cameraangle'] = list(camera_angles_list)
+#         # if camera_angle:
+#         #     video_start_time_query = CloudURI.objects.filter(userid=userid, camera_angle=camera_angle)
+
+#         #     if location:
+#         #         video_start_time_query = video_start_time_query.filter(location_name=location)
+
+#         #     if project_name:
+#         #         video_start_time_query = video_start_time_query.filter(project_name=project_name)
+
+#         #     video_start_times = video_start_time_query.values_list('video_start_time', flat=True)
+#         #     print("**********************", video_start_times)
+#         #     response_data['video_start_time'] = list(video_start_times)
+            
+            
+#         if camera_angle:
+#             video_start_time = NewCloudURI.objects.filter( userid=userid,camera_angle=camera_angle).values_list('video_start_time', flat=True)
+#             # video_start_time = CloudURI.objects.filter( userid=userid,camera_angle=camera_angle).values_list('video_start_time', flat=True)
+#             print("**********************",video_start_time)
+#             response_data['video_start_time'] = list(video_start_time)
+
+#         return JsonResponse(response_data)
+#     else:
+#         return HttpResponseBadRequest("Invalid request")
+
+
+
+
+data_store = {}  
 def fetch_cloud_uri(request):
     if request.method == 'GET':
         userid = request.session.get('user_id')
@@ -400,44 +453,109 @@ def fetch_cloud_uri(request):
         location = request.GET.get('location')
         camera_angle = request.GET.get('cameraangle')
         video_start_time = request.GET.get('video_start_time')
-        print("***************************video_start_time(for all check)",video_start_time)
+        
         response_data = {}
+
         if company_name:
-            projects_list = Project.objects.filter( userid=userid,company_name=company_name).values_list('name', flat=True)
+            data_store['company_name'] = company_name
+            projects_list = Project.objects.filter(userid=userid, company_name=company_name).values_list('name', flat=True)
             response_data['projects'] = list(projects_list)
 
         if project_name:
-            # locations_list = CloudURI.objects.filter( userid=userid,project_name=project_name).values_list('location_name', flat=True)
-            locations_list = NewCloudURI.objects.filter( userid=userid,project_name=project_name).values_list('location_name', flat=True)
+            data_store['project_name'] = project_name
+            locations_list = NewCloudURI.objects.filter(userid=userid,
+                                                         company_name=data_store['company_name'],
+                                                         project_name=project_name,
+                                                         ).values_list('location_name', flat=True)
             response_data['locations'] = list(locations_list)
 
         if location:
-            camera_angles_list = NewCloudURI.objects.filter( userid=userid,location_name=location).values_list('camera_angle', flat=True)
-            # camera_angles_list = CloudURI.objects.filter( userid=userid,location_name=location).values_list('camera_angle', flat=True)
+            data_store['location'] = location
+            camera_angles_list = NewCloudURI.objects.filter(userid=userid, 
+                                                            company_name=data_store['company_name'],
+                                                             project_name=data_store['project_name'],
+                                                             location_name=location,
+                                                            ).values_list('camera_angle', flat=True)
             response_data['cameraangle'] = list(camera_angles_list)
-        # if camera_angle:
-        #     video_start_time_query = CloudURI.objects.filter(userid=userid, camera_angle=camera_angle)
 
-        #     if location:
-        #         video_start_time_query = video_start_time_query.filter(location_name=location)
-
-        #     if project_name:
-        #         video_start_time_query = video_start_time_query.filter(project_name=project_name)
-
-        #     video_start_times = video_start_time_query.values_list('video_start_time', flat=True)
-        #     print("**********************", video_start_times)
-        #     response_data['video_start_time'] = list(video_start_times)
-            
-            
         if camera_angle:
-            video_start_time = NewCloudURI.objects.filter( userid=userid,camera_angle=camera_angle).values_list('video_start_time', flat=True)
-            # video_start_time = CloudURI.objects.filter( userid=userid,camera_angle=camera_angle).values_list('video_start_time', flat=True)
-            print("**********************",video_start_time)
-            response_data['video_start_time'] = list(video_start_time)
+            data_store['camera_angle'] = camera_angle
+            if 'location' in data_store and 'project_name' in data_store and 'company_name' in data_store:
+                video_start_time = NewCloudURI.objects.filter(userid=userid, 
+                                                              camera_angle=camera_angle,
+                                                              location_name=data_store['location'],
+                                                              project_name=data_store['project_name'],
+                                                              company_name=data_store['company_name']
+                                                              ).values_list('video_start_time', flat=True)
+                response_data['video_start_time'] = list(video_start_time)
 
+        print("Data store after filtering:", data_store)
+        
         return JsonResponse(response_data)
+    
     else:
         return HttpResponseBadRequest("Invalid request")
+
+
+
+
+
+def deleteall_cloud_data_table(request):
+    if request.method == 'GET':
+        user_id = request.session.get('user_id')        
+        if user_id is not None:
+            try:                
+                deleted_count, _ = NewCloudURI.objects.filter(userid=user_id).delete()
+               
+                return JsonResponse({'deleted_count': deleted_count, 'message': 'Cloud data deleted successfully.'})
+            except Exception as e:
+                return JsonResponse({'error': str(e)}, status=500)
+        else:
+            return JsonResponse({'error': 'User ID not found in session.'}, status=400)
+    else:
+        return JsonResponse({'error': 'Invalid request method.'}, status=405)
+
+
+def download_cloud_data_excel(request):
+    userid = request.session.get('user_id')
+    filtered_data = NewCloudURI.objects.filter(userid=userid).values(
+        'id', 'company_name', 'project_name', 'location_name', 
+        'video_start_time', 'video_end_time', 'onedrive_url', 'userid', 'camera_angle'
+    )
+    
+    # Create a new Excel workbook
+    wb = Workbook()
+    ws = wb.active
+    
+    # Define headers (using exact field names)
+    headers = [
+        'id', 'company_name', 'project_name', 'location_name', 
+        'video_start_time', 'video_end_time', 'onedrive_url', 'userid', 'camera_angle'
+    ]
+    ws.append(headers)
+    
+    # Append data rows
+    for item in filtered_data:
+        ws.append([
+            item['id'], item['company_name'], item['project_name'], 
+            item['location_name'], item['video_start_time'], item['video_end_time'], 
+            item['onedrive_url'], item['userid'], item['camera_angle']
+        ])
+    
+    # Save the workbook to a BytesIO object
+    excel_file = io.BytesIO()
+    wb.save(excel_file)
+    excel_file.seek(0)
+    
+    # Prepare response with Excel file as attachment
+    response = HttpResponse(
+        excel_file.read(), 
+        content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    )
+    response['Content-Disposition'] = 'attachment; filename="cloud_data.xlsx"'
+    
+    return response
+
 
 
 def view_cloud_uri(request):  

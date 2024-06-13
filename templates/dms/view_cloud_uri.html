@@ -80,6 +80,10 @@
 
     <div class="card mb-1" >
       <div class="card-datatable table-responsive pt-0">
+        <div class="d-flex justify-content-end "> <!-- Added d-flex (flexbox) and justify-content-end to align buttons to the right -->
+            <button class="btn btn-primary mb-3 mt-3 " id="cloud_excel_download">Download Excel</button> <!-- Added mr-2 for right margin -->
+            &nbsp;<button class="btn btn-danger mb-3 mt-3" id="deleteall_cloud_data">Delete All Data</button>
+          </div>  
         <table  id="filtered-data-table"  class="table table-striped table-bordered" cellspacing="0" width="100%">
           <thead>
             <tr>
@@ -281,7 +285,90 @@ $(document).ready(function() {
         });
     });
 
-  
+    $('#cloud_excel_download').on('click', function (e) {
+        e.preventDefault();  // Prevent default action of the button (if it's a form button)
+
+        // Show SweetAlert confirmation dialog
+        Swal.fire({
+            title: 'Download Cloud Data',
+            text: 'Are you sure you want to download your cloud data as an Excel file?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, download it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // User confirmed, proceed with download
+                $.ajax({
+                    url: '/vfms/download_cloud_data_excel/',
+                    type: 'GET',
+                    xhrFields: {
+                        responseType: 'blob'  // Set the AJAX response type to blob
+                    },
+                    success: function(blob) {
+                        // Create a URL for the blob object
+                        var url = window.URL.createObjectURL(blob);
+                        
+                        // Create a link element
+                        var a = document.createElement('a');
+                        a.href = url;
+                        a.download = 'cloud_data.xlsx';  // Filename
+                        document.body.appendChild(a);  // Append the link to the body
+                        a.click();  // Programmatically click the link to trigger the download
+                        document.body.removeChild(a);  // Remove the link when done
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error:', xhr.responseText);
+                        Swal.fire(
+                            'Error!',
+                            'Failed to download cloud data. Please try again.',
+                            'error'
+                        );
+                    }
+                });
+            }
+        });
+    });
+$('#deleteall_cloud_data').on('click', function (e) {
+        e.preventDefault();
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'This will permanently delete all your cloud data!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // User confirmed, proceed with deletion
+                $.ajax({
+                    url: '/vfms/deleteall_cloud_data_table/',
+                    type: 'get',
+                    dataType: 'json',
+                    success: function(data) {
+                        Swal.fire(
+                            'Deleted!',
+                            'Your cloud data has been deleted.',
+                            'success'
+                        );
+                        
+                        // Optionally, you can perform additional actions after deletion
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error:', xhr.responseText);
+                        Swal.fire(
+                            'Error!',
+                            'Failed to delete cloud data. Please try again.',
+                            'error'
+                        );
+                    }
+                });
+            }
+        });
+    });
+
 
 //     $('#cameraAngle').change(function() {
 //     var cameraAngle = $(this).val();

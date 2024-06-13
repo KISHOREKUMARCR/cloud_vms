@@ -21,6 +21,9 @@ urlpatterns = [
     path('upload-cloud-uri/',views.upload_cloud_uri, name="UploadcloudURI"),
     path('fetch-projects/',views.fetch_cloud_uri, name="FetchcloudURI"),
     path('filter-data/',views.filter_cloud_uri, name="filter_cloud_uri"),
+    path('download_cloud_data_excel/',views.download_cloud_data_excel, name="download_cloud_data_excel"),
+    path('deleteall_cloud_data_table/',views.deleteall_cloud_data_table, name="deleteall_cloud_data_table"),
+
 
 
 
