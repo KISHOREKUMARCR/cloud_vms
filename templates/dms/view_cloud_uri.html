@@ -260,28 +260,26 @@ $(document).ready(function() {
 
     $('#cameraAngle').change(function() {
         var cameraAngle = $(this).val();
-        console.log("*******************cameraAngle",cameraAngle)
-
+        console.log("*******************cameraAngle", cameraAngle);
+    
         fetchData({ 'cameraangle': cameraAngle }, function(data) {
-            console.log("*******************camera video_start_time",data.video_start_time)
-            // Convert ISO 8601 formatted date strings to Date objects
+            console.log("*******************camera video_start_time", data.video_start_time);
+            
+            // Convert ISO 8601 formatted date strings to Date objects without altering time zones
             var formattedVideoStartDates = data.video_start_time.map(function(isoDateString) {
-                var date = new Date(isoDateString);
-                // Format the date to display only the date portion
-                return date.toISOString().split('T')[0]; // Returns 'YYYY-MM-DD'
+                return isoDateString.split('T')[0]; // Returns 'YYYY-MM-DD'
             });
+    
             var uniqueDates = Array.from(new Set(formattedVideoStartDates));
+            console.log("Converted datetime to date", uniqueDates);
+    
             // Populate the dropdown with unique dates
             $('#videoStartTime').empty().append('<option value="" selected>Select Video Start Date</option>');
             $('#videoStartTime').append('<option value="ALL">ALL</option>');
-            
+    
             uniqueDates.forEach(function(date) {
-                if (date !== '2021-04-15') {
-                    $('#videoStartTime').append('<option value="' + date + '">' + date + '</option>');
-                }
-                
+                $('#videoStartTime').append('<option value="' + date + '">' + date + '</option>');
             });
-
         });
     });
 
