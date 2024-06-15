@@ -18,7 +18,7 @@ from django.shortcuts import render
 
 import json
 import requests
-
+from django.http import FileResponse
 # import paramiko
 import datetime
 from django.core.mail import send_mail
@@ -29,7 +29,6 @@ from accounts.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 ##########
-import os
 import shutil
 from django.conf import settings
 from django.templatetags import static
@@ -77,6 +76,7 @@ from django.db.models.functions import TruncDate
 import io
 
 from openpyxl import Workbook
+
 # def upload_cloud_uri(request):
 #     if request.method == 'POST':
 #         try:
@@ -392,7 +392,7 @@ def filter_cloud_uri(request):
 #   company_list = Company.objects.filter(userid=user_id)   
 #   return render(request, 'templates/dms/view_cloud_uri.html' ,{'data' : data,'company_list':company_list})
 
-  
+
 
 # def fetch_cloud_uri(request):
 #     if request.method == 'GET':
@@ -477,7 +477,6 @@ def fetch_cloud_uri(request):
                                                              location_name=location,
                                                             ).values_list('camera_angle', flat=True)
             response_data['cameraangle'] = list(camera_angles_list)
-
         if camera_angle:
             data_store['camera_angle'] = camera_angle
             if 'location' in data_store and 'project_name' in data_store and 'company_name' in data_store:
@@ -488,7 +487,21 @@ def fetch_cloud_uri(request):
                                                               company_name=data_store['company_name']
                                                               ).values_list('video_start_time', flat=True)
                 response_data['video_start_time'] = list(video_start_time)
-
+                
+                
+                
+            print("***********************************************************")
+            print("***********************************************************")
+            print("***********************************************************")
+            print("Selected location as video_start_time are",list(video_start_time))
+            print("***********************************************************")
+            print("***********************************************************")
+            print("***********************************************************")
+            print("Selected location as video_start_time are",video_start_time.count())
+            print("***********************************************************")
+            print("***********************************************************")
+            print("***********************************************************")
+            
         print("Data store after filtering:", data_store)
         
         return JsonResponse(response_data)
@@ -496,6 +509,12 @@ def fetch_cloud_uri(request):
     else:
         return HttpResponseBadRequest("Invalid request")
 
+
+
+
+def desired_download_excel(request):
+    file_path = os.path.join('static', 'assets', 'excel_format', 'cloud_data.xlsx')
+    return FileResponse(open(file_path, 'rb'), as_attachment=True, filename='cloud_data.xlsx')
 
 
 
@@ -538,7 +557,7 @@ def download_cloud_data_excel(request):
     for item in filtered_data:
         ws.append([
             item['id'], item['company_name'], item['project_name'], 
-            item['location_name'], str(item['video_start_time']), str(item['video_end_time']), 
+            item['location_name'], item['video_start_time'], item['video_end_time'], 
             item['onedrive_url'], item['userid'], item['camera_angle']
         ])
     
@@ -1366,7 +1385,7 @@ def ImportLabel(request):
             LNameID = cursor.fetchone()[0]
             print("LNameID : ",LNameID)
 
-            # area_name	auto_rickshaw	bus	car	others(earth mover)	lcv	mini bus	Two Wheeler	multi axle	Truck_3Axle	Truck_4Axle	Truck_6Axle	tracktor	tracktor_trailer	Truck_2Axle	van	Eicher	instance_count	image_count
+            # area_name auto_rickshaw   bus car others(earth mover) lcv mini bus    Two Wheeler multi axle  Truck_3Axle Truck_4Axle Truck_6Axle tracktor    tracktor_trailer    Truck_2Axle van Eicher  instance_count  image_count
             ins_query='INSERT INTO vfms_AddLabelInfo("LName_id", "Threewheelercnt", "Buscnt", "Carcnt","Otherscnt","Lcvcnt","MiniBuscnt","Twowheelercnt", "MultiAxlecnt","Axle3cnt","Axle4cnt","Axle6cnt","Tractorcnt","TTrailercnt","Truck2Acnt","Vancnt","Echiercnt","AnnotationCnt", "ImageCnt", "DatasetLocation") VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)'
             record_to_insert=(LNameID, col2, col3, col4, col5, col6, col7, col8,col9,col10, col11, col12, col13, col14, col15, col16, col17, col18, col19, col20)
 

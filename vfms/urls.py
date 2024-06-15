@@ -23,10 +23,7 @@ urlpatterns = [
     path('filter-data/',views.filter_cloud_uri, name="filter_cloud_uri"),
     path('download_cloud_data_excel/',views.download_cloud_data_excel, name="download_cloud_data_excel"),
     path('deleteall_cloud_data_table/',views.deleteall_cloud_data_table, name="deleteall_cloud_data_table"),
-
-
-
-
+    path('desired_download_excel/',views.desired_download_excel, name="desired_download_excel"),
 
     #company crud operation
     path('AddCompany', views.my_form, name='AddCompany'),

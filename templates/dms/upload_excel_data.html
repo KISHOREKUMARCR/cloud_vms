@@ -8,10 +8,22 @@
 
               <div class="row">
                 <!-- Basic  -->
+				
                 <div class="col-12">
+
                   <div class="card mb-4">
-                    <h5 class="card-header">Select & Upload File</h5>
-                    <div class="card-body">
+					<div class="row">
+						<div class="col-6">
+							<h5 class="card-header">Select & Upload File</h5>
+					
+						</div>
+						<div class="col-6 mt-3 ">
+							<div class="container d-flex justify-content-end">
+					        <button class="btn btn-success" id="download_desired_excel" type="button">Desired Excel format</button>
+					    </div>
+						</div>
+						<div class="card-body ">
+						
                     		<form action="" method="post" enctype="multipart/form-data">
 							    {% csrf_token %}
 							  	<div class="col">
@@ -26,21 +38,29 @@
 
 
 							</form>
-					{% if messages %}
-					    <ul class="messages">
-					        {% for message in messages %}
-					            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-					        {% endfor %}
-					    </ul>
-					{% endif %}
+						{% if messages %}
+							<ul class="messages">
+								{% for message in messages %}
+									<li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+								{% endfor %}
+							</ul>
+						{% endif %}
 
 
                     </div>
+					</div>
+                    
+                   
                   </div>
                 </div>
+				
               </div>
             </div>
 </div>
 
-
+<script>
+        document.getElementById('download_desired_excel').addEventListener('click', function() {
+            window.location.href = "{% url 'desired_download_excel' %}";
+        });
+    </script>
 {% endblock %}	
