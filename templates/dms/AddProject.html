@@ -40,19 +40,20 @@
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label class="form-label">Select Company</label>
-                                <select id="company"required name="company" class="form-control">
+                                 <select id="company" name="company" class="form-control" required>
                                     <option value="" disabled selected>Select Company</option>
                                     {% for company in company_list %}
-                                        <option value="{{ company.name }}">{{ company.name }}</option>
+                                        <option value="{{ company.id }}">{{ company.name }}</option>
                                     {% endfor %}
                                 </select>
                                 <input type="hidden" name="userid" value="{{ userid }}" />
+                               
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label class="form-label">Project Name</label>
-                                <input type="text" id="project_name" name="project_name" value="" required class="form-control" />
+                                <input type="text" id="project_name" name="name" value="" required class="form-control" />
                             </div>
                         </div>
                         <button type="submit" class="btn btn-primary">Submit</button>

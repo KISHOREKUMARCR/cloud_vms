@@ -1,7 +1,6 @@
-from datetime import datetime, timezone
+
 from django.db import models
 
-import django.utils.timezone
 # Create your models here.
 class Roles(models.Model):
 
@@ -11,6 +10,9 @@ class Roles(models.Model):
 
     def __str__(self):
         return self.role_name
+
+    
+
 
 class UserSocialAccount(models.Model):
     name = models.CharField(max_length=60, null=True)
@@ -48,15 +50,8 @@ class UserAccount(models.Model):
     user_company_name = models.CharField(max_length=100,null=True)
     user_business_type = models.CharField(max_length=100,null=True)
     #user_confirm_password = models.CharField(max_length=20)
-    # date_joined = models.DateField(auto_now_add=True)
-    # last_login = models.DateTimeField(auto_now_add=True)
-    
-    # date_joined = models.DateTimeField(default=datetime.now(tz=timezone.utc))
-    # last_login = models.DateTimeField(default=datetime.now(tz=timezone.utc))
-    last_login = models.DateTimeField(default=django.utils.timezone.now)
-    date_joined = models.DateTimeField(default=django.utils.timezone.now)
-    
-    
+    date_joined = models.DateField(auto_now_add=True)
+    last_login = models.DateTimeField(auto_now_add=True)
     user_status = models.BooleanField(default=True)
     
     user_image = models.ImageField(upload_to='profile_image', blank=True)
@@ -70,7 +65,8 @@ class UserAccount(models.Model):
     user_social_provider = models.CharField(max_length=50, null=True)
     user_profile_update = models.DateField(auto_now_add=True,null=True)
     pre_last_login = models.DateTimeField(auto_now_add=True)
-    
+    user_delete_access = models.BooleanField(default=False)
+
     
     def __str__(self):
         return f'{self.user_name}_{self.id}'

@@ -14,8 +14,7 @@
                   <div class="card mb-4">
 					<div class="row">
 						<div class="col-6">
-							<h5 class="card-header">Select & Upload File</h5>
-					
+							<h5 class="card-header">Select & Upload File</h5>					
 						</div>
 						<div class="col-6 mt-3 ">
 							<div class="container d-flex justify-content-end">
@@ -59,8 +58,8 @@
 </div>
 
 <script>
-        document.getElementById('download_desired_excel').addEventListener('click', function() {
-            window.location.href = "{% url 'desired_download_excel' %}";
-        });
-    </script>
+	document.getElementById('download_desired_excel').addEventListener('click', function() {
+		window.location.href = "{% url 'desired_download_excel' %}";
+	});
+</script>
 {% endblock %}	

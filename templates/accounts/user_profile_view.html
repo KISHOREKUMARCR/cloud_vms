@@ -65,8 +65,8 @@
                             <ul
                               class="list-inline mb-0 d-flex align-items-center flex-wrap justify-content-sm-start justify-content-center gap-2"
                             >
-                              <li class="list-inline-item fw-semibold"><i class="bx bx-pen"></i> {{ user.user_description }}</li>
-                              <li class="list-inline-item fw-semibold"><i class="bx bx-map"></i> {{ user.user_city }}</li>
+                              <!-- <li class="list-inline-item fw-semibold"><i class="bx bx-pen"></i> {{ user.user_description }}</li> -->
+                              <!-- <li class="list-inline-item fw-semibold"><i class="bx bx-map"></i> {{ user.user_city }}</li> -->
                               <li class="list-inline-item fw-semibold">
                                 <i class="bx bx-calendar-alt"></i> Joined {{ user.date_joined }}
                               </li>
@@ -126,19 +126,19 @@
                           <i class="bx bx-key"></i><span class="fw-semibold mx-2">User Id:</span> <span>{{ user.id }}</span>
                         </li>
 
-                        <li class="d-flex align-items-center mb-3">
+                       <!--  <li class="d-flex align-items-center mb-3">
                           <i class="bx bx-check"></i><span class="fw-semibold mx-2">Status:</span> <span>Active</span>
-                        </li>
+                        </li> -->
                         <li class="d-flex align-items-center mb-3">
                           <i class="bx bx-star"></i><span class="fw-semibold mx-2">Role:</span> <span>User</span>
                         </li>
-                        <li class="d-flex align-items-center mb-3">
+                        <!-- <li class="d-flex align-items-center mb-3">
                           <i class="bx bx-flag"></i><span class="fw-semibold mx-2">Country:</span> <span>{{ user.user_country }}</span>
-                        </li>
-                        <li class="d-flex align-items-center mb-3">
+                        </li> -->
+                        <!-- <li class="d-flex align-items-center mb-3">
                           <i class="bx bx-detail"></i><span class="fw-semibold mx-2">Languages:</span>
                           <span>English</span>
-                        </li>
+                        </li> -->
                       </ul>
                       <small class="text-muted text-uppercase">Contacts</small>
                       <ul class="list-unstyled mb-4 mt-3">
@@ -159,7 +159,7 @@
                         <li class="d-flex align-items-center mb-3">
                           <i class="bx bx-buildings text-primary me-2"></i>
                           <div class="d-flex flex-wrap">
-                            <span class="fw-semibold me-2">Compnay Name:</span><span>{{ user.user_company_name }}</span>
+                            <span class="fw-semibold me-2">Company Name:</span><span>{{ user.user_company_name }}</span>
                           </div>
                         </li>
                         <li class="d-flex align-items-center">
@@ -199,7 +199,7 @@
 				  <div class="card card-action mb-4">
                     <div class="card-header align-items-center">
                       <h5 class="card-action-title mb-0"><i class="bx bx-list-ul bx-sm me-2"></i>Activity Timeline</h5>
-                      <div class="card-action-element btn-pinned">
+                      <!-- <div class="card-action-element btn-pinned">
                         <div class="dropdown">
                           <button
                             type="button"
@@ -218,7 +218,7 @@
                             <li><a class="dropdown-item" href="javascript:void(0);">Report bug</a></li>
                           </ul>
                         </div>
-                      </div>
+                      </div> -->
                     </div>
                     <div class="card-body">
                       <ul class="timeline ms-2">
@@ -241,7 +241,7 @@
                             </div>-->
                           </div>
                         </li>
-                        <li class="timeline-item timeline-item-transparent">
+                       <!--  <li class="timeline-item timeline-item-transparent">
                           <span class="timeline-point timeline-point-info"></span>
                           <div class="timeline-event">
                             <div class="timeline-header mb-1">
@@ -250,7 +250,7 @@
                             </div>
                             <p class="mb-0">{{ last_project }} - {{ last_location }}</p>
                           </div>
-                        </li>
+                        </li> -->
                         <!--<li class="timeline-item timeline-item-transparent">
                           <span class="timeline-point timeline-point-primary"></span>
                           <div class="timeline-event">
@@ -290,7 +290,7 @@
                             </div>
                           </div>
                         </li>-->
-                        <li class="timeline-item timeline-item-transparent">
+                        <!-- <li class="timeline-item timeline-item-transparent">
                           <span class="timeline-point timeline-point-success"></span>
                           <div class="timeline-event pb-0">
                             <div class="timeline-header mb-1">
@@ -300,10 +300,10 @@
                             <p class="mb-0">{{ profile_val }}% Completed</p>
                             <p class="mb-0">Click Edit Profile to update. </p>
                           </div>
-                        </li>
+                        </li> 
                         <li class="timeline-end-indicator">
                           <i class="bx bx-check-circle"></i>
-                        </li>
+                        </li>-->
                       </ul>
                     </div>
                   </div>
@@ -425,121 +425,51 @@
                   
 				  <div class="row">
                     <!-- Connections -->
-                    <!--<div class="col-lg-12 col-xl-6">
-                      <div class="card card-action mb-4">
-                        <div class="card-header align-items-center">
-                          <h5 class="card-action-title mb-0">Connections</h5>
-                          <div class="card-action-element btn-pinned">
-                            <div class="dropdown">
-                              <button
-                                type="button"
-                                class="btn dropdown-toggle hide-arrow p-0"
-                                data-bs-toggle="dropdown"
-                                aria-expanded="false"
-                              >
-                                <i class="bx bx-dots-vertical-rounded"></i>
-                              </button>
-                              <ul class="dropdown-menu dropdown-menu-end">
-                                <li><a class="dropdown-item" href="javascript:void(0);">Share connections</a></li>
-                                <li><a class="dropdown-item" href="javascript:void(0);">Suggest edits</a></li>
-                                <li>
-                                  <hr class="dropdown-divider" />
-                                </li>
-                                <li><a class="dropdown-item" href="javascript:void(0);">Report bug</a></li>
-                              </ul>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="card-body">
-                          <ul class="list-unstyled mb-0">
-                            <li class="mb-3">
-                              <div class="d-flex align-items-start">
-                                <div class="d-flex align-items-start">
-                                  <div class="avatar me-3">
-                                    <img src="{% static 'assets/img/avatars/2.png' %}" alt="Avatar" class="rounded-circle" />
-                                  </div>
-                                  <div class="me-2">
-                                    <h6 class="mb-0">Cecilia Payne</h6>
-                                    <small class="text-muted">45 Connections</small>
-                                  </div>
-                                </div>
-                                <div class="ms-auto">
-                                  <button class="btn btn-label-primary p-1 btn-sm"><i class="bx bx-user"></i></button>
-                                </div>
-                              </div>
-                            </li>
-                            <li class="mb-3">
-                              <div class="d-flex align-items-start">
-                                <div class="d-flex align-items-start">
-                                  <div class="avatar me-3">
-                                    <img src="{% static 'assets/img/avatars/3.png' %}" alt="Avatar" class="rounded-circle" />
-                                  </div>
-                                  <div class="me-2">
-                                    <h6 class="mb-0">Curtis Fletcher</h6>
-                                    <small class="text-muted">1.32k Connections</small>
-                                  </div>
-                                </div>
-                                <div class="ms-auto">
-                                  <button class="btn btn-primary p-1 btn-sm"><i class="bx bx-user"></i></button>
-                                </div>
-                              </div>
-                            </li>
-                            <li class="mb-3">
-                              <div class="d-flex align-items-start">
-                                <div class="d-flex align-items-start">
-                                  <div class="avatar me-3">
-                                    <img src="{% static 'assets/img/avatars/10.png' %}" alt="Avatar" class="rounded-circle" />
-                                  </div>
-                                  <div class="me-2">
-                                    <h6 class="mb-0">Alice Stone</h6>
-                                    <small class="text-muted">125 Connections</small>
-                                  </div>
-                                </div>
-                                <div class="ms-auto">
-                                  <button class="btn btn-primary p-1 btn-sm"><i class="bx bx-user"></i></button>
-                                </div>
-                              </div>
-                            </li>
-                            <li class="mb-3">
-                              <div class="d-flex align-items-start">
-                                <div class="d-flex align-items-start">
-                                  <div class="avatar me-3">
-                                    <img src="{% static 'assets/img/avatars/7.png' %}" alt="Avatar" class="rounded-circle" />
-                                  </div>
-                                  <div class="me-2">
-                                    <h6 class="mb-0">Darrell Barnes</h6>
-                                    <small class="text-muted">456 Connections</small>
-                                  </div>
-                                </div>
-                                <div class="ms-auto">
-                                  <button class="btn btn-label-primary p-1 btn-sm"><i class="bx bx-user"></i></button>
-                                </div>
-                              </div>
-                            </li>
+                    
+                    <div class="col-lg-3 col-md-6 col-sm-12" style="">
+                  <div class="card  mb-lg-0 mb-4">
+                    <div class="card-body text-center">
+                      <h2>
+                        <i class="bx bx-store text-success display-6"></i>
+                      </h2>
+                      <h4>Total company</h4>
+                      <h5> {{ total_company }}</h5>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-3 col-md-6 col-sm-12" style="">
+                  <div class="card  mb-lg-0 mb-4">
+                    <div class="card-body text-center">
+                      <h2>
+                        <i class="bx bx-task text-info display-6"></i>
+                      </h2>
+                      <h4>Total Projects</h4>
+                      <h5> {{ total_projects }}</h5>
+                    </div>
+                  </div>
+                </div><div class="col-lg-3 col-md-6 col-sm-12">
+                  <div class="card  e mb-lg-0 mb-4">
+                    <div class="card-body text-center">
+                      <h2>                      
+                        <i class='bx bx-current-location text-primary display-6'></i>
+                      </h2>
+                      <h4>Total Location</h4>
+                      <h5> {{ total_locations }}</h5>
+                    </div>
+                  </div>
+                </div>
+              <div class="col-lg-3 col-md-6 col-sm-12" style="">
+                  <div class="card   mb-lg-0 mb-4">
+                    <div class="card-body text-center">
+                      <h2>
+                        <i class="bx bx-video text-danger display-6"></i>
+                      </h2>
+                      <h4>Total CloudURI</h4>
 
-                            <li class="mb-3">
-                              <div class="d-flex align-items-start">
-                                <div class="d-flex align-items-start">
-                                  <div class="avatar me-3">
-                                    <img src="{% static 'assets/img/avatars/12.png' %}" alt="Avatar" class="rounded-circle" />
-                                  </div>
-                                  <div class="me-2">
-                                    <h6 class="mb-0">Eugenia Moore</h6>
-                                    <small class="text-muted">1.2k Connections</small>
-                                  </div>
-                                </div>
-                                <div class="ms-auto">
-                                  <button class="btn btn-label-primary p-1 btn-sm"><i class="bx bx-user"></i></button>
-                                </div>
-                              </div>
-                            </li>
-                            <li class="text-center">
-                              <a href="javascript:;">View all connections</a>
-                            </li>
-                          </ul>
-                        </div>
-                      </div>
-                    </div>-->
+                      <h5>{{ total_cloud_url }}</h5>
+                    </div>
+                  </div>
+                </div>
                     <!--/ Connections -->
                     <!-- Teams -->
                     <!--<div class="col-lg-12 col-xl-6">

@@ -44,19 +44,20 @@
 								<div class="col-md-6">    
 								    <div class="mb-3">
 								        <label class="form-label">Company Name</label>
-								        <select id="company_name" required name="company_name" class="form-control">
-								        	<option value="" disabled selected>Select Company</option>
-								            {% for company in company_list %}
-								                <option value="{{ company.name }}">{{ company.name }}</option>
-								            {% endfor %}
-								        </select>
+								        <select id="company_id" required name="company_id" class="form-control">
+										    <option value="" disabled selected>Select Company</option>
+										    {% for company in company_list %}
+										        <option value="{{ company.id }}">{{ company.name }}</option>
+										    {% endfor %}
+										</select>
+
 								        <input type="hidden" id="userid" name="userid" value="{{ userid }}" />
 								    </div>
 								</div>
 								<div class="col-md-6">    
 								    <div class="mb-3">
 								        <label class="form-label">Project Name</label>
-								        <select id="project_name" name="project_name" class="form-control">
+								        <select id="project_id" name="project_id" class="form-control">
 								        	 <option value="" selected>Select Project</option>
 								        </select>
 								    </div>
@@ -166,36 +167,63 @@
         $("#datetimepicker1").datetimepicker();
         $("#datetimepicker2").datetimepicker();
       });
-      $(document).ready(function(){
 
-      	function fetchData(params, successCallback) {
-	        $.ajax({
-	            url: '/vfms/fetch-projects/',
-	            type: 'GET',
-	            data: params,
-	            success: successCallback,
-	            error: function(xhr, status, error) {
-	                console.error(xhr.responseText);
-	            }
-	        });
-	    }
 
-      	$('#company_name').change(function() {
-		        var companyName = $(this).val();
-		        fetchData({ 'company_name': companyName }, function(data) {
-		            var uniqueProjects = [...new Set(data.projects)];
-		            console.log("uniqueProjects ",uniqueProjects)
-		            $('#project_name').empty().append('<option value="" selected>Select Project</option>');
-		            uniqueProjects.forEach(function(project) {
-		                $('#project_name').append('<option value="' + project + '">' + project + '</option>');
-		            });
+      // $(document).ready(function(){
 
-		        });
-		    });
+      // 	function fetchData(params, successCallback) {
+	  //       $.ajax({
+	  //           url: '/vfms/fetch-projects/',
+	  //           type: 'GET',
+	  //           data: params,
+	  //           success: successCallback,
+	  //           error: function(xhr, status, error) {
+	  //               console.error(xhr.responseText);
+	  //           }
+	  //       });
+	  //   }
+
+      // 	$('#company_name').change(function() {
+	// 	        var companyName = $(this).val();
+	// 	        fetchData({ 'company_name': companyName }, function(data) {
+	// 	            var uniqueProjects = [...new Set(data.projects)];
+	// 	            console.log("uniqueProjects ",uniqueProjects)
+	// 	            $('#project_name').empty().append('<option value="" selected>Select Project</option>');
+	// 	            uniqueProjects.forEach(function(project) {
+	// 	                $('#project_name').append('<option value="' + project + '">' + project + '</option>');
+	// 	            });
+
+	// 	        });
+	// 	    });
 
 
 														      	
-      });
+      // });
+
+$(document).ready(function() {
+    function fetchData(params, successCallback) {
+        $.ajax({
+            url: '/vfms/fetch-projects/',
+            type: 'GET',
+            data: params,
+            success: successCallback,
+            error: function(xhr, status, error) {
+                console.error(xhr.responseText);
+            }
+        });
+    }
+
+    $('#company_id').change(function() {
+        var company_id = $(this).val();
+        fetchData({ 'company_id': company_id }, function(data) {
+            $('#project_id').empty().append('<option value="" selected>Select Project</option>');
+            data.projects.forEach(function(project) {
+                $('#project_id').append('<option value="' + project.id + '">' + project.name + '</option>');
+            });
+        });
+    });
+});
+
     </script>
 {%endblock%}
 

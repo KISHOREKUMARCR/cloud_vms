@@ -4,22 +4,23 @@ from django.core.validators import RegexValidator
 from django.core.exceptions import ValidationError
 
 
-class CloudURIForm(forms.ModelForm):
-    class Meta:
-        model = CloudURI
-        exclude = ['video_start_time', 'video_end_time']
+
  
 class CloudURIForm(forms.ModelForm):
     class Meta:
         model = CloudURI
-        fields = ['company_name', 'project_name', 'location_name', 'onedrive_url','userid','camera_angle'] 
-       
+        fields = ['company_name', 'project_name', 'location_name', 'onedrive_url', 'video_start_time', 'video_end_time','userid','camera_angle'] 
+
+
 class NewCloudURIForm(forms.ModelForm):
-   class Meta:
+    company_name = forms.CharField(max_length=255, required=True)
+    project_name = forms.CharField(max_length=255, required=True)
+
+    class Meta:
         model = NewCloudURI
-        fields = ['company_name', 'project_name', 'location_name', 'onedrive_url', 'video_start_time', 'video_end_time','userid','camera_angle']
-        
-        
+        fields = ['company_id', 'company_name', 'project_id', 'project_name', 'location_name', 'onedrive_url', 'video_start_time', 'video_end_time', 'userid', 'camera_angle']
+
+
 class MyForm(forms.ModelForm): #company model form
   class Meta:
     model = Company
@@ -49,10 +50,13 @@ class MyForm(forms.ModelForm): #company model form
 
 
 
+
+
 class ProjForm(forms.ModelForm):  #project model form
   class Meta:
     model = Project
-    fields=['company','name','company_name','userid']
+    
+    fields = ['name', 'company']   
 
     def save(self, commit=True):
         instance = super().save(commit=False)
@@ -65,6 +69,9 @@ class ProjForm(forms.ModelForm):  #project model form
             instance.save()
 
         return instance
+
+
+
 
 class LocationForm(forms.ModelForm): #location/station model form
   class Meta:

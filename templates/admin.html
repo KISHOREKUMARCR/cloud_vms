@@ -1,0 +1,346 @@
+{% load static %}
+<!DOCTYPE html>
+
+  <html
+    lang="en"
+    class="light-style layout-navbar-fixed layout-menu-fixed"
+    dir="ltr"
+    data-theme="theme-default"
+    data-assets-path="{% static 'assets/' %}"
+    data-template="vertical-menu-template-no-customizer"
+  >
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
+    />
+    
+
+    <title>VFMS Dashboard</title>
+    {% block title %}
+    
+    {% endblock %}
+    <meta name="description" content="" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{% static 'assets/img/favicon/favicon.ico' %}" />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+   
+    <link
+    href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Roboto:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i"
+    rel="stylesheet">
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="{% static 'assets/vendor/fonts/boxicons.css' %}" />
+    <link rel="stylesheet" href="{% static 'assets/vendor/fonts/fontawesome.css' %}" />
+    <link rel="stylesheet" href="{% static 'assets/vendor/fonts/flag-icons.css' %}" />
+
+    <!-- Core CSS -->
+    <link rel="stylesheet" href="{% static 'assets/vendor/css/rtl/core.css' %}" />
+    <link rel="stylesheet" href="{% static 'assets/vendor/css/rtl/theme-default.css' %}" />
+    <link rel="stylesheet" href="{% static 'assets/css/demo.css' %}" />
+
+    <!-- Vendors CSS -->
+    <link rel="stylesheet" href="{% static 'assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css' %}" />
+    <link rel="stylesheet" href="{% static 'assets/vendor/libs/typeahead-js/typeahead.css' %}" />
+    <link rel="stylesheet" href="{% static 'assets/vendor/libs/apex-charts/apex-charts.css' %}" />
+
+    <!-- Vendors CSS fixed datatable -->
+    <link rel="stylesheet" href="{% static 'assets/vendor/libs/datatables-bs5/datatables.bootstrap5.css' %}" />
+    <link rel="stylesheet" href="{% static 'assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css' %}" />
+    <link rel="stylesheet" href="{% static 'assets/vendor/libs/datatables-select-bs5/select.bootstrap5.css' %}" />
+    <link rel="stylesheet" href="{% static 'assets/vendor/libs/datatables-checkboxes-jquery/datatables.checkboxes.css' %}" />
+    <link rel="stylesheet" href="{% static 'assets/vendor/libs/datatables-fixedcolumns-bs5/fixedcolumns.bootstrap5.css' %}" />
+    <link rel="stylesheet" href="{% static 'assets/vendor/libs/datatables-fixedheader-bs5/fixedheader.bootstrap5.css' %}" />
+
+    <!-- Vendors CSS sweet alert -->
+    <link rel="stylesheet" href="{% static 'assets/vendor/libs/animate-css/animate.css' %}" />
+    <link rel="stylesheet" href="{% static 'assets/vendor/libs/sweetalert2/sweetalert2.css' %}" />
+     
+    {% block stylesheet  %} {% endblock %}
+ 
+    <!-- Page CSS -->
+
+    <!-- Helpers -->
+    <script src="{% static 'assets/vendor/js/helpers.js' %}"></script>
+
+    <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
+    <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
+    <script src="{% static 'assets/js/config.js' %}"></script>
+
+
+
+
+
+
+    <!-- ###################file upload excel $#$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ -->
+    <script src="{% static 'assets/js/forms-file-upload.js' %}"></script>
+    <script src="{% static 'assets/vendor/libs/dropzone/dropzone.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'assets/vendor/libs/dropzone/dropzone.css' %}" />
+    <script src="{% static 'assets/vendor/js/template-customizer.js' %}"></script>
+
+    <!-- ######################################################################### -->
+
+
+
+
+
+
+    <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+    
+  </head>
+
+  <body>
+    <!-- Layout wrapper -->
+    <div class="layout-wrapper layout-content-navbar">
+      <div class="layout-container">
+        <!-- Menu -->
+
+        <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
+          <div class="app-brand demo">
+            <a href="" class="app-brand-link">
+              <span class="app-brand-logo demo">
+                <img src="{% static 'assets/svg/cosai_logo.svg' %}" class="navbar-logo" alt="logo" width="28px" height="28px">
+              </span>
+              <span class="app-brand-text demo menu-text fw-bold ms-2">COS AI</span>
+            </a>
+
+            <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto">
+              <i class="bx menu-toggle-icon d-none d-xl-block fs-4 align-middle"></i>
+              <i class="bx bx-x d-block d-xl-none bx-sm align-middle"></i>
+            </a>
+          </div>
+
+          <div class="menu-divider mt-0"></div>
+
+                <ul class="menu-inner py-1">
+               
+                  <li class="menu-item active " >
+                    <a href="{% url 'admin' %}" class="menu-link ">
+                      <i class="menu-icon tf-icons fa fa-user fs-4"></i> 
+                      <div data-i18n=" Administration"> Administration</div>
+                    </a>
+                    
+                      <li class="menu-item active">    
+                        <a href="{% url 'admin_user_settings' %}" class="menu-link list_profile"  >
+                          <i class="menu-icon tf-icons  fa fa-gear"></i> 
+                          <div data-i18n="User Setting" >User Setting</div>
+                        </a>
+                      </li>
+                      <!-- <li class="menu-item active">
+                        <a href="" class="menu-link list_profile" >
+                          <i class="menu-icon tf-icons bx bx-right-arrow"></i> 
+                          <div data-i18n="Update User" >Update User</div>
+                        </a>
+                      </li> -->
+  
+                
+              </ul>
+          
+          
+                  </aside>
+
+       
+        <div class="layout-page">
+          
+	          <nav class="layout-navbar navbar navbar-expand-xl align-items-center bg-navbar-theme" id="layout-navbar">
+	            <div class="container-fluid">
+	              <div class="layout-menu-toggle navbar-nav align-items-xl-center me-3 me-xl-0 d-xl-none">
+	                <a class="nav-item nav-link px-0 me-xl-4" href="javascript:void(0)">
+	                  <i class="bx bx-menu bx-sm"></i>
+	                </a>
+	              </div>
+
+	              <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
+	                <!-- Search -->
+	                <div class="navbar-nav align-items-center">
+	                  <div class="nav-item navbar-search-wrapper mb-0">
+	                    <a class="nav-item nav-link search-toggler px-0" href="javascript:void(0);">
+	                      <!-- <i class="bx bx-search-alt bx-sm"></i> -->
+	                      <span class="d-none d-md-inline-block text-muted"></span>
+	                    </a>
+	                  </div>
+	                </div>
+	                <!-- /Search -->
+
+	                <ul class="navbar-nav flex-row align-items-center ms-auto">
+	                 
+	                  <!-- User -->
+	                  <div class="d-none d-lg-flex">
+	                    <div class="app-brand demo">
+	                      <a href="" class="app-brand-link">
+	                        <div class="avatar">
+	                          <img src="{% static 'assets/img/logo/data_motor.jpg' %}" alt class="rounded" />
+	                        </div>
+	                        <span class="app-brand-text demo menu-text fw-bold ms-2">VFMS</span>
+	                      </a>
+	                    </div>
+	                  </div>
+	                  <li class="nav-item navbar-dropdown dropdown-user dropdown">
+	                    <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
+	                      <div class="avatar avatar-online">
+	                      
+	                          <img src="{% static 'media/user_icon.png' %}" alt class="rounded-circle" />						
+	                      </div>
+	                    </a>
+	                    <ul class="dropdown-menu dropdown-menu-end">
+	                      <li>
+	                        <a class="dropdown-item" href="#">
+	                          <div class="d-flex">
+	                            <div class="flex-shrink-0 me-3">
+	                              <div class="avatar avatar-online">
+	                               
+	                                  <img src="{% static 'media/user_icon.png' %}" alt class="rounded-circle" />						
+	                               
+	                              </div>
+	                            </div>
+	                            
+	                            <div class="flex-grow-1">
+	                              <span class="fw-semibold d-block lh-1">cosaiadmin </span>
+	                              <small>Admin</small>
+	                         
+	                            </div>
+	                           
+	                          </div>
+
+	                        </a>
+	                      </li>
+	                      <li>
+	                        <div class="dropdown-divider"></div>
+	                      </li>
+	                       <!-- <li>
+	                        <a class="dropdown-item" href="{% url 'profile_view_final' %}">
+	                          <i class="bx bx-user me-2"></i>
+	                          <span class="align-middle">My Profile</span>
+	                        </a>
+	                      </li>
+	                       -->
+	                      <!-- <li>
+	                        <div class="dropdown-divider"></div>
+	                      </li> -->
+	                      <li>
+	                        <a class="dropdown-item" href="{% url 'logout_request' %}" target="_blank">
+	                          <i class="bx bx-power-off me-2"></i>
+	                          <span class="align-middle">Log Out</span>
+	                        </a>
+	                      </li>
+	                    </ul>
+	                  </li>
+	                  <!--/ User -->
+	                </ul>
+	              </div>
+	              
+	              <!-- Search Small Screens -->
+	              <div class="navbar-search-wrapper search-input-wrapper d-none">
+	                <input
+	                  type="text"
+	                  class="form-control search-input container-fluid border-0"
+	                  placeholder="Search..."
+	                  aria-label="Search..."
+	                />
+	                <i class="bx bx-x bx-sm search-toggler cursor-pointer"></i>
+	              </div>
+	            </div>
+	          </nav>
+  {% block content %}
+
+
+    {% endblock %}
+	     
+        	<div class="content-backdrop fade"></div>
+      	</div>
+      <!-- Content wrapper -->
+	    </div>
+	    <!-- / Layout page -->
+	  </div>
+
+	  <!-- Overlay -->
+	  <div class="layout-overlay layout-menu-toggle"></div>
+
+	  <!-- Drag Target Area To SlideIn Menu On Small Screens -->
+	  <div class="drag-target"></div>
+	</div>
+    <!-- / Layout wrapper -->
+
+    <!-- Core JS -->
+    <!-- build:js assets/vendor/js/core.js -->
+    <script src="{% static 'assets/vendor/libs/jquery/jquery.js' %}"></script>
+    <script src="{% static 'assets/vendor/libs/popper/popper.js' %}"></script>
+    <script src="{% static 'assets/vendor/js/bootstrap.js' %}"></script>
+    <script src="{% static 'assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js' %}"></script>
+
+    <script src="{% static 'assets/vendor/libs/hammer/hammer.js' %}"></script>
+
+    <script src="{% static 'assets/vendor/libs/i18n/i18n.js' %}"></script>
+    <script src="{% static 'assets/vendor/libs/typeahead-js/typeahead.js' %}"></script>
+
+    <script src="{% static 'assets/vendor/js/menu.js' %}"></script>
+    <!-- endbuild -->
+
+    <!-- Vendors JS -->
+    <script src="{% static 'assets/vendor/libs/apex-charts/apexcharts.js' %}"></script>
+
+    <!-- Main JS -->
+    <script src="{% static 'assets/js/main.js' %}"></script>
+
+    <!-- Page JS -->
+    <script src="{% static 'assets/js/dashboards-analytics.js' %}"></script>
+    <!--<script src="{% static 'assets/js/form-basic-inputs.js' %}"></script>-->
+    <script src="{% static 'assets/vendor/libs/sweetalert2/sweetalert2.js' %}"></script>
+
+    <!-- Vendors JS -->
+    <script src="{% static 'assets/vendor/libs/datatables/jquery.dataTables.js' %}"></script>
+    <script src="{% static 'assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js' %}"></script>
+    <script src="{% static 'assets/vendor/libs/datatables-responsive/datatables.responsive.js' %}"></script>
+    <script src="{% static 'assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.js' %}"></script>
+
+    <script src="{% static 'assets/vendor/libs/datatables-fixedheader-bs5/fixedheader.bootstrap5.js' %}"></script>
+    
+    <!-- script tag -->
+
+    {% block script %}
+    
+    {% endblock %} 
+  </body>
+  </html>
+    {% block javascript %}
+    
+    <script>
+      function sweet_alert_message(icons, message) {
+    if (icons == "success") {
+      title1 = "Good job!"
+    } else if (icons == "info") {
+      title1 == "Info!"
+    } else if (icons == "warning") {
+      title1 = "Warning!"
+    } else {
+      title1 = "Error!"
+    }
+    Swal.fire({
+      title: title1,
+      text: message,
+      icon: icons,
+      customClass: {
+        confirmButton: 'btn btn-primary'
+      },
+      buttonsStyling: false
+    });
+  }
+
+  $(document).ready(function () {
+    $(".sub-menu ul").hide();
+    $(".sub-menu a").click(function () {
+        $(this).parent(".sub-menu").children("ul").slideToggle("100");
+        $(this).find(".right").toggleClass("fa-caret-up fa-caret-down");
+    });
+});
+ 
+
+   </script>
+    {% endblock  %} 
+
+    

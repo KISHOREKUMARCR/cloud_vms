@@ -25,7 +25,6 @@ from django.template.loader import render_to_string
 from django.core.exceptions import ObjectDoesNotExist
 from PIL import Image 
 from django.contrib.auth import logout
-import datetime
 
 #global values 
 social_image_url = ""
@@ -140,10 +139,7 @@ def profile_value(person):
 
 @login_required
 def profile_view_final(request):
-    print("\n\n USER PROFILE USER PROFILE USER PROFILE in profile_view_final: ",request.user)
     user = show_data(request)
-    print("\n\n USER PROFILE USER PROFILE USER PROFILE in profile_view_final(show_data): ",user)
-    print("\n\n USER PROFILE USER PROFILE USER PROFILE in profile_view_final(show_data): ",user['custom_user'])
     if user['custom_user'] == "unknown":
         print("\n\n USER - unknown")
         user = request.user
@@ -175,9 +171,29 @@ def profile_view_final(request):
         context = {'user': user,"profile_val":profile_val,"last_project":last_project,"last_location":last_location,"project_count": project_count, 'location_count':location_count, 'camera_count':camera_count}
     else: 
     '''
-    context = {'user': user,"profile_val":profile_val,"login_val":login_val} 
+    userid = request.session.get('user_id')  
+    if userid:
+        
+
+        total_company = Company.objects.filter(userid=userid).count()
+        total_projects = Project.objects.filter(userid=userid).count()
+        total_locations = NewCloudURI.objects.filter(userid=userid).count()
+        total_locations = NewCloudURI.objects.filter(userid=userid).values('location_name').distinct().count()
+        total_cloud_url = NewCloudURI.objects.filter(userid=userid).count()
+        
+    else:
+        total_company = 0
+        total_projects = 0
+        total_locations = 0
+        total_cloud_url = 0
+    
+    context={'total_company':total_company,'total_projects':total_projects,'total_locations':total_locations,'total_cloud_url':total_cloud_url,
+            'user': user,"profile_val":profile_val,"login_val":login_val}
     print(' PROFILE VIEW USER context")', context)
     return render(request, 'templates/accounts/user_profile_view.html', context)
+
+
+
     
 @login_required
 def profile_edit_account_delete(request):
@@ -217,7 +233,7 @@ def profile_edit_security(request):
     
     if request.method == "POST":
         pwd = request.POST.get('newPassword')
-        new_password =pwd
+        new_password = urlsafe_base64_encode(force_bytes(pwd))
         user.user_password = new_password
         user.save()
         
@@ -556,7 +572,7 @@ def auth_password_confirm(request,uidb64,token):
             else:
                 
                 #uprofile.user_confirm_password = confirm_password
-                uprofile.user_password =new_password
+                uprofile.user_password = urlsafe_base64_encode(force_bytes(new_password))
                 uprofile.save()
                 return redirect('loginprocess')
     
@@ -644,20 +660,11 @@ def registration(request):
         comp_name = request.POST.get('companyname')
         busi_type = request.POST.get('busitype')
         print("\n\n\n\n busitype : ",busi_type)
-        # password = urlsafe_base64_encode(force_bytes(pwd))
-        password = pwd
-        # last_login = datetime.datetime.now(tz=timezone.utc)
-        # date_joined = datetime.datetime.now(tz=timezone.utc)
-    
-        
-        # last_login = models.DateTimeField(default=datetime.now(tz=timezone.utc))
-        # date_joined = models.DateTimeField(default=datetime.now(tz=timezone.utc))
-
-        last_login = datetime.datetime.utcnow().replace(tzinfo=datetime.timezone.utc)
-        date_joined = datetime.datetime.utcnow().replace(tzinfo=datetime.timezone.utc)
-
+        password = urlsafe_base64_encode(force_bytes(pwd))
+        last_login = datetime.datetime.now(tz=timezone.utc)
+        date_joined = datetime.datetime.now(tz=timezone.utc)
         print(name,email,mobile,uname,pwd,password,comp_name,busi_type)
-        uprofile = UserAccount.objects.create(name=name,user_name = uname,user_email=email,user_mobile=mobile,user_password=password,date_joined=date_joined,last_login=last_login,user_roles_id=3,user_company_name=comp_name,user_business_type=busi_type,user_social_provider='manual')
+        uprofile = UserAccount.objects.create(name=name,user_name = uname,user_email=email,user_mobile=mobile,user_password=password,date_joined=date_joined,last_login=last_login,user_roles_id=1,user_company_name=comp_name,user_business_type=busi_type,user_social_provider='manual')
         print(uprofile)
         
         # uprofile.save()
@@ -731,17 +738,16 @@ def loginprocess_func(uname,pwd,request):
     if user is not None:
         custom_login(request, user)
         role_id = Roles.objects.get(role_name = user.user_roles).id
-        
         print("role_id",role_id)
+        
+
         uprofile = UserAccount.objects.get(user_name = uname)
         uprofile.pre_last_login = uprofile.last_login
-        uprofile.last_login = datetime.datetime.utcnow().replace(tzinfo=datetime.timezone.utc)
-
-
-
+        uprofile.last_login = datetime.datetime.now(tz=timezone.utc)
         uprofile.save()
         messages.success(request, 'Login successful!')
         return 'AdminMenu'
+
         # if role_id == 3:
             
         #     #return redirect('role_auth')
@@ -768,14 +774,85 @@ def loginprocess_func(uname,pwd,request):
         return 'loginprocess'
         #return redirect('loginprocess')
 
+
+def admin_update_user_setting(request):
+    if request.method == 'POST':
+        user_id = request.POST.get('user_id')
+        delete_cloud_data = request.POST.get('delete_cloud_data') == 'on'
+
+        # Update user_delete_access field in UserAccount model
+        try:
+            user = UserAccount.objects.get(pk=user_id)
+            user.user_delete_access = delete_cloud_data
+            user.save()
+            return HttpResponse("User settings updated successfully")
+        except UserAccount.DoesNotExist:
+            return HttpResponse("User not found", status=404)
+
+    return HttpResponse(status=405)  # Method Not Allowed
+
+
+def fetch_user_delete_access(request):
+    if request.method == 'POST':
+        user_id = request.POST.get('user_id')
+        try:
+            user = UserAccount.objects.get(id=user_id)
+            user_delete_access = user.user_delete_access
+            return JsonResponse({'user_delete_access': user_delete_access})
+        except UserAccount.DoesNotExist:
+            return JsonResponse({'error': 'User not found'}, status=404)
+    
+    return JsonResponse({}, status=400)
+
+
+def admin_user_settings(request):
+    user_accounts = UserAccount.objects.all()
+    context = { 'user_accounts': user_accounts }
+    return render(request, 'templates/dms/admin_user_setting.html',context)
+
+
+def admin_user_login(request):
+    if request.method == 'POST':
+        uname = request.POST.get('username')
+        pwd = request.POST.get('password')
+        
+        user = custom_authenticate(uname, pwd)
+        
+        if user is not None:
+            custom_login(request, user)
+            
+            uprofile = UserAccount.objects.get(user_name=uname)
+            uprofile.pre_last_login = uprofile.last_login
+            uprofile.last_login = datetime.datetime.now(tz=timezone.utc)
+            uprofile.save()
+            
+            messages.success(request, 'Login successful!')
+            return JsonResponse({'redirect_url': '/vfms/Admin_Home/'})  # Adjust redirect URL as per your app
+            
+        else:
+            messages.error(request, "Invalid Username and Password")
+            return JsonResponse({'error': 'Invalid credentials'}, status=400)
+    
+    # If not a POST request or login failed, return to login page
+    return JsonResponse({'error': 'Method not allowed'}, status=405)
+
+
+
 def loginprocess(request):
     print("INSIDE loginprocess")
     if request.method == 'POST':
         uname=request.POST.get('username')
         pwd=request.POST.get('password')
-        pwd = pwd     
+        print("Request data are  ",request.POST)
 
+        if uname == "cosaiadmin" and pwd == "cosaiadmin":
+            role_id = Roles.objects.get(role_name = uname).id
+            print("your role id is ",role_id)
+            if role_id == 2:       
+                messages.success(request, 'Admin Login successful!')     
+                return redirect('admin')
 
+        pwd = urlsafe_base64_encode(force_bytes(pwd))        
         a= loginprocess_func(uname,pwd,request)        
         return redirect(a)
               
@@ -849,6 +926,7 @@ def validate_username(request):
         is_is_status = UserAccount.objects.get(user_name=username).user_status
     email = request.GET.get('email', None)
     password = request.GET.get('password', None)
+    print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA : ",is_is_status,email,username,password,urlsafe_base64_encode(force_bytes(password)),UserAccount.objects.filter(user_email = email,user_social_provider='manual').exists(),UserAccount.objects.filter(user_name=username,user_password=urlsafe_base64_encode(force_bytes(password))).exists())
     
     
     
@@ -856,14 +934,30 @@ def validate_username(request):
         'is_username': UserAccount.objects.filter(user_name=username).exists(),
         'is_email': UserAccount.objects.filter(user_email=email).exists(),
         'is_manualemail' : UserAccount.objects.filter(user_email = email,user_social_provider='manual').exists(),
-        'is_password': UserAccount.objects.filter(user_password=password).exists(),
-        'is_user' : UserAccount.objects.filter(user_name=username,user_password=password).exists(),
+        'is_password': UserAccount.objects.filter(user_password=urlsafe_base64_encode(force_bytes(password))).exists(),
+        'is_user' : UserAccount.objects.filter(user_name=username,user_password=urlsafe_base64_encode(force_bytes(password))).exists(),
         'is_status' : UserAccount.objects.filter(user_name=username,user_status=True).exists()
         
     }
     print(data)
     return JsonResponse(data)
-
+'''   
+def validate_password(request):
+    username = request.GET.get('username', None)
+    #email = request.GET.get('email', None)
+    password = request.POST.get('password', None)
+    print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA : ",username,password,urlsafe_base64_encode(force_bytes(password)),UserAccount.objects.filter(user_name=username,user_password=urlsafe_base64_encode(force_bytes(password))).exists())
+    
+    
+    data = {
+        'is_username': UserAccount.objects.filter(user_name=username).exists(),
+        #'is_email': UserAccount.objects.filter(user_email=email).exists(),
+        'is_password': UserAccount.objects.filter(user_password=urlsafe_base64_encode(force_bytes(password))).exists(),
+        'is_user' : UserAccount.objects.filter(user_name=username,user_password=urlsafe_base64_encode(force_bytes(password))).exists()
+        
+    }
+    return JsonResponse(data)
+'''
 class DeleteUser(View):
 
     def get(self, request):

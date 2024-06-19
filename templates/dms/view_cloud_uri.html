@@ -4,18 +4,31 @@
     <script src="{% static 'assets/vendor/libs/dropzone/dropzone.js' %}"></script>
     <link rel="stylesheet" href="{% static 'assets/vendor/libs/dropzone/dropzone.css' %}" />
     <script src="{% static 'assets/vendor/js/template-customizer.js' %}"></script>
+
+
+
 {% block title %} Videos List {% endblock %}
 
-<style>
-  
-</style>
-
+ <style>
+      .close-top-right {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    z-index: 1051; /* Ensure it is above the modal */
+  }
+    </style>
 
 {% block content %}
 <div class="content-wrapper">
   <div class="container-xxl flex-grow-1 container-p-y">
     <h4 class="py-3 breadcrumb-wrapper mb-4"><span class="text-muted fw-light">COS AI - VMS APP /</span> Cloud Video List</h4>
-    
+    {% if messages %}
+      {% for message in messages %}
+          <div class="alert alert-success" role="alert" style="display: none;">
+              {{ message }}
+          </div>
+      {% endfor %}
+  {% endif %} 
 
 <div class="card mb-4">
     <h5 class="card-header">Filter Cloud Data</h5>
@@ -29,15 +42,14 @@
                         <select id="company"required name="company" class="form-control">
                                     <option value="" disabled selected>Select Company</option>
                                     {% for company in company_list %}
-                                        <option value="{{ company.name }}">{{ company.name }}</option>
+                                        <option value="{{ company.id }}">{{ company.name }}</option>
                                     {% endfor %}
                         </select>
                     </div>
                     <div class="col-md-6  mb-3">
                         <label class="form-label" for="project">Select Project</label>
-                        <select id="project" required name="project" class="form-control">
-                            <option value="" selected>Select Project</option>
-                           
+                        <select id="project_id" required name="project_id" class="form-control">
+                            <option value="" selected>Select Project</option>                           
                         </select>
                     </div>
                 </div>
@@ -74,15 +86,18 @@
 </div>
 
 
-
-
-
-
     <div class="card mb-1" >
       <div class="card-datatable table-responsive pt-0">
         <div class="d-flex justify-content-end "> <!-- Added d-flex (flexbox) and justify-content-end to align buttons to the right -->
-            <button class="btn btn-primary mb-3 mt-3 " id="cloud_excel_download">Download Excel</button> <!-- Added mr-2 for right margin -->
-            &nbsp;<button class="btn btn-danger mb-3 mt-3" id="deleteall_cloud_data">Delete All Data</button>
+
+            <button class="btn btn-primary mb-3 mt-3 " id="cloud_excel_download">Download Excel</button> <!-- Added mr-2 for right margin -->  &nbsp;
+            {% if user_account.user_delete_access %}
+                <button class="btn btn-danger mb-3 mt-3 mr-2" id="deleteall_cloud_data">Delete All Data</button>&nbsp;
+            {% endif %}
+          
+
+          <!-- <button class="btn btn-danger mb-3 mt-3 mr-2" id="deleteall_cloud_data">Delete All Data</button> -->
+            <button class="btn btn-success mb-3 mt-3" id="export_database">Export SQL</button>&nbsp;
           </div>  
         <table  id="filtered-data-table"  class="table table-striped table-bordered" cellspacing="0" width="100%">
           <thead>
@@ -108,12 +123,13 @@
               <!-- <td>{{ item.video_start_time|date:"Y-m-d\TH:i:s\Z" }}</td>
               <td>{{  item.video_end_time|date:"Y-m-d\TH:i:s\Z" }}</td>-->
 
-              <td>{{ item.video_start_time|date:"Y-m-d H:i:s A"}}  </td>
+              <td class="video-start-time">{{ item.video_start_time|date:"Y-m-d H:i:s A" }}</td>
               <td>{{ item.video_end_time|date:"Y-m-d H:i:s A"}} </td>
 
               
               <!-- <td>{{ item.video_end_time|date:"Y-m-d P"}} </td> -->
-              <td><button class="view-btn btn btn-primary" data-url="{{ item.onedrive_url }}">View</button></td>
+            <td><button class="view-btn btn btn-primary" data-url="{{ item.onedrive_url }}">View</button></td>
+
             </tr>
             {% endfor %}
           </tbody>
@@ -125,7 +141,53 @@
 </div>
 
 
+   <!--  <div class="modal fade " id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog modal-xl" role="document" >
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title"  id="videoModalLabel" >Video Viewer</h5>
+       <button type="button" style="margin-left: 634px;" id="fullscreen-btn" class="btn btn-secondary"> <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M5 5h5V3H3v7h2zm5 14H5v-5H3v7h7zm11-5h-2v5h-5v2h7zm-2-4h2V3h-7v2h5z"/></svg></button>
+       <button type="button" id="closemodal" class="close btn btn-secondary" data-dismiss="modal" aria-label="Close"> <span aria-hidden="true">×</span> </button>        
+      </div>
+      <div class="modal-body">
+        <iframe id="iframe-modal"  width=1050 height=730   frameborder="0" ></iframe>
 
+      </div>
+     
+    </div>
+  </div>
+</div>
+ -->
+
+ 
+ <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="videoModalLabel">Video Viewer</h5>
+        <!-- <button type="button" style="margin-left: 634px;" id="fullscreen-btn" class="btn btn-secondary">
+          <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24">
+            <path fill="currentColor" d="M5 5h5V3H3v7h2zm5 14H5v-5H3v7h7zm11-5h-2v5h-5v2h7zm-2-4h2V3h-7v2h5z"/>
+          </svg>
+        </button> -->
+       <button type="button" id="closemodal1" class="close btn btn-warning" data-dismiss="modal" style="
+        position: relative;
+        z-index: 2;
+        margin-left:auto;
+        top: -18px;
+        margin-right: -855px;
+        " aria-label="Close"> <span aria-hidden="true">×</span> </button>
+
+        <button type="button" id="closemodal" class="close btn btn-default" data-dismiss="modal" aria-label="Close" style=" position: relative;  z-index: 2;
+        margin-left:auto;top: 70px;margin-right: 50px;"> <span aria-hidden="true">×</span> </button>
+      </div>
+      <div class="modal-body">
+        <iframe id="iframe-modal" width="1050" height="730" frameborder="0"></iframe>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- 
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -139,8 +201,10 @@
       </div>
     </div>
   </div>
-</div>
+</div> -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
 
 <script>
 
@@ -218,21 +282,21 @@ $(document).ready(function() {
     }
 
     $('#company').change(function() {
-        var companyName = $(this).val();
-        fetchData({ 'company_name': companyName }, function(data) {
+        var company_id = $(this).val();
+        fetchData({ 'company_id': company_id }, function(data) {
             var uniqueProjects = [...new Set(data.projects)];
-            $('#project').empty().append('<option value="" selected>Select Project</option>');
+            $('#project_id').empty().append('<option value="" selected>Select Project</option>');
             uniqueProjects.forEach(function(project) {
-                $('#project').append('<option value="' + project + '">' + project + '</option>');
+                $('#project_id').append('<option value="' + project.id + '">' + project.name + '</option>');
             });
-
             // $('#location, #cameraAngle, #videoStartTime').empty().append('<option value="" selected>Select</option>');
         });
     });
 
-    $('#project').change(function() {
-        var projectName = $(this).val();
-        fetchData({ 'project_name': projectName }, function(data) {
+    $('#project_id').change(function() {        
+        var project_id = $(this).val();
+        console.log("hiiii",project_id)
+        fetchData({ 'project_id': project_id }, function(data) {
             var uniqueLocations = [...new Set(data.locations)];
             $('#location').empty().append('<option value="" selected>Select Location</option>');
             uniqueLocations.forEach(function(location) {
@@ -328,6 +392,64 @@ $(document).ready(function() {
             }
         });
     });
+
+
+
+$(document).ready(function() {
+    $('#export_database').on('click', function(e) {
+        e.preventDefault();
+        Swal.fire({
+            title: 'Export Database SQL Format',
+            text: 'Are you sure you want to download your database as an SQL file?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, export it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // User confirmed, proceed with export
+                $.ajax({
+                    url: '/vfms/export_database_postgresql/',
+                    type: 'GET',
+                    xhrFields: {
+                        responseType: 'blob'  // Set the AJAX response type to blob
+                    },                  
+                    success: function(blob) {
+                        console.log(blob)
+                        // Create a URL for the blob object
+                        var url = window.URL.createObjectURL(blob);
+                        
+                        // Create a link element
+                        var a = document.createElement('a');
+                        a.href = url;
+                        a.download = 'export_database.sql';  // Filename
+                        document.body.appendChild(a);  // Append the link to the body
+                        a.click();  // Programmatically click the link to trigger the download
+                        document.body.removeChild(a);  // Remove the link when done
+
+
+
+                        Swal.fire(
+                            'Downloaded!',
+                            'Your database has been exported.',
+                            'success'
+                        );
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error:', xhr.responseText);
+                        Swal.fire(
+                            'Error!',
+                            'Failed to export database. Please try again.',
+                            'error'
+                        );
+                    }
+                });
+            }
+        });
+    });
+});
+
 $('#deleteall_cloud_data').on('click', function (e) {
         e.preventDefault();
         Swal.fire({
@@ -351,7 +473,9 @@ $('#deleteall_cloud_data').on('click', function (e) {
                             'Your cloud data has been deleted.',
                             'success'
                         );
-                        
+                         setTimeout(function () {
+                        location.reload(true);
+                      }, 1000);
                         // Optionally, you can perform additional actions after deletion
                     },
                     error: function(xhr, status, error) {
@@ -395,14 +519,91 @@ $('#deleteall_cloud_data').on('click', function (e) {
 
 
 
+    // $(document).on('click', '.view-btn', function() {
+    //     var url = $(this).data('url');
+    //     $('#iframe-modal').attr('src', url);
+    //     $('#myModal').modal('show');
+    // });
+
+  // $(document).on('click', '.view-btn', function() {
+  //       console.log('View button clicked');
+  //       var url = $(this).data('url');
+  //       var startTime = $(this).closest('tr').find('.video-start-time').text();
+  //       console.log('Start time:', startTime);
+  //       $('#videoModalLabel').text('Video Viewer - ' + startTime); 
+  //       $('#iframe-modal').attr('src', url);
+  //       $('#myModal').modal('show');
+  //   });
+
+
+
+
+// $(document).ready(function() {
+//     // Event delegation for .view-btn
+//     $(document).on('click', '.view-btn', function() {
+//         // Retrieve the video start time (6th <td> element)
+//         var startTime = $(this).closest('tr').find('td:nth-child(6)').text();
+//         console.log('File Name is :', startTime);
+
+//         var url = $(this).data('url');
+//         $('#videoModalLabel').text(' File Name - ' + startTime); 
+//         $('#iframe-modal').attr('src', url);
+//         $('#myModal').modal('show');
+//     });
+// });
+
+
+
+
+
+//   $('#closemodal').click(function() {
+//         $('#myModal').modal('hide');
+//     });
+
+
+//     $('#fullscreen-btn').click(function() {
+//         var iframe = document.getElementById('iframe-modal');
+//         if (iframe.requestFullscreen) {
+//             iframe.requestFullscreen();
+//         } else if (iframe.mozRequestFullScreen) {
+//             iframe.mozRequestFullScreen();
+//         } else if (iframe.webkitRequestFullscreen) {
+//             iframe.webkitRequestFullscreen();
+//         } else if (iframe.msRequestFullscreen) {
+//             iframe.msRequestFullscreen();
+//         }
+//     });
+
+
+
+
+$(document).ready(function() {
+    // Event delegation for .view-btn
     $(document).on('click', '.view-btn', function() {
+        // Retrieve the video start time (6th <td> element)
+        var startTime = $(this).closest('tr').find('td:nth-child(6)').text();
+        console.log('File Name is :', startTime);
+
         var url = $(this).data('url');
+        $('#videoModalLabel').text('File Name - ' + startTime); 
         $('#iframe-modal').attr('src', url);
         $('#myModal').modal('show');
     });
 
+    $('#closemodal').click(function() {
+        $('#myModal').removeClass('fullscreen-modal');
+        $('#myModal').modal('hide');
+    });
+    $('#closemodal1').click(function() {
+        $('#myModal').removeClass('fullscreen-modal');
+        $('#myModal').modal('hide');
+    });
+
     $('#fullscreen-btn').click(function() {
         var iframe = document.getElementById('iframe-modal');
+        console.log("hi")
+        $('#myModal').toggleClass('fullscreen-modal');
+
         if (iframe.requestFullscreen) {
             iframe.requestFullscreen();
         } else if (iframe.mozRequestFullScreen) {
@@ -413,6 +614,8 @@ $('#deleteall_cloud_data').on('click', function (e) {
             iframe.msRequestFullscreen();
         }
     });
+});
+
 });
 
 

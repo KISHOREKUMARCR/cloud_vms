@@ -1,0 +1,188 @@
+{% extends 'templates/admin.html' %}
+{% load static %}
+ 
+
+
+
+{% block title %} Videos List {% endblock %}
+
+
+
+{% block content %}
+<div class="content-wrapper">
+  <div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="py-3 breadcrumb-wrapper mb-4"><span class="text-muted fw-light">COS AI - VMS ADMIN /</span> User List</h4>
+    {% if messages %}
+      {% for message in messages %}
+          <div class="alert alert-success" role="alert" style="display: none;">
+              {{ message }}
+          </div>
+      {% endfor %}
+  {% endif %} 
+
+
+
+
+
+
+
+    <div class="card mb-1" >
+      <div class="card-datatable table-responsive pt-0">
+        <div class="d-flex justify-content-end "> 
+                       {% csrf_token %}
+
+          </div>  
+        <table  id="filtered-data-table"  class="table table-striped table-bordered" cellspacing="0" width="100%">
+           <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>User Name</th>
+                        <th>Company Name</th>
+                        <th>Business Type</th>
+                        <th>Date Joined</th>
+                        <th>Last Login</th>
+                        <th>Status</th>
+                        <th>Login</th>
+                    </tr>
+                </thead>
+           <tbody>
+                    {% for user in user_accounts %}
+                    <tr>
+                        <td>{{ user.id }}</td>
+                        <td>{{ user.name }}</td>
+                        <td>{{ user.user_name }}</td>
+                        <td>{{ user.user_company_name }}</td>
+                        <td>{{ user.user_business_type }}</td>
+                        <td>{{ user.date_joined }}</td>
+                        <td>{{ user.last_login }}</td>
+ 							<td>
+                            {% if user.user_status %}
+                                Active
+                            {% else %}
+                            	Inactive
+                            {% endif %}
+                        </td> 
+                        <td>
+                        	<a href="#" class="login-link" 
+						       data-username="{{ user.user_name }}" 
+						       data-password="{{ user.user_password }}">
+						        <i class="fa fa-sign-in" style="font-size:20px"></i>
+						    </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+        </table>
+      </div>
+    </div>
+
+
+  </div>
+</div>
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+
+<script>
+$(document).ready(function() {
+    // Initialize the DataTable only once
+    var dataTable = $('#filtered-data-table').DataTable({
+        paging: true,
+        initComplete: function() {
+            this.api().columns().every(function(index) {
+                var column = this;
+                if (index !== 0 && index !== 7) {
+                    var title = $(column.header()).text();
+                    var select = $('<select class="form-control"><option value="">' +  title + '</option></select>')
+                        .appendTo($(column.footer()).empty())
+                        .on('change', function() {
+                            var val = $.fn.dataTable.util.escapeRegex($(this).val());
+                            column.search(val ? '^' + val + '$' : '', true, false).draw();
+                        });
+                    column.data().unique().sort().each(function(d, j) {
+                        select.append('<option value="' + d + '">' + d + '</option>');
+                    });
+                }
+            });
+        }
+    });
+  });
+$(document).ready(function() {
+    $('.login-link').click(function(e) {
+        e.preventDefault();
+
+        var username = $(this).data('username');
+        var password = $(this).data('password');
+
+        // Show confirmation dialog using SweetAlert
+        Swal.fire({
+            title: 'Confirm Login',
+            text: 'Are you sure you want to login?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, login!',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // User confirmed, make AJAX request
+                $.ajax({
+                    type: 'POST',
+                    url: '/vfms/admin_user_login/',
+                    headers: {
+                        'X-CSRFToken': $('input[name="csrfmiddlewaretoken"]').val()
+                    },
+                    data: {
+                        'username': username,
+                        'password': password
+                    },
+                    success: function(response) {
+                        console.log('AJAX request successful:', response);
+                        if ('redirect_url' in response) {
+                            // Use SweetAlert for success message
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Success!',
+                                text: 'Login successful!',
+                                confirmButtonColor: '#3085d6',
+                                confirmButtonText: 'Continue'
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    window.open(response.redirect_url, '_blank');
+                                }
+                            });
+                        } else {
+                            // Use SweetAlert for error message
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: response.error || 'Login failed!'
+                            });
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('AJAX request failed:', error);
+                        // Use SweetAlert for generic error handling
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Something went wrong! Please try again.'
+                        });
+                    }
+                });
+            }
+        });
+    });
+});
+
+
+</script>
+
+
+
+{% endblock %}

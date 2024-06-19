@@ -76,6 +76,7 @@ from django.db.models.functions import TruncDate
 import io
 
 from openpyxl import Workbook
+from accounts.models import UserAccount
 
 # def upload_cloud_uri(request):
 #     if request.method == 'POST':
@@ -119,12 +120,61 @@ from openpyxl import Workbook
 
 #     return render(request, 'templates/dms/upload_excel_data.html')
 
+# def upload_cloud_uri(request):
+#     if request.method == 'POST':
+#         try:
+#             file = request.FILES['file']
+#             if not file:
+#                 messages.error(request, "No file uploaded")
+#                 return render(request, 'templates/dms/upload_excel_data.html')
+
+#             # Check the file extension
+#             if file.name.endswith('.xlsx') or file.name.endswith('.xls'):
+#                 df = pd.read_excel(file, dtype=str)
+#             elif file.name.endswith('.csv'):
+#                 df = pd.read_csv(file, dtype=str)
+#             else:
+#                 messages.error(request, "Unsupported file type")
+#                 return render(request, 'templates/dms/upload_excel_data.html')
+
+#             required_columns = [ 'company_name', 'project_name', 'location_name', 'video_start_time', 'video_end_time', 'onedrive_url', 'userid', 'camera_angle']
+
+#             # Check if all required columns are in the DataFrame
+#             if not all(column.strip()  in df.columns for column in required_columns):
+#                 missing_columns = [column for column in required_columns if column not in df.columns]
+#                 messages.error(request, f"Missing required columns: {', '.join(missing_columns)}")
+#                 return render(request, 'templates/dms/upload_excel_data.html')
+
+#             # Iterate over rows in the DataFrame and create CloudURI instances
+#             for index, row in df.iterrows():            
+#                 NewCloudURI.objects.create(
+#                     userid=row.get('userid'),
+#                     company_name=row.get('company_name'),
+#                     project_name=row.get('project_name'),
+#                     location_name=row.get('location_name'),
+#                     video_start_time=row.get('video_start_time'),
+#                     video_end_time=row.get('video_end_time'),
+#                     camera_angle=row.get('camera_angle'),
+#                     onedrive_url=row.get('onedrive_url'),
+#                     )
+#             messages.success(request, "Data has been successfully uploaded to the CloudURI model")
+
+#         except Exception as e:
+#             messages.error(request, f"Error processing file: {str(e)}")
+
+#     return render(request, 'templates/dms/upload_excel_data.html')
+
+
+
 def upload_cloud_uri(request):
     if request.method == 'POST':
         try:
-            file = request.FILES['file']
-
-            # Check the file extension
+            file = request.FILES.get('file')
+            if not file:
+                messages.error(request, "No file uploaded")
+                return render(request, 'templates/dms/upload_excel_data.html')
+            
+            # Check the file extension and read the file accordingly
             if file.name.endswith('.xlsx') or file.name.endswith('.xls'):
                 df = pd.read_excel(file, dtype=str)
             elif file.name.endswith('.csv'):
@@ -133,42 +183,53 @@ def upload_cloud_uri(request):
                 messages.error(request, "Unsupported file type")
                 return render(request, 'templates/dms/upload_excel_data.html')
 
-            required_columns = [ 'company_name', 'project_name', 'location_name', 'video_start_time', 'video_end_time', 'onedrive_url', 'userid', 'camera_angle']
+            required_columns = [
+                'company_name', 'project_name', 'location_name',
+                'video_start_time', 'video_end_time', 'onedrive_url',
+                'userid', 'camera_angle'
+            ]
 
             # Check if all required columns are in the DataFrame
-            if not all(column.strip()  in df.columns for column in required_columns):
-                missing_columns = [column for column in required_columns if column not in df.columns]
+            missing_columns = [column for column in required_columns if column not in df.columns]
+            if missing_columns:
                 messages.error(request, f"Missing required columns: {', '.join(missing_columns)}")
                 return render(request, 'templates/dms/upload_excel_data.html')
 
             # Iterate over rows in the DataFrame and create CloudURI instances
             for index, row in df.iterrows():
-                # CloudURI.objects.create(
-                #     userid=row.get('userid'),
-                #     company_name=row.get('company_name'),
-                #     project_name=row.get('project_name'),
-                #     location_name=row.get('location_name'),
-                #     video_start_time=row.get('video_start_time'),
-                #     video_end_time=row.get('video_end_time'),
-                #     camera_angle=row.get('camera_angle'),
-                #     onedrive_url=row.get('onedrive_url'),
-                # )
+                try:
+                    company = Company.objects.get(name=row['company_name'])
+                    company_id = company.id
+                except Company.DoesNotExist:
+                    company_id = None
+
+                try:
+                    project = Project.objects.get(name=row['project_name'])
+                    project_id = project.id
+                except Project.DoesNotExist:
+                    project_id = None
+
                 NewCloudURI.objects.create(
                     userid=row.get('userid'),
-                    company_name=row.get('company_name'),
+                    company_id=company_id,
+                    project_id=project_id,
+
+                    company_name=row.get('company_name'),                    
                     project_name=row.get('project_name'),
+
                     location_name=row.get('location_name'),
                     video_start_time=row.get('video_start_time'),
                     video_end_time=row.get('video_end_time'),
                     camera_angle=row.get('camera_angle'),
                     onedrive_url=row.get('onedrive_url'),
-                    )
-            messages.success(request, "Data has been successfully uploaded to the CloudURI model")
+                )
 
+            messages.success(request, "Data has been successfully uploaded to the CloudURI model")
         except Exception as e:
             messages.error(request, f"Error processing file: {str(e)}")
 
     return render(request, 'templates/dms/upload_excel_data.html')
+
 
 # def add_cloud_uri_view(request):
 #     userid = request.session.get('user_id')
@@ -202,42 +263,55 @@ def upload_cloud_uri(request):
 #     return render(request, 'templates/dms/add_cloud_uri.html', context=context)
 
 def add_cloud_uri_view(request):
-
-
-
     userid = request.session.get('user_id')
+
     if request.method == 'POST':
-        print("****************************",request.POST)
         video_start_time_str = request.POST.get('video_start_time')
         video_end_time_str = request.POST.get('video_end_time')
 
         video_start_time = datetime.strptime(video_start_time_str, '%m/%d/%Y %I:%M %p')
         video_end_time = datetime.strptime(video_end_time_str, '%m/%d/%Y %I:%M %p')
 
-        # Create a mutable copy of request.POST
         mutable_post = request.POST.copy()
-
-        # Update the mutable copy with converted date/time values
         mutable_post['video_start_time'] = video_start_time.strftime('%Y-%m-%d %H:%M:%S')
         mutable_post['video_end_time'] = video_end_time.strftime('%Y-%m-%d %H:%M:%S')
-        # form = CloudURIForm(mutable_post)
+
+        # Fetch company_id and project_id from POST data
+        company_id = mutable_post.get('company_id')
+        project_id = mutable_post.get('project_id')
+
+        # Retrieve company_name and project_name based on company_id and project_id
+        try:
+            company_name = Company.objects.get(id=company_id).name
+        except Company.DoesNotExist:
+            company_name = None
+        
+        try:
+            project_name = Project.objects.get(id=project_id).name
+        except Project.DoesNotExist:
+            project_name = None
+
+        # Update mutable_post with company_name and project_name
+        mutable_post['company_name'] = company_name
+        mutable_post['project_name'] = project_name
+
         form = NewCloudURIForm(mutable_post)
-    
-        if form.is_valid():     
-            print(form.cleaned_data,"<<<<<<<<<<<<<<<<<<<<<<<<<<")    
+
+        print("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&",form)
+        if form.is_valid():
             form.save()
-            messages.success(request, 'Video URI Added successfully.')            
+            messages.success(request, 'Video URI Added successfully.')
+        else:
+            messages.error(request, 'Error adding Video URI. Please check the form.')
+
     else:
-        # form = CloudURIForm()
         form = NewCloudURIForm()
-    
+
     company_list = Company.objects.filter(userid=userid)
-    projects_list=Project.objects.filter(userid=userid)
-    context={'form': form ,'userid':userid,'projects_list':projects_list,'company_list':company_list}       
+    projects_list = Project.objects.filter(userid=userid)
+    context = {'form': form, 'userid': userid, 'projects_list': projects_list, 'company_list': company_list}
+
     return render(request, 'templates/dms/add_cloud_uri.html', context=context)
-
-
-
 
 
 
@@ -305,33 +379,30 @@ def filter_cloud_uri(request):
         if not userid:
             return HttpResponseBadRequest("User not authenticated")
 
-        company_name = request.POST.get('company')
-        project_name = request.POST.get('project')
+        # company_name = request.POST.get('company')
+        # project_name = request.POST.get('project')
+
+        company_id = request.POST.get('company')
+        project_id = request.POST.get('project')
+
         location = request.POST.get('location')
         camera_angle = request.POST.get('cameraAngle')
         video_start_time = request.POST.get('videoStartTime')
 
-        # Build the filter dictionary
         filtercolumn = {'userid': userid}
 
-        if company_name:
-            filtercolumn['company_name'] = company_name
-        if project_name:
-            filtercolumn['project_name'] = project_name
+        if company_id:
+            filtercolumn['company_id'] = company_id
+        if project_id:
+            filtercolumn['project_id'] = project_id
         if location:
             filtercolumn['location_name'] = location
         if camera_angle:
             filtercolumn['camera_angle'] = camera_angle
 
-        # Filter the CloudURI objects based on the filter dictionary
-        
-
         filtered_data = NewCloudURI.objects.filter(**filtercolumn)
-        # filtered_data = CloudURI.objects.filter(**filtercolumn)
-
-        if video_start_time == "ALL":
-           # filtered_data = CloudURI.objects.all()
-           # filtered_data = NewCloudURI.objects.all()
+        
+        if video_start_time == "ALL":       
            filtered_data = NewCloudURI.objects.filter(userid=userid, location_name=location)
 
             
@@ -447,8 +518,16 @@ def filter_cloud_uri(request):
 data_store = {}  
 def fetch_cloud_uri(request):
     if request.method == 'GET':
+
+        print("**********",request.GET)
+
+        company_id = request.GET.get('company_id')
+        project_id = request.GET.get('project_id')
+        
         userid = request.session.get('user_id')
         company_name = request.GET.get('company_name')
+
+
         project_name = request.GET.get('project_name')
         location = request.GET.get('location')
         camera_angle = request.GET.get('cameraangle')
@@ -456,37 +535,75 @@ def fetch_cloud_uri(request):
         
         response_data = {}
 
-        if company_name:
-            data_store['company_name'] = company_name
-            projects_list = Project.objects.filter(userid=userid, company_name=company_name).values_list('name', flat=True)
-            response_data['projects'] = list(projects_list)
+        if company_id:
+            data_store['company_id'] = company_id
+            projects = Project.objects.filter(company_id=company_id, userid=userid)
+            projects_list = [{'id': project.id, 'name': project.name} for project in projects]
+            return JsonResponse({'projects': projects_list})
 
-        if project_name:
-            data_store['project_name'] = project_name
+
+
+        # if company_name:
+        #     data_store['company_name'] = company_name
+        #     projects_list = Project.objects.filter(userid=userid, company_name=company_name).values_list('name', flat=True)
+        #     response_data['projects'] = list(projects_list)
+
+
+        if project_id:   
+            data_store['project_id'] = project_id         
             locations_list = NewCloudURI.objects.filter(userid=userid,
-                                                         company_name=data_store['company_name'],
-                                                         project_name=project_name,
+                                                         company_id=data_store['company_id'],
+                                                         project_id=project_id,
                                                          ).values_list('location_name', flat=True)
             response_data['locations'] = list(locations_list)
+
+        # if project_name:
+        #     data_store['project_name'] = project_name
+        #     locations_list = NewCloudURI.objects.filter(userid=userid,
+        #                                                  company_name=data_store['company_name'],
+        #                                                  project_name=project_name,
+        #                                                  ).values_list('location_name', flat=True)
+        #     response_data['locations'] = list(locations_list)
+
+        # if location:
+        #     data_store['location'] = location
+        #     camera_angles_list = NewCloudURI.objects.filter(userid=userid, 
+        #                                                     company_name=data_store['company_name'],
+        #                                                      project_name=data_store['project_name'],
+        #                                                      location_name=location,
+        #                                                     ).values_list('camera_angle', flat=True)
+        #     response_data['cameraangle'] = list(camera_angles_list)
 
         if location:
             data_store['location'] = location
             camera_angles_list = NewCloudURI.objects.filter(userid=userid, 
-                                                            company_name=data_store['company_name'],
-                                                             project_name=data_store['project_name'],
+                                                            company_id=data_store['company_id'],
+                                                             project_id=data_store['project_id'],
                                                              location_name=location,
                                                             ).values_list('camera_angle', flat=True)
             response_data['cameraangle'] = list(camera_angles_list)
+
         if camera_angle:
             data_store['camera_angle'] = camera_angle
-            if 'location' in data_store and 'project_name' in data_store and 'company_name' in data_store:
+            if 'location' in data_store and 'project_id' in data_store and 'company_id' in data_store:
                 video_start_time = NewCloudURI.objects.filter(userid=userid, 
                                                               camera_angle=camera_angle,
                                                               location_name=data_store['location'],
-                                                              project_name=data_store['project_name'],
-                                                              company_name=data_store['company_name']
+                                                              project_id=data_store['project_id'],
+                                                              company_id=data_store['company_id']
                                                               ).values_list('video_start_time', flat=True)
                 response_data['video_start_time'] = list(video_start_time)
+
+        # if camera_angle:
+        #     data_store['camera_angle'] = camera_angle
+        #     if 'location' in data_store and 'project_name' in data_store and 'company_name' in data_store:
+        #         video_start_time = NewCloudURI.objects.filter(userid=userid, 
+        #                                                       camera_angle=camera_angle,
+        #                                                       location_name=data_store['location'],
+        #                                                       project_name=data_store['project_name'],
+        #                                                       company_name=data_store['company_name']
+        #                                                       ).values_list('video_start_time', flat=True)
+        #         response_data['video_start_time'] = list(video_start_time)
                 
                 
                 
@@ -509,6 +626,135 @@ def fetch_cloud_uri(request):
     else:
         return HttpResponseBadRequest("Invalid request")
 
+
+import os
+import logging
+from django.conf import settings
+from django.http import HttpResponse, HttpResponseServerError
+from django.views.decorators.csrf import csrf_exempt
+from django.db import connections
+from django.utils.text import get_valid_filename
+
+logger = logging.getLogger(__name__)
+
+@csrf_exempt
+def export_database_postgresql(request):
+    try:
+        db_name = settings.DATABASES['default']['NAME']
+        db_user = settings.DATABASES['default']['USER']
+        db_host = settings.DATABASES['default']['HOST']
+        db_password = settings.DATABASES['default']['PASSWORD']
+
+        # Set PGPASSWORD environment variable if password is required
+        if db_password:
+            os.environ['PGPASSWORD'] = db_password
+
+        # Connect to the database using Django's database connection
+        with connections['default'].cursor() as cursor:
+
+            # Get all table names in the database
+            cursor.execute("SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'")
+            table_names = [row[0] for row in cursor.fetchall()]
+
+            # Initialize an empty list to store SQL statements
+            sql_lines = []
+
+            for table_name in table_names:
+                # Generate CREATE TABLE statement
+                cursor.execute(f"SELECT column_name, data_type FROM information_schema.columns WHERE table_name = '{table_name}'")
+                columns = cursor.fetchall()
+                create_table_sql = f"CREATE TABLE {table_name} ("
+                for column in columns:
+                    create_table_sql += f"{column[0]} {column[1]}, "
+                create_table_sql = create_table_sql[:-2] + ");"
+                sql_lines.append(create_table_sql)
+
+                # Generate INSERT INTO statements
+                cursor.execute(f"SELECT * FROM {table_name}")
+                table_data = cursor.fetchall()
+                for row in table_data:
+                    insert_sql = f"INSERT INTO {table_name} VALUES ("
+                    for value in row:
+                        if isinstance(value, str):
+                            insert_sql += f"'{value}', "
+                        else:
+                            insert_sql += f"{value}, "
+                    insert_sql = insert_sql[:-2] + ");"
+                    sql_lines.append(insert_sql)
+
+        # File path and name
+        file_name = 'exported_data.sql'
+        file_path = os.path.join(settings.MEDIA_ROOT, file_name)  # Change to your preferred directory
+
+        # Ensure directory exists
+        os.makedirs(settings.MEDIA_ROOT, exist_ok=True)
+
+        # Write SQL statements to a file
+        with open(file_path, 'w') as f:
+            for line in sql_lines:
+                f.write(line + "\n")
+
+        # Prepare HTTP response with the SQL file as a downloadable attachment
+        with open(file_path, 'rb') as sql_file:
+            response = HttpResponse(sql_file, content_type='application/sql')
+            response['Content-Disposition'] = f'attachment; filename="{get_valid_filename(file_name)}"'
+            return response
+
+    except Exception as e:
+        error_message = f'Export failed: {str(e)}'
+        logger.error(error_message)
+        return HttpResponseServerError(error_message)
+
+
+
+# @csrf_exempt
+# def export_database_postgresql(request):
+#     # db_name = settings.DATABASES['default']['NAME']
+#     # db_user = settings.DATABASES['default']['USER']
+#     # db_host = settings.DATABASES['default']['HOST']
+
+#     db_name ="vms_db"
+#     db_user = "postgres"
+#     db_host = "localhost"
+
+#     # Command to dump the database to an SQL file
+#     command = f'pg_dump -h {db_host} -U {db_user} {db_name}'
+
+#     try:
+#         # Execute the command
+#         process = subprocess.Popen(command, stdout=subprocess.PIPE, shell=True)
+#         sql_dump = process.communicate()[0]
+
+#         # Prepare HTTP response with the SQL dump as a downloadable file
+#         response = HttpResponse(sql_dump, content_type='application/force-download')
+#         response['Content-Disposition'] = 'attachment; filename="export_vms_db.sql"'
+
+#         return response
+
+#     except Exception as e:
+#         # If an error occurs during the dump process, return an error response
+#         return JsonResponse({'error': str(e)}, status=500)
+
+
+
+# def export_database_postgresql(request):
+#     # db_name = settings.DATABASES['default']['NAME']
+#     # db_user = settings.DATABASES['default']['USER']
+#     # db_host = settings.DATABASES['default']['HOST']
+
+#     db_name ="vms_db"
+#     db_user = "postgres"
+#     db_host = "localhost"
+
+
+#     command = f'pg_dump -h {db_host} -U {db_user} {db_name}'
+
+#     process = subprocess.Popen(command, stdout=subprocess.PIPE, shell=True)
+#     sql_dump = process.communicate()[0]
+
+#     response = HttpResponse(sql_dump, content_type='application/force-download')
+#     response['Content-Disposition'] = 'attachment; filename="export_vms_db.sql"'
+#     return response
 
 
 
@@ -579,41 +825,142 @@ def download_cloud_data_excel(request):
 
 def view_cloud_uri(request):  
   user_id = request.session.get('user_id')
+
+  user_account = UserAccount.objects.get(id=user_id)
+  print("*******************",user_account)
   # data = CloudURI.objects.filter(userid=user_id).order_by('-id')[:10]
   data = NewCloudURI.objects.filter(userid=user_id).order_by('-id')[:10]
 
-  company_list = Company.objects.filter(userid=user_id)   
-  return render(request, 'templates/dms/view_cloud_uri.html' ,{'data' : data,'company_list':company_list})
+  company_list = Company.objects.filter(userid=user_id) 
+  return render(request, 'templates/dms/view_cloud_uri.html' ,{'data' : data,'company_list':company_list,'user_account':user_account})
+
+# class Add_project(View):
+#     def get(self, request, *args, **kwargs):
+#         user_id = request.session.get('user_id')
+#         print("GET method - user_id:", user_id)
+#         company_list = Company.objects.filter(userid=user_id)
+#         form = ProjForm()
+#         return render(request, 'templates/dms/AddProject.html', {'userid': user_id, 'company_list': company_list, 'form': form})
+
+#     def post(self, request, *args, **kwargs):
+#         user_id = request.session.get('user_id')
+#         print("POST method - user_id:", user_id)
+#         form = ProjForm(request.POST)
+#         if form.is_valid():
+#             project = form.save(commit=False)
+#             project.userid = user_id  # Assign the user_id to the project
+#             project.save()
+#             messages.success(request, 'Project added successfully.')
+#             return redirect('add_project')  # Redirect to prevent form resubmission
+
+#         # Form is invalid, re-render the page with the form errors
+#         company_list = Company.objects.filter(userid=user_id)
+#         return render(request, 'templates/dms/AddProject.html', {'userid': user_id, 'company_list': company_list, 'form': form})
+
+# class Add_project(View):
+  
+#     def get(self, request, *args, **kwargs):
+#         user_id = request.session.get('user_id')
+#         print("GET method - user_id:", user_id)
+#         company_list = Company.objects.filter(userid=user_id)
+#         return render(request, 'templates/dms/AddProject.html', {'userid': user_id, 'company_list': company_list})
+
+#     def post(self, request, *args, **kwargs):
+#         if request.method == "POST":
+#             user_id = request.session.get('user_id')
+#             print("POST method - user_id:", user_id)
+#             company_name = request.POST.get('company')
+#             project_name = request.POST.get('project_name')
+#             print(company_name, project_name)
+
+#             # Retrieve UserAccount instance
+#             user_account = UserAccount.objects.get(id=user_id)
+
+#             # Create Project with UserAccount instance and company_name
+#             project = Project.objects.create(user_id=user_account, name=project_name, company_name=company_name)
+
+#             messages.success(request, 'Project added successfully.')
+#             company_list = Company.objects.filter(userid=user_id)
+#             return render(request, 'templates/dms/AddProject.html', {'userid': user_id, 'company_list': company_list})
 
 
-class Add_project(View):
- 
-  def get(self,request,*args,**kwargs):
-      user_id = request.session.get('user_id')
-      print("get method ....................................................user_id",user_id)
-      company_list = Company.objects.filter(userid=user_id)      
-      return render(request, 'templates/dms/AddProject.html', {'userid':user_id,'company_list':company_list})
-
-  def post(self,request,*args,**kwargs):
-      if request.method == "POST":
+class AddProject(View):
+    def get(self, request, *args, **kwargs):
         user_id = request.session.get('user_id')
-        print("POST method ...................................................user_id",user_id)
-        company_name = request.POST.get('company')
-        project_name = request.POST.get('project_name')
-        print(company_name, project_name, "*****")
-        messages.success(request, 'Project Added successfully.')
-        project = Project.objects.create(userid=user_id, name=project_name, company_name=company_name)       
-        company_list = Company.objects.filter(userid=user_id)      
+        company_list = Company.objects.filter(userid=user_id)
+        return render(request, 'templates/dms/AddProject.html', {'userid':user_id,'company_list':company_list})
+
+    def post(self, request, *args, **kwargs):
+        user_id = request.session.get('user_id')
+        company_list = Company.objects.filter(userid=user_id)
+        company_id = request.POST.get('company')
+        project_name = request.POST.get('name')  # Assuming 'name' corresponds to project name
+
+        try:
+            company = Company.objects.get(id=company_id, userid=user_id)
+        except Company.DoesNotExist:
+            company = None
+
+        if company:
+            project = Project.objects.create(userid=user_id, name=project_name, company=company)
+            messages.success(request, 'Project added successfully.')
+        else:
+            messages.error(request, 'Company does not exist or you do not have permission to add a project.')
+
         return render(request, 'templates/dms/AddProject.html', {'userid':user_id,'company_list':company_list})
 
 
+# class AddProject(View):
+
+#   def get(self,request,*args,**kwargs):
+#       user_id = request.session.get('user_id')
+#       print("get method ....................................................user_id",user_id)
+#       company_list = Company.objects.filter(userid=user_id)  
+
+#       return render(request, 'templates/dms/AddProject.html', {'userid':user_id,'company_list':company_list})
+
+#   def post(self,request,*args,**kwargs):
+#       if request.method == "POST":
+#         userid = request.session.get('user_id')
+#         company_id = request.POST.get('company')
+#         name = request.POST.get('project_name')
+#         messages.success(request, 'Project Added successfully.')
+#         project = Project.objects.create(user_id=user_id, name=project_name, company_name=company_name)       
+#         company_list = Company.objects.filter(userid=user_id)      
+#         return render(request, 'templates/dms/AddProject.html', {'userid':user_id,'company_list':company_list})
+
+
+
+# class ListProject(View):
+#     def get(self,request,*args,**kwargs):
+#         user_id = request.session.get('user_id')
+#         all_projects=Project.objects.filter(userid=user_id)
+#         context={'all_projects':all_projects}
+#         print("**********",context)
+#         return render (request,'templates/dms/ListProject.html',context=context)
 
 class ListProject(View):
-    def get(self,request,*args,**kwargs):
+    def get(self, request, *args, **kwargs):
         user_id = request.session.get('user_id')
-        all_projects=Project.objects.filter(userid=user_id)
-        context={'all_projects':all_projects}
-        return render (request,'templates/dms/ListProject.html',context=context)
+        all_projects = Project.objects.filter(userid=user_id)        
+        for project in all_projects:
+            project.company_name = project.company.name  # Assuming company has a 'name' field
+        
+        context = {'all_projects': all_projects}
+        print("**********", context)
+        return render(request, 'templates/dms/ListProject.html', context=context)
+
+
+
+@login_required
+def editproj_form(request):
+    user_id = request.session.get('user_id')
+    all_projects=Project.objects.filter(userid=user_id)
+    for project in all_projects:
+        project.company_name = project.company.name
+    context={'all_projects':all_projects}
+    return render(request,'templates/dms/ModifyProject.html', context)
+
 
 
 
@@ -623,7 +970,6 @@ class ProjectUpdate(UpdateView):
     get_project=Project.objects.get(id=pk_id)
     form=ProjForm(instance=get_project)
     context={'form':form,'userid':user_id}   
-    print("****",context)
     return render(request,'templates/dms/ProjectUpdate.html', context)
 
   def post(self, request, pk_id):      
@@ -636,19 +982,7 @@ class ProjectUpdate(UpdateView):
       get_project=Project.objects.get(id=pk_id)
       form=ProjForm(instance=get_project)
       context={'form':form,'userid':user_id}   
-      print("****",context)
       return render(request,'templates/dms/ProjectUpdate.html', context)
-
-   
-# to update station information 
-@login_required
-def editproj_form(request):
-    user_id = request.session.get('user_id')
-    all_projects=Project.objects.filter(userid=user_id)
-    context={'all_projects':all_projects}
-    return render(request,'templates/dms/ModifyProject.html', context)
-
-
 
 
 
@@ -704,7 +1038,7 @@ def Company_delete(request, pk_id):
         company = get_object_or_404(Company, id=pk_id)
 
 
-        projects_to_delete = Project.objects.filter(userid=user_id, company_name=company.name)
+        projects_to_delete = Project.objects.filter(userid=user_id, company_id=company.id)
         projects_to_delete.delete()
 
 

@@ -1,0 +1,151 @@
+{% extends 'templates/admin.html' %}
+{% load static %}
+
+{% block title %}Project Update {% endblock %}
+
+{% block content %}
+<div class="container-xxl flex-grow-1 container-p-y">
+    <form id="userSettingsForm" class="browser-default-validation" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <h4 class="py-3 breadcrumb-wrapper mb-4"><span class="text-muted fw-light">COS AI - VMS ADMIN /</span> Admin User Settings</h4>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card mb-4">
+                    <h5 class="card-header">User Settings</h5>
+                    <div class="card-body">
+                        <div class="form-group "> <!-- Added 'row' class to form-group -->
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="user_id">Select User</label>
+                                    <select id="user_id" required name="user_id" class="form-control">
+                                        <option value="" disabled selected>Select User</option>
+                                        {% for user in user_accounts %}
+                                            <option value="{{ user.id }}" data-name="{{ user.name }}">{{ user.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label">Enable / Disable Delete Cloud Data</label>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="delete_cloud_data" name="delete_cloud_data">
+                                        <label class="form-check-label" for="delete_cloud_data">Delete Cloud Data</label>
+                                    </div>
+                                    <input type="hidden" id="userid" name="userid" value="{{ request.user.id }}" />
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+
+
+    function fetchUserDeleteAccess(userId) {
+        $.ajax({
+            type: "POST",
+            url: '/vfms/fetch-user-delete-access/',
+            headers: {
+                'X-CSRFToken': $('input[name="csrfmiddlewaretoken"]').val()
+            },
+            data: {
+                user_id: userId,
+                csrfmiddlewaretoken: '{{ csrf_token }}'
+            },
+            success: function(response) {
+                if ('user_delete_access' in response) {
+                    const deleteAccess = response.user_delete_access;
+                    // Update UI or perform actions based on deleteAccess value
+                    const deleteCloudDataCheckbox = document.getElementById('delete_cloud_data');
+                    deleteCloudDataCheckbox.checked = deleteAccess;
+                } else {
+                    console.error('Error: User delete access not found.');
+                }
+            },
+            error: function(xhr, errmsg, err) {
+                console.error('Error:', errmsg);
+            }
+        });
+    }
+
+
+    document.addEventListener('DOMContentLoaded', function() {
+
+        document.getElementById('user_id').addEventListener('change', function() {
+            const userId = this.value;
+            if (userId) {
+                fetchUserDeleteAccess(userId);
+            }
+        });
+
+        document.getElementById('userSettingsForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            const userId = document.getElementById('user_id').value;
+            const userName = document.getElementById('user_id').options[document.getElementById('user_id').selectedIndex].getAttribute('data-name');
+            const isEnabled = document.getElementById('delete_cloud_data').checked;
+
+            console.log('Selected User:', userName, 'ID:', userId);
+            console.log('Delete Cloud Data Enabled:', isEnabled);
+
+
+
+
+            // Show confirmation dialog using SweetAlert
+            Swal.fire({
+                title: 'Confirm',
+                text: 'Are you sure you want to update user settings?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, update it!',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Proceed with form submission via AJAX
+                    $.ajax({
+                        type: "POST",
+                        url: '/vfms/admin-update_user_setting/',
+                        headers: {
+                            'X-CSRFToken': $('input[name="csrfmiddlewaretoken"]').val()
+                        },
+                        data: {
+                            user_id: userId,
+                            delete_cloud_data: isEnabled ? 'on' : 'off',
+                            csrfmiddlewaretoken: '{{ csrf_token }}'
+                        },
+                        success: function(response) {
+                            console.log('Form submitted successfully');
+                            Swal.fire(
+                                'Success!',
+                                'User settings updated successfully.',
+                                'success'
+                            );
+                             setTimeout(function () {
+		                        location.reload(true);
+		                      }, 1000);
+                        },
+                        error: function(xhr, errmsg, err) {
+                            console.error('Error:', errmsg);
+                            Swal.fire(
+                                'Error!',
+                                'Failed to update user settings. Please try again.',
+                                'error'
+                            );
+                            
+                        }
+                    });
+                }
+            });
+
+        });
+    });
+</script>
+
+
+{% endblock %}

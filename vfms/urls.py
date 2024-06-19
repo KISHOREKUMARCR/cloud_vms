@@ -24,6 +24,9 @@ urlpatterns = [
     path('download_cloud_data_excel/',views.download_cloud_data_excel, name="download_cloud_data_excel"),
     path('deleteall_cloud_data_table/',views.deleteall_cloud_data_table, name="deleteall_cloud_data_table"),
     path('desired_download_excel/',views.desired_download_excel, name="desired_download_excel"),
+    path('export_database_postgresql/',views.export_database_postgresql, name="export_database_postgresql"),
+
+
 
     #company crud operation
     path('AddCompany', views.my_form, name='AddCompany'),
@@ -34,7 +37,9 @@ urlpatterns = [
 
     #project crud operation
     #path("AddProject/", views.project_form,name='AddProject'),
-    path("AddProject/",views.Add_project.as_view(),name='AddProject'),  # Addd project get and post method
+    # path('AddProject/', views.AddProject.as_view(), name='AddProject'),
+    # path('add_project/', views.add_project_view, name='AddProject'),
+    path('AddProject/', views.AddProject.as_view(), name='AddProject'),
     path("ListProject/", views.ListProject.as_view(),name='ListProject'),
     path("ModifyProject/",views.editproj_form,name='ModifyProject'),
     path("ProjectUpdate/<int:pk_id>/",views.ProjectUpdate.as_view(),name='UpdateProject'),
@@ -55,6 +60,13 @@ urlpatterns = [
     path("Admin_Home/",AdminMenu,name="AdminMenu"),
     path("Approver_Home/",ApproverMenu,name="ApproverMenu"),
     path("User_Home/",UserMenu,name="UserMenu"),
+    path("admin/",admin,name="admin"),
+    path('admin_user_login/', views.admin_user_login, name='admin_user_login'),
+    path("admin_user_settings/",views.admin_user_settings,name='admin_user_settings'),
+
+    path('admin-update_user_setting/',views.admin_update_user_setting, name="admin_update_user_setting"),
+    path('fetch-user-delete-access/', views.fetch_user_delete_access, name='fetch_user_delete_access'),
+
 
     #company relevant urls
 

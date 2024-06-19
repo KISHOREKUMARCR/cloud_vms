@@ -90,7 +90,7 @@
 
 
 
-    <script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
     
   </head>
 
@@ -418,7 +418,9 @@
                        {% endcomment %}
                    {% endif %}
                    <li class="menu-item active open">
-                    <a href="{% url 'AdminMenu' %}"class="menu-link">
+                    {% comment %} <a href="{% url 'AdminMenu' %}"class="menu-link"> {% endcomment %}
+                      <a href="{% url 'ViewcloudURI' %}"class="menu-link">
+                      
                       
                       <i class="menu-icon tf-icons bx bx-home-circle"></i>
                       <div data-i18n="Dashboards">Dashboards</div>
@@ -494,12 +496,12 @@
           </li>
 
 
-          <li class="menu-item ">
+          {% comment %} <li class="menu-item ">
           <a href="{% url 'ViewcloudURI' %}" class="menu-link">
           <i class="menu-icon tf-icons bx bx-data"></i>
           <div data-i18n="Cloud Video List">Cloud Video List</div>
           </a>
-          </li>
+          </li> {% endcomment %}
 
           <li class="menu-item ">
           <a href="{% url 'UploadcloudURI' %}" class="menu-link">
@@ -680,7 +682,7 @@
                             
                             <div class="flex-grow-1">
                               <span class="fw-semibold d-block lh-1">{{custom_user.user_name}} </span>
-                              <small>Super Admin</small>
+                              <small>User</small>
                               <!-- <span class="fw-semibold d-block lh-1 mb-2 mt-3">User Reference ID:  </span> -->
                          
                             </div>
