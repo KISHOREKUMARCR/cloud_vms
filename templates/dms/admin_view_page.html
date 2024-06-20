@@ -1,6 +1,11 @@
 {% extends 'templates/admin.html' %}
 {% load static %}
- 
+<script src="{% static 'assets/js/forms-file-upload.js' %}"></script>
+<script src="{% static 'assets/vendor/libs/dropzone/dropzone.js' %}"></script>
+<link rel="stylesheet" href="{% static 'assets/vendor/libs/dropzone/dropzone.css' %}" />
+<script src="{% static 'assets/vendor/js/template-customizer.js' %}"></script>
+
+
 
 
 
@@ -112,6 +117,7 @@ $(document).ready(function() {
     });
   });
 $(document).ready(function() {
+    console.log("javascritp working . .. . ")
     $('.login-link').click(function(e) {
         e.preventDefault();
 
