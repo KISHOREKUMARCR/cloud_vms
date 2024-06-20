@@ -731,6 +731,10 @@ def add_client_company(CompanyName):
         cursor.close()
         conn.close()
    #return render(request, 'templates/accounts/registerpage.html')
+   
+import datetime
+
+
 def loginprocess_func(uname,pwd,request):
     print("INSIDE loginprocess_func")
     global current_login_user_id
@@ -743,7 +747,9 @@ def loginprocess_func(uname,pwd,request):
 
         uprofile = UserAccount.objects.get(user_name = uname)
         uprofile.pre_last_login = uprofile.last_login
-        uprofile.last_login = datetime.datetime.now(tz=timezone.utc)
+        # uprofile.last_login = datetime.datetime.now(tz=timezone.utc)
+        uprofile.last_login = datetime.datetime.now(tz=datetime.timezone.utc)
+
         uprofile.save()
         messages.success(request, 'Login successful!')
         return 'AdminMenu'
