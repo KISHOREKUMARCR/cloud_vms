@@ -648,6 +648,7 @@ def registration(request):
     return render(request, 'templates/accounts/registerpage.html',{'cform':cform,'capform':capform})
     #return render(request, 'templates/accounts/register-cover.html',{'cform':cform,'capform':capform})
 '''
+import datetime
 
 def registration(request):
     print("INSIDE registration")
@@ -661,8 +662,13 @@ def registration(request):
         busi_type = request.POST.get('busitype')
         print("\n\n\n\n busitype : ",busi_type)
         password = urlsafe_base64_encode(force_bytes(pwd))
-        last_login = datetime.datetime.now(tz=timezone.utc)
-        date_joined = datetime.datetime.now(tz=timezone.utc)
+        # last_login = datetime.datetime.now(tz=timezone.utc)
+        # date_joined = datetime.datetime.now(tz=timezone.utc)
+        
+        last_login = datetime.datetime.now(tz=datetime.timezone.utc)
+        date_joined = datetime.datetime.now(tz=datetime.timezone.utc)
+
+
         print(name,email,mobile,uname,pwd,password,comp_name,busi_type)
         uprofile = UserAccount.objects.create(name=name,user_name = uname,user_email=email,user_mobile=mobile,user_password=password,date_joined=date_joined,last_login=last_login,user_roles_id=2,user_company_name=comp_name,user_business_type=busi_type,user_social_provider='manual')
         print(uprofile)
@@ -732,7 +738,7 @@ def add_client_company(CompanyName):
         conn.close()
    #return render(request, 'templates/accounts/registerpage.html')
    
-import datetime
+
 
 
 def loginprocess_func(uname,pwd,request):

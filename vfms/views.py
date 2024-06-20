@@ -572,6 +572,13 @@ def fetch_cloud_uri(request):
                                                          company_id=data_store['company_id'],
                                                          project_id=project_id,
                                                          ).values_list('location_name', flat=True)
+            print("Company ID ",data_store['company_id'])
+            print("project_id ID ",data_store['project_id'])
+            print("hellooooo location . . . .")
+            print("******************************")
+            print("-----",list(locations_list))
+            print("******************************")
+            
             response_data['locations'] = list(locations_list)
 
         # if project_name:

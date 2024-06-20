@@ -106,7 +106,7 @@ WSGI_APPLICATION = "DMS.wsgi.application"
 
 
 
-database_name = 'vms_db' 
+database_name = 'vms_db3' 
 
 DATABASES = {
     'default': {
