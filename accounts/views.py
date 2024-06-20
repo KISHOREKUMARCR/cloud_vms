@@ -2,7 +2,7 @@ import json,datetime,os ,yagmail
 from json import dumps
 import psycopg2
 from django.core import serializers
-from django.utils import timezone
+# from django.utils import timezone
 from django.shortcuts import render,redirect
 from django.http import HttpResponse,HttpResponseRedirect
 from accounts.forms import UserAccountForm, UserAccountUpdateForm,CaptchaForms
