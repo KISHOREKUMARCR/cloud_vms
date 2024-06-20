@@ -197,16 +197,33 @@ def upload_cloud_uri(request):
 
             # Iterate over rows in the DataFrame and create CloudURI instances
             for index, row in df.iterrows():
-                try:
-                    company = Company.objects.get(name=row['company_name'])
+                # try:
+                #     company = Company.objects.get(name=row['company_name'])
+                #     company_id = company.id
+                # except Company.DoesNotExist:
+                #     company_id = None
+
+                # try:
+                #     project = Project.objects.get(name=row['project_name'])
+                #     project_id = project.id
+                # except Project.DoesNotExist:
+                #     project_id = None
+                companies = Company.objects.filter(name=row['company_name'])
+                if companies.exists():
+                    if companies.count() > 1:
+                        messages.warning(request, f"Multiple companies found for name: {row['company_name']}. Using the first one.")
+                    company = companies.first()
                     company_id = company.id
-                except Company.DoesNotExist:
+                else:
                     company_id = None
 
-                try:
-                    project = Project.objects.get(name=row['project_name'])
+                projects = Project.objects.filter(name=row['project_name'])
+                if projects.exists():
+                    if projects.count() > 1:
+                        messages.warning(request, f"Multiple projects found for name: {row['project_name']}. Using the first one.")
+                    project = projects.first()
                     project_id = project.id
-                except Project.DoesNotExist:
+                else:
                     project_id = None
 
                 NewCloudURI.objects.create(
@@ -550,11 +567,17 @@ def fetch_cloud_uri(request):
 
 
         if project_id:   
-            data_store['project_id'] = project_id         
+            data_store['project_id'] = project_id    
+            print("userid",userid)     
             locations_list = NewCloudURI.objects.filter(userid=userid,
                                                          company_id=data_store['company_id'],
                                                          project_id=project_id,
                                                          ).values_list('location_name', flat=True)
+            print("*********LOCATION",locations_list)
+            filtered_data = NewCloudURI.objects.all()
+
+            print("*********filtered_data",filtered_data)
+
             response_data['locations'] = list(locations_list)
 
         # if project_name:
@@ -944,8 +967,9 @@ class ListProject(View):
         user_id = request.session.get('user_id')
         all_projects = Project.objects.filter(userid=user_id)        
         for project in all_projects:
+            print("*********project",project)
             project.company_name = project.company.name  # Assuming company has a 'name' field
-        
+            
         context = {'all_projects': all_projects}
         print("**********", context)
         return render(request, 'templates/dms/ListProject.html', context=context)
@@ -957,7 +981,12 @@ def editproj_form(request):
     user_id = request.session.get('user_id')
     all_projects=Project.objects.filter(userid=user_id)
     for project in all_projects:
-        project.company_name = project.company.name
+        if project.company:
+          project.company_name = project.company.name
+        else:
+          project.company_name = 'No Company'
+        # print("*********project",project)
+        # project.company_name = project.company.name
     context={'all_projects':all_projects}
     return render(request,'templates/dms/ModifyProject.html', context)
 

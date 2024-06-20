@@ -120,7 +120,7 @@
           <!-- <div class="menu-inner-shadow"></div> -->
          
                 <ul class="menu-inner py-1">
-                  {% if custom_user.user_roles.id == 1 %}
+                  {% comment %} {% if custom_user.user_roles.id == 1 %} {% endcomment %}
                   <!-- Dashboards -->
                  <!--  <li class="menu-item active open">
                     <a href="{% url 'dashboarddata' %}"class="menu-link">
@@ -416,7 +416,7 @@
                         {% comment %}
                          {% endif %}  
                        {% endcomment %}
-                   {% endif %}
+                   {% comment %} {% endif %} {% endcomment %}
                    <li class="menu-item active open">
                     {% comment %} <a href="{% url 'AdminMenu' %}"class="menu-link"> {% endcomment %}
                       <a href="{% url 'ViewcloudURI' %}"class="menu-link">

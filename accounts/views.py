@@ -664,7 +664,7 @@ def registration(request):
         last_login = datetime.datetime.now(tz=timezone.utc)
         date_joined = datetime.datetime.now(tz=timezone.utc)
         print(name,email,mobile,uname,pwd,password,comp_name,busi_type)
-        uprofile = UserAccount.objects.create(name=name,user_name = uname,user_email=email,user_mobile=mobile,user_password=password,date_joined=date_joined,last_login=last_login,user_roles_id=1,user_company_name=comp_name,user_business_type=busi_type,user_social_provider='manual')
+        uprofile = UserAccount.objects.create(name=name,user_name = uname,user_email=email,user_mobile=mobile,user_password=password,date_joined=date_joined,last_login=last_login,user_roles_id=2,user_company_name=comp_name,user_business_type=busi_type,user_social_provider='manual')
         print(uprofile)
         
         # uprofile.save()
