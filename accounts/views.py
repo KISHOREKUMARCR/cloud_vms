@@ -829,7 +829,9 @@ def admin_user_login(request):
             
             uprofile = UserAccount.objects.get(user_name=uname)
             uprofile.pre_last_login = uprofile.last_login
-            uprofile.last_login = datetime.datetime.now(tz=timezone.utc)
+            # uprofile.last_login = datetime.datetime.now(tz=timezone.utc)
+            uprofile.last_login = datetime.datetime.now(tz=datetime.timezone.utc)
+
             uprofile.save()
             
             messages.success(request, 'Login successful!')
