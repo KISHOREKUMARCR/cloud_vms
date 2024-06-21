@@ -535,7 +535,7 @@ def filter_cloud_uri(request):
 data_store = {}  
 def fetch_cloud_uri(request):
     if request.method == 'GET':
-
+        data_store = {}  # Initialize data_store
         print("**********",request.GET)
 
         company_id = request.GET.get('company_id')
