@@ -208,23 +208,6 @@ def upload_cloud_uri(request):
                     project_id = project.id
                 except Project.DoesNotExist:
                     project_id = None
-                # companies = Company.objects.filter(name=row['company_name'])
-                # if companies.exists():
-                #     if companies.count() > 1:
-                #         messages.warning(request, f"Multiple companies found for name: {row['company_name']}. Using the first one.")
-                #     company = companies.first()
-                #     company_id = company.id
-                # else:
-                #     company_id = None
-
-                # projects = Project.objects.filter(name=row['project_name'])
-                # if projects.exists():
-                #     if projects.count() > 1:
-                #         messages.warning(request, f"Multiple projects found for name: {row['project_name']}. Using the first one.")
-                #     project = projects.first()
-                #     project_id = project.id
-                # else:
-                #     project_id = None
 
                 NewCloudURI.objects.create(
                     userid=row.get('userid'),
@@ -535,7 +518,7 @@ def filter_cloud_uri(request):
 data_store = {}  
 def fetch_cloud_uri(request):
     if request.method == 'GET':
-        data_store = {}  # Initialize data_store
+
         print("**********",request.GET)
 
         company_id = request.GET.get('company_id')
@@ -572,13 +555,6 @@ def fetch_cloud_uri(request):
                                                          company_id=data_store['company_id'],
                                                          project_id=project_id,
                                                          ).values_list('location_name', flat=True)
-            print("Company ID ",data_store['company_id'])
-            print("project_id ID ",data_store['project_id'])
-            print("hellooooo location . . . .")
-            print("******************************")
-            print("-----",list(locations_list))
-            print("******************************")
-            
             response_data['locations'] = list(locations_list)
 
         # if project_name:
@@ -968,9 +944,8 @@ class ListProject(View):
         user_id = request.session.get('user_id')
         all_projects = Project.objects.filter(userid=user_id)        
         for project in all_projects:
-            print("*********project",project)
             project.company_name = project.company.name  # Assuming company has a 'name' field
-            
+        
         context = {'all_projects': all_projects}
         print("**********", context)
         return render(request, 'templates/dms/ListProject.html', context=context)
@@ -982,12 +957,7 @@ def editproj_form(request):
     user_id = request.session.get('user_id')
     all_projects=Project.objects.filter(userid=user_id)
     for project in all_projects:
-        if project.company:
-          project.company_name = project.company.name
-        else:
-          project.company_name = 'No Company'
-        # print("*********project",project)
-        # project.company_name = project.company.name
+        project.company_name = project.company.name
     context={'all_projects':all_projects}
     return render(request,'templates/dms/ModifyProject.html', context)
 
