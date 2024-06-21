@@ -1,3 +1,4 @@
+pip==24.1
 asttokens==2.2.1
 Django
 debugpy==1.6.7
