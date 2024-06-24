@@ -185,9 +185,14 @@
             <span aria-hidden="true">×</span>
           </button>
         </div>
-        <button type="button" id="closemodal" class="close btn btn-default" data-dismiss="modal" aria-label="Close" style="position: relative; z-index: 2; margin-left: auto; top: 76px; margin-right: 32px;">
+       
+
+        <button type="button" id="closemodal" class="close btn btn-default" data-dismiss="modal" aria-label="Close" style="position: absolute;z-index: 7;margin-left: 1593px;top: 107px;/* margin-right: 39px; *//* margin-bottom: -12px; *//* background: black; */margin-top: -8px;">
           <span aria-hidden="true">×</span>
         </button>
+
+
+
       </div>
       <div class="modal-body">
         <iframe id="iframe-modal" width="1650" height="700" frameborder="0"></iframe>
@@ -319,30 +324,7 @@ $(document).ready(function() {
         });
     });
 
-    // $('#cameraAngle').change(function() {
-    //     var cameraAngle = $(this).val();
-    //     console.log("*******************cameraAngle", cameraAngle);
     
-    //     fetchData({ 'cameraangle': cameraAngle }, function(data) {
-    //         console.log("*******************camera video_start_time", data.video_start_time);
-            
-    //         // Convert ISO 8601 formatted date strings to Date objects without altering time zones
-    //         var formattedVideoStartDates = data.video_start_time.map(function(isoDateString) {
-    //             return isoDateString.split('T')[0]; // Returns 'YYYY-MM-DD'
-    //         });
-    
-    //         var uniqueDates = Array.from(new Set(formattedVideoStartDates));
-    //         console.log("Converted datetime to date", uniqueDates);
-    
-    //         // Populate the dropdown with unique dates
-    //         $('#videoStartTime').empty().append('<option value="" selected>Select Video Start Date</option>');
-    //         $('#videoStartTime').append('<option value="ALL">ALL</option>');
-    
-    //         uniqueDates.forEach(function(date) {
-    //             $('#videoStartTime').append('<option value="' + date + '">' + date + '</option>');
-    //         });
-    //     });
-    // });
 
     $('#cloud_excel_download').on('click', function (e) {
         e.preventDefault();  // Prevent default action of the button (if it's a form button)
@@ -488,19 +470,24 @@ $('#deleteall_cloud_data').on('click', function (e) {
         });
     });
 
+  
 
      $(document).ready(function() {
-    $(document).on('click', '.view-btn', function() {
-      var startTime = $(this).closest('tr').find('td:nth-child(6)').text();
-      console.log('File Name is :', startTime);
-      var url = $(this).data('url');
-      $('#videoModalLabel').text('File Name - ' + startTime);
-      $('#iframe-modal').attr('src', url);
-      $('#openlink').click(function() {
-        $(this).attr('href', url);
-      });
-      $('#myModal').modal('show');
-    });
+        $(document).on('click', '.view-btn', function() {
+          var startTime = $(this).closest('tr').find('td:nth-child(6)').text();
+          console.log('File Name is :', startTime);
+          var url = $(this).data('url');
+            
+
+
+
+          $('#videoModalLabel').text('File Name - ' + startTime);
+          $('#iframe-modal').attr('src', url);
+          $('#openlink').click(function() {
+            $(this).attr('href', url);
+          });
+          $('#myModal').modal('show');
+        });
 
     function closeModal() {
       $('#iframe-modal').attr('src', '');    
