@@ -76,6 +76,7 @@ import io
 
 from openpyxl import Workbook
 from accounts.models import UserAccount
+from django.shortcuts import render, get_object_or_404
 
 # def upload_cloud_uri(request):
 #     if request.method == 'POST':
@@ -368,6 +369,64 @@ def add_cloud_uri_view(request):
 
 
 
+# def filter_cloud_uri(request):
+#     if request.method == 'POST':
+#         print("*******************request post method data is :", request.POST)
+        
+#         check_filter_data = {}
+#         video_start_time = None
+#         video_end_time = None
+        
+#         # Process POST data to extract and format filters
+#         for key in request.POST:
+#             if key != 'csrfmiddlewaretoken':
+#                 value = request.POST.get(key)
+#                 print(f"{key}: {value}")
+#                 if value:
+#                     if key in ['video_start_time', 'video_end_time']:
+#                         try:
+#                             datetime_obj = datetime.strptime(value, '%m/%d/%Y %I:%M %p')
+#                             datetime_obj = datetime_obj.replace(second=0, microsecond=0)
+#                             if key == 'video_start_time':
+#                                 video_start_time = datetime_obj
+#                                 print("(***) video_start_time", datetime_obj)
+#                             else:
+#                                 video_end_time = datetime_obj
+#                                 print("(***) video_end_time", datetime_obj)
+#                         except ValueError:
+#                             print(f"Error converting {key} value: {value}")
+#                     else:
+#                         check_filter_data[key] = value
+
+#         # Filter queryset based on datetime range if both start and end times are provided
+#         filtered_data = NewCloudURI.objects.all()
+        
+#         if video_start_time and video_end_time:
+#             filtered_data = filtered_data.filter(video_start_time__range=(video_start_time, video_end_time))
+        
+#         # Filter queryset based on other criteria
+#         if check_filter_data:
+#             filtered_data = filtered_data.filter(**check_filter_data)
+
+#         # Serialize filtered data to JSON
+#         filtered_data_json = list(filtered_data.values(
+#             'company_name', 'project_name', 'location_name',
+#             'camera_angle', 'video_start_time', 'video_end_time', 'onedrive_url'
+#         ))
+
+#         # Return filtered data as JSON response
+#         return JsonResponse(filtered_data_json, safe=False)
+    
+#     else:
+#         return HttpResponseBadRequest("Invalid request")
+
+
+
+from django.shortcuts import render
+from django.http import JsonResponse, HttpResponseBadRequest
+from datetime import datetime
+from .models import NewCloudURI, Company, Project
+
 def filter_cloud_uri(request):
     if request.method == 'POST':
         print("*******************request post method data is :", request.POST)
@@ -407,79 +466,37 @@ def filter_cloud_uri(request):
         if check_filter_data:
             filtered_data = filtered_data.filter(**check_filter_data)
 
-        # Serialize filtered data to JSON
-        filtered_data_json = list(filtered_data.values(
-            'company_name', 'project_name', 'location_name',
-            'camera_angle', 'video_start_time', 'video_end_time', 'onedrive_url'
-        ))
+        # Fetch company names and project names for each instance
+        filtered_data_json = []
+        for item in filtered_data:
+            try:
+                company = Company.objects.get(id=item.company_id)
+                project = Project.objects.get(id=item.project_id)
+                item_data = {
+                    'company_name': company.name if company else 'Unknown',
+                    'project_name': project.name if project else 'Unknown',
+                    'location_name': item.location_name,
+                    'camera_angle': item.camera_angle,
+                    'video_start_time': item.video_start_time,
+                    'video_end_time': item.video_end_time,
+                    'onedrive_url': item.onedrive_url,
+                    'video_duration': str(item.video_end_time - item.video_start_time),  # Example of adding a computed field
+                }
+                filtered_data_json.append(item_data)
+
+            except Company.DoesNotExist:
+                # Handle if company is not found
+                pass
+            except Project.DoesNotExist:
+                # Handle if project is not found
+                pass
+
 
         # Return filtered data as JSON response
         return JsonResponse(filtered_data_json, safe=False)
     
     else:
         return HttpResponseBadRequest("Invalid request")
-
-
-
-# def filter_cloud_uri(request):
-#     if request.method == 'POST':
-#         print("*******************request post method data is :", request.POST)
-        
-#         # Initialize an empty dictionary to store filter criteria
-#         check_filter_data = {}
-        
-#         # Iterate over POST data to populate check_filter_data
-#         for key in request.POST:
-#             if key != 'csrfmiddlewaretoken':  # Exclude CSRF token
-#                 value = request.POST.get(key)
-#                 print(f"{key}: {value}")
-#                 # Only add key-value pair if value is not empty
-#                 if value:
-#                     if key in ['video_start_time', 'video_end_time']:
-#                         # Manually convert MM/DD/YYYY HH:MM AM/PM to Python datetime object
-#                         try:
-#                             datetime_obj = datetime.strptime(value, '%m/%d/%Y %I:%M %p')
-#                             datetime_obj = datetime_obj.replace(second=0, microsecond=0)
-#                             check_filter_data[key] = datetime_obj
-#                         except ValueError as e:
-#                             print(f"Error converting {key} value: {value}. Error: {e}")
-#                     else:
-#                         check_filter_data[key] = value
-
-#         # Check if user is authenticated
-#         userid = request.session.get('user_id')
-#         if not userid:
-#             return HttpResponseBadRequest("User not authenticated")
-
-#         # Filter NewCloudURI queryset based on check_filter_data
-#         filtered_data = NewCloudURI.objects.all()
-        
-#         try:
-#             # Filter based on video_start_time and video_end_time range
-#             if 'video_start_time' in check_filter_data:
-#                 filtered_data = filtered_data.filter(
-#                     video_start_time__lte=check_filter_data['video_start_time']
-#                 )
-#             if 'video_end_time' in check_filter_data:
-#                 filtered_data = filtered_data.filter(
-#                     video_end_time__gte=check_filter_data['video_end_time']
-#                 )
-#         except Exception as e:
-#             print(f"Error filtering queryset: {e}")
-
-#         # Create a list of dictionaries from filtered queryset
-#         filtered_data_json = list(filtered_data.values(
-#             'company_name', 'project_name', 'location_name',
-#             'camera_angle', 'video_start_time', 'video_end_time', 'onedrive_url'
-#         ))
-
-#         # Return filtered data as JSON response
-#         return JsonResponse(filtered_data_json, safe=False)
-#     else:
-#         return HttpResponseBadRequest("Invalid request")
-
-
-
 
 
 
@@ -704,16 +721,41 @@ def download_cloud_data_excel(request):
 
 
 
+# def view_cloud_uri(request):  
+#   user_id = request.session.get('user_id')
+
+#   user_account = UserAccount.objects.get(id=user_id)
+#   print("*******************",user_account)
+#   # data = CloudURI.objects.filter(userid=user_id).order_by('-id')[:10]
+#   data = NewCloudURI.objects.filter(userid=user_id).order_by('-id')[:10]
+#   company_list = Company.objects.filter(userid=user_id) 
+#   return render(request, 'templates/dms/view_cloud_uri.html' ,{'data' : data,'company_list':company_list,'user_account':user_account})
+
+
+
 def view_cloud_uri(request):  
   user_id = request.session.get('user_id')
-
   user_account = UserAccount.objects.get(id=user_id)
   print("*******************",user_account)
   # data = CloudURI.objects.filter(userid=user_id).order_by('-id')[:10]
   data = NewCloudURI.objects.filter(userid=user_id).order_by('-id')[:10]
+  print("Data are  . .",data)
+  for item in data:
+    try:
+        company = Company.objects.get(id=item.company_id)
+        item.company_name = company.name
+    except Company.DoesNotExist:
+        item.company_name = 'Unknown'  
+
+    try:
+        project = Project.objects.get(id=item.project_id)
+        item.project_name = project.name
+    except Project.DoesNotExist:
+        item.project_name = 'Unknown'  
 
   company_list = Company.objects.filter(userid=user_id) 
   return render(request, 'templates/dms/view_cloud_uri.html' ,{'data' : data,'company_list':company_list,'user_account':user_account})
+
 
 
 
@@ -721,7 +763,8 @@ class AddProject(View):
     def get(self, request, *args, **kwargs):
         user_id = request.session.get('user_id')
         company_list = Company.objects.filter(userid=user_id)
-        return render(request, 'templates/dms/AddProject.html', {'userid':user_id,'company_list':company_list})
+        return render(request, 'templates/dms/AddProject.html', {'userid': user_id, 'company_list': company_list})
+
 
     def post(self, request, *args, **kwargs):
         user_id = request.session.get('user_id')
@@ -735,12 +778,18 @@ class AddProject(View):
             company = None
 
         if company:
-            project = Project.objects.create(userid=user_id, name=project_name, company=company)
-            messages.success(request, 'Project added successfully.')
+            # Check if project with the same name exists for this user and company
+            existing_project = Project.objects.filter(userid=user_id, company=company, name=project_name).exists()
+            if existing_project:
+                messages.error(request, 'Project with this name already exists.')
+            else:
+                project = Project.objects.create(userid=user_id, name=project_name, company=company)
+                messages.success(request, 'Project added successfully.')
         else:
             messages.error(request, 'Company does not exist or you do not have permission to add a project.')
 
-        return render(request, 'templates/dms/AddProject.html', {'userid':user_id,'company_list':company_list})
+        return render(request, 'templates/dms/AddProject.html', {'userid': user_id, 'company_list': company_list})
+
 
 
 
@@ -757,40 +806,102 @@ class ListProject(View):
 
 
 
+# @login_required
+# def editproj_form(request):
+#     user_id = request.session.get('user_id')
+#     all_projects=Project.objects.filter(userid=user_id)
+#     for project in all_projects:
+#         project.company_name = project.company.name
+#     context={'all_projects':all_projects}
+#     return render(request,'templates/dms/ModifyProject.html', context)
 @login_required
 def editproj_form(request):
     user_id = request.session.get('user_id')
-    all_projects=Project.objects.filter(userid=user_id)
+    all_projects = Project.objects.filter(userid=user_id)
+
     for project in all_projects:
-        project.company_name = project.company.name
-    context={'all_projects':all_projects}
-    return render(request,'templates/dms/ModifyProject.html', context)
+        if project.company:
+            project.company_name = project.company.name
+        else:
+            project.company_name = 'No Company'  # Or handle it according to your application logic
+
+    context = {'all_projects': all_projects}
+    return render(request, 'templates/dms/ModifyProject.html', context)
 
 
+# class ProjectUpdate(View):
+#     def get(self, request, pk_id):
+#         user_id = request.session.get('user_id') 
+#         try:
+#             get_project = Project.objects.get(id=pk_id, userid=user_id)
+#         except Project.DoesNotExist:
+#             messages.error(request, 'Project does not exist or you do not have permission to edit.')
+#             return redirect('list_projects')  # Redirect or handle not found case
 
+#         form = ProjForm(instance=get_project)
+#         context = {'form': form, 'userid': user_id}   
+#         return render(request, 'templates/dms/ProjectUpdate.html', context)
 
-class ProjectUpdate(UpdateView):
-  def get(self,request,pk_id):
-    user_id = request.session.get('user_id') 
-    get_project=Project.objects.get(id=pk_id)
-    form=ProjForm(instance=get_project)
-    context={'form':form,'userid':user_id}   
-    return render(request,'templates/dms/ProjectUpdate.html', context)
+#     def post(self, request, pk_id):      
+#         user_id = request.session.get('user_id') 
+#         try:
+#             existing_project = Project.objects.get(id=pk_id, userid=user_id)
+#         except Project.DoesNotExist:
+#             messages.error(request, 'Project does not exist or you do not have permission to edit.')
+#             return redirect('list_projects')  # Redirect or handle not found case
 
-  def post(self, request, pk_id):      
-      user_id = request.session.get('user_id') 
-      existing_Project = Project.objects.get(id=pk_id)         
-      update_project_name = request.POST.get('project_name')
-      messages.success(request, 'Projects details Updated successfully')
-      existing_Project.name = update_project_name
-      existing_Project.save() 
-      get_project=Project.objects.get(id=pk_id)
-      form=ProjForm(instance=get_project)
-      context={'form':form,'userid':user_id}   
-      return render(request,'templates/dms/ProjectUpdate.html', context)
+#         form = ProjForm(request.POST, instance=existing_project)
 
+#         if form.is_valid():
+#             form.save()
+#             messages.success(request, 'Project details updated successfully')
+#             return redirect('list_projects')  # Redirect to the list of projects
+#         else:
+#             messages.error(request, 'Failed to update project details. Please check the form.')
 
+#         context = {'form': form, 'userid': user_id}   
+#         return render(request, 'templates/dms/ProjectUpdate.html', context)
 
+# --------------------------------------------------------------
+class ProjectUpdate(View):
+    def get(self, request, pk_id):
+        user_id = request.session.get('user_id') 
+        try:
+            project = Project.objects.get(id=pk_id)
+        except Project.DoesNotExist:
+            messages.error(request, 'Project does not exist or you do not have permission to edit.')
+        
+        form = ProjForm(instance=project)
+        context = {'form': form, 'userid': user_id}   
+        return render(request, 'templates/dms/ProjectUpdate.html', context)
+
+    def post(self, request, pk_id):
+        user_id = request.session.get('user_id')
+        existing_project = get_object_or_404(Project, id=pk_id)
+        
+        company_id = request.POST.get('company_id')
+        project_name = request.POST.get('project_name')
+        print("Reponse",project_name)
+        if company_id and project_name:
+            existing_projects = Project.objects.filter(company_id=company_id, name__iexact=project_name).exclude(id=pk_id)
+            
+            if existing_projects.exists():
+                messages.error(request, 'A project with this name already exists for this company.')
+            else:
+                print("Reponse123",project_name)
+                existing_project.company_id = company_id
+                existing_project.name = project_name
+                print("****",existing_project)
+                existing_project.save()
+                messages.success(request, 'Project details updated successfully')
+        else:
+            messages.error(request, 'Error updating project. Invalid form data.')
+        
+        form = ProjForm(instance=existing_project)
+        context = {'form': form, 'userid': user_id}   
+        return render(request, 'templates/dms/ProjectUpdate.html', context)
+
+  
 
 
 

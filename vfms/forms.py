@@ -66,26 +66,61 @@ class MyForm(forms.ModelForm): #company model form
 
 
 
-class ProjForm(forms.ModelForm):  #project model form
-  class Meta:
-    model = Project
+# class ProjForm(forms.ModelForm):  #project model form
+#   class Meta:
+#     model = Project
     
-    fields = ['name', 'company']   
+#     fields = ['name', 'company']   
+
+#     def save(self, commit=True):
+#         instance = super().save(commit=False)
+
+#         # Convert the name to uppercase
+#         if instance.name:
+#             instance.name = instance.name
+
+#         if commit:
+#             instance.save()
+
+#         return instance
+
+class ProjForm(forms.ModelForm):
+    class Meta:
+        model = Project
+        fields = ['name', 'company']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Mark fields as not required
+        self.fields['name'].required = False
+        self.fields['company'].required = False
 
     def save(self, commit=True):
         instance = super().save(commit=False)
-
-        # Convert the name to uppercase
-        if instance.name:
-            instance.name = instance.name
-
+        # Any additional processing or modifications before saving
         if commit:
             instance.save()
-
         return instance
 
-
-
+# class ProjForm(forms.ModelForm):
+#     class Meta:
+#         model = Project
+#         fields = ['name', 'company']
+    
+#     def __init__(self, *args, **kwargs):
+#         super().__init__(*args, **kwargs)
+#         # Add customizations to fields if needed
+    
+#     def clean_name(self):
+#         name = self.cleaned_data.get('name')
+#         company = self.cleaned_data.get('company')
+#         instance_id = self.instance.id if self.instance else None
+        
+#         # Check if project with this name already exists for this company (case insensitive)
+#         if Project.objects.filter(company=company, name__iexact=name).exclude(id=instance_id).exists():
+#             raise forms.ValidationError('A project with this name already exists for this company.')
+        
+#         return name
 
 class LocationForm(forms.ModelForm): #location/station model form
   class Meta:

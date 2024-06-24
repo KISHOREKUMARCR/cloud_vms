@@ -149,16 +149,20 @@
               </thead>
                <tbody>
                 {% for item in data %}
-                <tr>
-                  <td>{{ forloop.counter }}</td>
-                  <td>{{ item.company_name }}</td>
-                  <td>{{ item.project_name }}</td>
-                  <td>{{ item.location_name }}</td>
-                  <td>{{ item.camera_angle }}</td>
-                  <td class="video-start-time">{{ item.video_start_time|date:"Y-m-d H:i:s A" }}</td>
-                  <td>{{ item.video_end_time|date:"Y-m-d H:i:s A"}} </td>
-                  <td><button class="view-btn btn btn-primary" data-url="{{ item.onedrive_url }}"  >View</button></td>
-                </tr>
+             
+
+                 <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ item.company_name }}</td>
+            <td>{{ item.project_name }}</td>
+            <td>{{ item.location_name }}</td>
+            <td>{{ item.camera_angle }}</td>
+            <td>{{ item.video_start_time|date:"Y-m-d H:i:s A" }}</td>
+            <td>{{ item.video_end_time|date:"Y-m-d H:i:s A" }}</td>
+            <td><button class="view-btn btn btn-primary" data-url="{{ item.onedrive_url }}">View</button></td>
+        </tr>
+
+
                 {% endfor %}
               </tbody>
               </tfoot>
@@ -191,8 +195,6 @@
           <span aria-hidden="true">×</span>
         </button>
 
-
-
       </div>
       <div class="modal-body">
         <iframe id="iframe-modal" width="1650" height="700" frameborder="0"></iframe>
@@ -209,6 +211,9 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
 <script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
 <script>
+
+
+
 
 $(document).ready(function() {
     var dataTable = $('#filtered-data-table').DataTable({
@@ -232,8 +237,36 @@ $(document).ready(function() {
         }
     });
 
+     function validateTimeRange() {
+
+        var fromTime = $('#video_from_time').val();
+        var toTime = $('#video_to_time').val();
+
+         if (fromTime && toTime) {
+                var fromTime = moment($('#video_from_time').val(), 'MM/DD/YYYY h:mm A');
+                var toTime = moment($('#video_to_time').val(), 'MM/DD/YYYY h:mm A');
+
+                if (!fromTime.isValid() || !toTime.isValid()) {
+                    alert('Please enter valid date and time.');
+                    return false;
+                }
+
+                if (fromTime >= toTime) {
+                    alert('From Time should be earlier than To Time. Please select a valid time range.');
+                    return false;
+                }
+         }
+        
+        return true;
+    }
+
+
     $('#filter-form').submit(function(event) {
         event.preventDefault();
+        // Validate time range
+        if (!validateTimeRange()) {
+            return; // Prevent form submission if validation fails
+        }
         var formData = $(this).serialize();
         console.log("formData",formData)
         $.ajax({
