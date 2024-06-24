@@ -34,7 +34,7 @@ urlpatterns = [
     path('ModifyCompany', views.edit_form, name='ModifyCompany'),
     path('Companyupdate/<int:pk_id>/',views.CompanyUpdate.as_view(),name='Companyupdate'),
     path('Company_delete/<int:pk_id>/', views.Company_delete, name="Company_delete"),
-
+   
     #project crud operation
     #path("AddProject/", views.project_form,name='AddProject'),
     # path('AddProject/', views.AddProject.as_view(), name='AddProject'),

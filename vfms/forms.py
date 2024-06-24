@@ -2,7 +2,7 @@ from django import forms
 from .models import *
 from django.core.validators import RegexValidator
 from django.core.exceptions import ValidationError
-
+from django.db.models.functions import Lower
 
 
  
@@ -21,10 +21,24 @@ class NewCloudURIForm(forms.ModelForm):
         fields = ['company_id', 'company_name', 'project_id', 'project_name', 'location_name', 'onedrive_url', 'video_start_time', 'video_end_time', 'userid', 'camera_angle']
 
 
+class CompanyForm(forms.ModelForm):
+    class Meta:
+        model = Company
+        fields = ['name', 'address', 'phone', 'email']
+
+    
+
+
 class MyForm(forms.ModelForm): #company model form
   class Meta:
     model = Company
     fields=['name','address','phone','email','userid']
+
+  def clean_name(self):
+        name = self.cleaned_data.get('name').strip().lower()
+        if Company.objects.annotate(lower_name=Lower('name')).filter(lower_name=name).exists():
+            raise ValidationError("Company name already exists.")
+        return name
 
   # Custom validation for phone number
   def clean_phone(self):

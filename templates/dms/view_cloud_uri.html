@@ -10,14 +10,17 @@
 {% block title %} Videos List {% endblock %}
 
  <style>
-      .close-top-right {
+    .close-top-right {
     position: fixed;
     top: 10px;
     right: 10px;
     z-index: 1051; /* Ensure it is above the modal */
-  }
-    </style>
+    }
 
+  /*  .model_width{
+    width: 66% !important;
+    }*/
+ </style>
 {% block content %}
 <div class="content-wrapper">
   <div class="container-xxl flex-grow-1 container-p-y">
@@ -31,177 +34,171 @@
   {% endif %} 
 
 <div class="card mb-4">
-    <h5 class="card-header">Filter Cloud Data</h5>
+    <h5 class="card-header1 " style="margin: 12px;  color: inherit ;">Filter Cloud Data</h5>
     <div class="card-body">
-        <form id="filter-form" method="post"  >
-            {% csrf_token %}
-            <div class="form-group">
-                <div class="row">
-                    <div class="col-md-6  mb-3">
-                        <label class="form-label" for="company">Select Company</label>
-                        <select id="company"required name="company" class="form-control">
-                                    <option value="" disabled selected>Select Company</option>
-                                    {% for company in company_list %}
-                                        <option value="{{ company.id }}">{{ company.name }}</option>
-                                    {% endfor %}
-                        </select>
-                    </div>
-                    <div class="col-md-6  mb-3">
-                        <label class="form-label" for="project">Select Project</label>
-                        <select id="project_id" required name="project_id" class="form-control">
-                            <option value="" selected>Select Project</option>                           
-                        </select>
-                    </div>
-                </div>
-                <div class="row"> 
-                    <div class="col-md-6  mb-3">
-                        <label class="form-label" for="location">Location Name</label>
-                        <select id="location"  name="location" class="form-control">
+         <form id="filter-form" method="post"  >
+             {% csrf_token %}
+             <div class="form-group">
+                 <div class="col-lg-12">
+                     <div class="row">
+                        <div class="col-md-4">
+                            <label class="form-label" for="company">Select Company</label>
+                            <select id="company"required name="company_id" class="form-control">
+                            <option value="" disabled selected>Select Company</option>
+                            {% for company in company_list %}
+                                <option value="{{ company.id }}">{{ company.name }}</option>
+                            {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label" for="project">Select Project</label>
+                            <select id="project_id"  name="project_id" class="form-control">
+                                <option value="" selected>Select Project</option>                           
+                            </select>
+                        </div>
+                        <div class="col-md-4"> 
+                            <label class="form-label" for="location">Location Name</label>
+                            <select id="location"  name="location_name" class="form-control">
                             <option value="" selected>Select Location</option>
-                      
-                        </select>
-                    </div>
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label" for="cameraAngle">Camera Angle</label>
-                        <select id="cameraAngle"  name="cameraAngle" class="form-control">
-                            <option value="" selected>Select Camera Angle</option>
-                          
-                        </select>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label" for="videoStartTime">Available Dates</label>
-                        <select id="videoStartTime"  name="videoStartTime" class="form-control">
-                            <option value="" selected>Select Dates</option>
-                         
-                        </select>
-                    </div>
-                
-                </div>
-                <button type="submit" class="btn btn-primary">Submit</button>
-            </div>
-        </form>
+                            </select>
+                        </div>                        
+                     </div>
+                     <div class="row">
+                        <div class="col-md-4">
+                           <label class="form-label" for="cameraAngle">Camera Angle</label>
+                            <select id="cameraAngle"  name="camera_angle" class="form-control">
+                                <option value="" selected>Select Camera Angle</option>                              
+                            </select>
+                        </div>
+
+                        <!-- <div class="col-md-4">
+                            <label class="form-label" for="videoStartTime">Available Dates</label>
+                            <select id="videoStartTime"  name="videoStartTime" class="form-control">
+                                <option value="" selected>Select Dates</option>                             
+                            </select>
+                        </div> -->
+                         <!-- Bootstrap 4 -->
+                                <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+
+                                <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+                                <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
+                                <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+
+                                <!-- Font Awesome -->
+                                <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+
+                                <!-- Moment.js -->
+                                <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.23.0/moment.min.js" integrity="sha256-VBLiveTKyUZMEzJd6z2mhfxIqz3ZATCuVMawPZGzIfA=" crossorigin="anonymous"></script>
+
+                                <!-- Tempus Dominus Bootstrap 4 -->
+                                <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.1.2/css/tempusdominus-bootstrap-4.min.css" integrity="sha256-XPTBwC3SBoWHSmKasAk01c08M6sIA5gF5+sRxqak2Qs=" crossorigin="anonymous" />
+                                <script src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.1.2/js/tempusdominus-bootstrap-4.min.js" integrity="sha256-z0oKYg6xiLq3yJGsp/LsY9XykbweQlHl42jHv2XTBz4=" crossorigin="anonymous"></script>
+
+
+
+                        <div class="col-md-4"> 
+                                <label class="form-label">From Time</label>
+                                <div class="input-group date" id="datetimepicker1" data-target-input="nearest">
+                                <input type="text" id="video_from_time" name="video_start_time" class="form-control datetimepicker-input" data-target="#datetimepicker1"/>
+                                <div class="input-group-append" data-target="#datetimepicker1" data-toggle="datetimepicker">
+                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                </div>
+                                </div>
+                        </div>   
+                        <div class="col-md-4"> 
+                                <label class="form-label">To Time</label>
+                                <div class="input-group date" id="datetimepicker2" data-target-input="nearest">
+                                <input type="text" id="video_to_time" name="video_end_time" class="form-control datetimepicker-input" data-target="#datetimepicker2"/>
+                                <div class="input-group-append" data-target="#datetimepicker2" data-toggle="datetimepicker">
+                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                                </div>
+                                </div>
+                        </div>                      
+                     </div>                   
+                 </div>
+                 <button type="submit" class="btn btn-primary mt-3" style="margin-left: 10px;">Submit</button>
+             </div>
+         </form>
     </div>
 </div>
+
 
 
     <div class="card mb-1" >
       <div class="card-datatable table-responsive pt-0">
-        <div class="d-flex justify-content-end "> <!-- Added d-flex (flexbox) and justify-content-end to align buttons to the right -->
-
-            <button class="btn btn-primary mb-3 mt-3 " id="cloud_excel_download">Download Excel</button> <!-- Added mr-2 for right margin -->  &nbsp;
+             <div class="d-flex justify-content-end "> 
+            <button class="btn btn-primary mb-3 mt-3 " id="cloud_excel_download">Download Excel</button> &nbsp;
             {% if user_account.user_delete_access %}
                 <button class="btn btn-danger mb-3 mt-3 mr-2" id="deleteall_cloud_data">Delete All Data</button>&nbsp;
             {% endif %}
-          
-
-          <!-- <button class="btn btn-danger mb-3 mt-3 mr-2" id="deleteall_cloud_data">Delete All Data</button> -->
             <button class="btn btn-success mb-3 mt-3" id="export_database">Export SQL</button>&nbsp;
           </div>  
-        <table  id="filtered-data-table"  class="table table-striped table-bordered" cellspacing="0" width="100%">
-          <thead>
-            <tr>
-              <th>S.No</th>
-              <th>Company Name</th>
-              <th>Project Name</th>
-              <th>Location Name</th>
-              <th>Camera Angle</th>
-              <th>Video Start Time</th>
-              <th>Video End Time</th>
-              <th>View</th>
-            </tr>
-          </thead>
-           <tbody>
-            {% for item in data %}
-            <tr>
-              <td>{{ forloop.counter }}</td>
-              <td>{{ item.company_name }}</td>
-              <td>{{ item.project_name }}</td>
-              <td>{{ item.location_name }}</td>
-              <td>{{ item.camera_angle }}</td>
-              <!-- <td>{{ item.video_start_time|date:"Y-m-d\TH:i:s\Z" }}</td>
-              <td>{{  item.video_end_time|date:"Y-m-d\TH:i:s\Z" }}</td>-->
-
-              <td class="video-start-time">{{ item.video_start_time|date:"Y-m-d H:i:s A" }}</td>
-              <td>{{ item.video_end_time|date:"Y-m-d H:i:s A"}} </td>
-
-              
-              <!-- <td>{{ item.video_end_time|date:"Y-m-d P"}} </td> -->
-            <td><button class="view-btn btn btn-primary" data-url="{{ item.onedrive_url }}">View</button></td>
-
-            </tr>
-            {% endfor %}
-          </tbody>
-          </tfoot>
-        </table>
+            <table  id="filtered-data-table"  class="table table-striped table-bordered" cellspacing="0" width="100%">
+              <thead>
+                <tr>
+                  <th>S.No</th>
+                  <th>Company Name</th>
+                  <th>Project Name</th>
+                  <th>Location Name</th>
+                  <th>Camera Angle</th>
+                  <th>Video Start Time</th>
+                  <th>Video End Time</th>
+                  <th>View</th>
+                </tr>
+              </thead>
+               <tbody>
+                {% for item in data %}
+                <tr>
+                  <td>{{ forloop.counter }}</td>
+                  <td>{{ item.company_name }}</td>
+                  <td>{{ item.project_name }}</td>
+                  <td>{{ item.location_name }}</td>
+                  <td>{{ item.camera_angle }}</td>
+                  <td class="video-start-time">{{ item.video_start_time|date:"Y-m-d H:i:s A" }}</td>
+                  <td>{{ item.video_end_time|date:"Y-m-d H:i:s A"}} </td>
+                  <td><button class="view-btn btn btn-primary" data-url="{{ item.onedrive_url }}"  >View</button></td>
+                </tr>
+                {% endfor %}
+              </tbody>
+              </tfoot>
+            </table>
       </div>
     </div>
   </div>
 </div>
-
-
-   <!--  <div class="modal fade " id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-  <div class="modal-dialog modal-xl" role="document" >
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title"  id="videoModalLabel" >Video Viewer</h5>
-       <button type="button" style="margin-left: 634px;" id="fullscreen-btn" class="btn btn-secondary"> <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="currentColor" d="M5 5h5V3H3v7h2zm5 14H5v-5H3v7h7zm11-5h-2v5h-5v2h7zm-2-4h2V3h-7v2h5z"/></svg></button>
-       <button type="button" id="closemodal" class="close btn btn-secondary" data-dismiss="modal" aria-label="Close"> <span aria-hidden="true">×</span> </button>        
-      </div>
-      <div class="modal-body">
-        <iframe id="iframe-modal"  width=1050 height=730   frameborder="0" ></iframe>
-
-      </div>
-     
-    </div>
-  </div>
-</div>
- -->
 
  
- <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-  <div class="modal-dialog modal-xl" role="document">
+
+
+
+<div class="modal fade model_width" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog modal-xl" style="max-width: 97%;" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="videoModalLabel">Video Viewer</h5>
-        <!-- <button type="button" style="margin-left: 634px;" id="fullscreen-btn" class="btn btn-secondary">
-          <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24">
-            <path fill="currentColor" d="M5 5h5V3H3v7h2zm5 14H5v-5H3v7h7zm11-5h-2v5h-5v2h7zm-2-4h2V3h-7v2h5z"/>
-          </svg>
-        </button> -->
-       <button type="button" id="closemodal1" class="close btn btn-warning" data-dismiss="modal" style="
-        position: relative;
-        z-index: 2;
-        margin-left:auto;
-        top: -18px;
-        margin-right: -855px;
-        " aria-label="Close"> <span aria-hidden="true">×</span> </button>
-
-        <button type="button" id="closemodal" class="close btn btn-default" data-dismiss="modal" aria-label="Close" style=" position: relative;  z-index: 2;
-        margin-left:auto;top: 70px;margin-right: 50px;"> <span aria-hidden="true">×</span> </button>
+        <div class="col-md-12">
+          <h5 class="modal-title" id="videoModalLabel">Video Viewer</h5>
+          <a href="" target="_blank" id="openlink" style="position: absolute; top: -1px; right: 63px;">
+            <i class="fa-solid fa-up-right-from-square"></i>
+          </a>
+          <button type="button" id="closemodal1" class="close btn btn-warning" data-dismiss="modal" aria-label="Close" style="position: relative; z-index: 2; top: -24px; margin-right: -20px; background: #ffc107;">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <button type="button" id="closemodal" class="close btn btn-default" data-dismiss="modal" aria-label="Close" style="position: relative; z-index: 2; margin-left: auto; top: 76px; margin-right: 32px;">
+          <span aria-hidden="true">×</span>
+        </button>
       </div>
       <div class="modal-body">
-        <iframe id="iframe-modal" width="1050" height="730" frameborder="0"></iframe>
+        <iframe id="iframe-modal" width="1650" height="700" frameborder="0"></iframe>
       </div>
     </div>
   </div>
 </div>
-<!-- 
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="myModalLabel">Video Viewer</h5>
-        
-        <button type="button" id="fullscreen-btn" class="btn btn-secondary">Fullscreen</button>
-      </div>
-      <div class="modal-body">
-        <iframe id="iframe-modal" width="100%" height="400" frameborder="1" allowfullscreen></iframe>
-      </div>
-    </div>
-  </div>
-</div> -->
+
+
+
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
 
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
@@ -209,7 +206,6 @@
 <script>
 
 $(document).ready(function() {
-    // Initialize the DataTable only once
     var dataTable = $('#filtered-data-table').DataTable({
         paging: true,
         initComplete: function() {
@@ -234,6 +230,7 @@ $(document).ready(function() {
     $('#filter-form').submit(function(event) {
         event.preventDefault();
         var formData = $(this).serialize();
+        console.log("formData",formData)
         $.ajax({
             url: '/vfms/filter-data/',
             type: 'POST',
@@ -318,34 +315,34 @@ $(document).ready(function() {
                 $('#cameraAngle').append('<option value="' + cameraAngle + '">' + cameraAngle + '</option>');
             });
 
-            $('#videoStartTime').empty().append('<option value="" selected>Select Date</option>');
+            // $('#videoStartTime').empty().append('<option value="" selected>Select Date</option>');
         });
     });
 
-    $('#cameraAngle').change(function() {
-        var cameraAngle = $(this).val();
-        console.log("*******************cameraAngle", cameraAngle);
+    // $('#cameraAngle').change(function() {
+    //     var cameraAngle = $(this).val();
+    //     console.log("*******************cameraAngle", cameraAngle);
     
-        fetchData({ 'cameraangle': cameraAngle }, function(data) {
-            console.log("*******************camera video_start_time", data.video_start_time);
+    //     fetchData({ 'cameraangle': cameraAngle }, function(data) {
+    //         console.log("*******************camera video_start_time", data.video_start_time);
             
-            // Convert ISO 8601 formatted date strings to Date objects without altering time zones
-            var formattedVideoStartDates = data.video_start_time.map(function(isoDateString) {
-                return isoDateString.split('T')[0]; // Returns 'YYYY-MM-DD'
-            });
+    //         // Convert ISO 8601 formatted date strings to Date objects without altering time zones
+    //         var formattedVideoStartDates = data.video_start_time.map(function(isoDateString) {
+    //             return isoDateString.split('T')[0]; // Returns 'YYYY-MM-DD'
+    //         });
     
-            var uniqueDates = Array.from(new Set(formattedVideoStartDates));
-            console.log("Converted datetime to date", uniqueDates);
+    //         var uniqueDates = Array.from(new Set(formattedVideoStartDates));
+    //         console.log("Converted datetime to date", uniqueDates);
     
-            // Populate the dropdown with unique dates
-            $('#videoStartTime').empty().append('<option value="" selected>Select Video Start Date</option>');
-            $('#videoStartTime').append('<option value="ALL">ALL</option>');
+    //         // Populate the dropdown with unique dates
+    //         $('#videoStartTime').empty().append('<option value="" selected>Select Video Start Date</option>');
+    //         $('#videoStartTime').append('<option value="ALL">ALL</option>');
     
-            uniqueDates.forEach(function(date) {
-                $('#videoStartTime').append('<option value="' + date + '">' + date + '</option>');
-            });
-        });
-    });
+    //         uniqueDates.forEach(function(date) {
+    //             $('#videoStartTime').append('<option value="' + date + '">' + date + '</option>');
+    //         });
+    //     });
+    // });
 
     $('#cloud_excel_download').on('click', function (e) {
         e.preventDefault();  // Prevent default action of the button (if it's a form button)
@@ -492,129 +489,29 @@ $('#deleteall_cloud_data').on('click', function (e) {
     });
 
 
-//     $('#cameraAngle').change(function() {
-//     var cameraAngle = $(this).val();
-//     console.log("*******************cameraAngle", cameraAngle);
-
-//     fetchData({ 'cameraangle': cameraAngle }, function(data) {
-//         console.log("*******************camera video_start_time", data.video_start_time);
-
-//         // Convert ISO 8601 formatted date strings to Date objects
-//         var formattedVideoStartDates = data.video_start_time.map(function(isoDateString) {
-//             var date = new Date(isoDateString);
-//             // Format the date to display only the date portion
-//             return date.toISOString().split('T')[0]; // Returns 'YYYY-MM-DD'
-//         });
-
-//         // Filter out unique dates
-//         var uniqueDates = Array.from(new Set(formattedVideoStartDates));
-
-//         // Populate the dropdown with unique dates
-//         $('#videoStartTime').empty().append('<option value="" selected>Select Video Start Date</option>');
-//         uniqueDates.forEach(function(date) {
-//             $('#videoStartTime').append('<option value="' + date + '">' + date + '</option>');
-//         });
-//     });
-// });
-
-
-
-    // $(document).on('click', '.view-btn', function() {
-    //     var url = $(this).data('url');
-    //     $('#iframe-modal').attr('src', url);
-    //     $('#myModal').modal('show');
-    // });
-
-  // $(document).on('click', '.view-btn', function() {
-  //       console.log('View button clicked');
-  //       var url = $(this).data('url');
-  //       var startTime = $(this).closest('tr').find('.video-start-time').text();
-  //       console.log('Start time:', startTime);
-  //       $('#videoModalLabel').text('Video Viewer - ' + startTime); 
-  //       $('#iframe-modal').attr('src', url);
-  //       $('#myModal').modal('show');
-  //   });
-
-
-
-
-// $(document).ready(function() {
-//     // Event delegation for .view-btn
-//     $(document).on('click', '.view-btn', function() {
-//         // Retrieve the video start time (6th <td> element)
-//         var startTime = $(this).closest('tr').find('td:nth-child(6)').text();
-//         console.log('File Name is :', startTime);
-
-//         var url = $(this).data('url');
-//         $('#videoModalLabel').text(' File Name - ' + startTime); 
-//         $('#iframe-modal').attr('src', url);
-//         $('#myModal').modal('show');
-//     });
-// });
-
-
-
-
-
-//   $('#closemodal').click(function() {
-//         $('#myModal').modal('hide');
-//     });
-
-
-//     $('#fullscreen-btn').click(function() {
-//         var iframe = document.getElementById('iframe-modal');
-//         if (iframe.requestFullscreen) {
-//             iframe.requestFullscreen();
-//         } else if (iframe.mozRequestFullScreen) {
-//             iframe.mozRequestFullScreen();
-//         } else if (iframe.webkitRequestFullscreen) {
-//             iframe.webkitRequestFullscreen();
-//         } else if (iframe.msRequestFullscreen) {
-//             iframe.msRequestFullscreen();
-//         }
-//     });
-
-
-
-
-$(document).ready(function() {
-    // Event delegation for .view-btn
+     $(document).ready(function() {
     $(document).on('click', '.view-btn', function() {
-        // Retrieve the video start time (6th <td> element)
-        var startTime = $(this).closest('tr').find('td:nth-child(6)').text();
-        console.log('File Name is :', startTime);
-
-        var url = $(this).data('url');
-        $('#videoModalLabel').text('File Name - ' + startTime); 
-        $('#iframe-modal').attr('src', url);
-        $('#myModal').modal('show');
+      var startTime = $(this).closest('tr').find('td:nth-child(6)').text();
+      console.log('File Name is :', startTime);
+      var url = $(this).data('url');
+      $('#videoModalLabel').text('File Name - ' + startTime);
+      $('#iframe-modal').attr('src', url);
+      $('#openlink').click(function() {
+        $(this).attr('href', url);
+      });
+      $('#myModal').modal('show');
     });
 
-    $('#closemodal').click(function() {
-        $('#myModal').removeClass('fullscreen-modal');
-        $('#myModal').modal('hide');
-    });
-    $('#closemodal1').click(function() {
-        $('#myModal').removeClass('fullscreen-modal');
-        $('#myModal').modal('hide');
-    });
+    function closeModal() {
+      $('#iframe-modal').attr('src', '');    
+      $('#myModal').modal('hide');
+    }
 
-    $('#fullscreen-btn').click(function() {
-        var iframe = document.getElementById('iframe-modal');
-        console.log("hi")
-        $('#myModal').toggleClass('fullscreen-modal');
+    $('#closemodal').click(closeModal);
+    $('#closemodal1').click(closeModal);
 
-        if (iframe.requestFullscreen) {
-            iframe.requestFullscreen();
-        } else if (iframe.mozRequestFullScreen) {
-            iframe.mozRequestFullScreen();
-        } else if (iframe.webkitRequestFullscreen) {
-            iframe.webkitRequestFullscreen();
-        } else if (iframe.msRequestFullscreen) {
-            iframe.msRequestFullscreen();
-        }
-    });
-});
+  });
+
 
 });
 

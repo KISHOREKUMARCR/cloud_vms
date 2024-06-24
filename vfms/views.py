@@ -15,7 +15,6 @@ import sqlite3
 import openpyxl
 import psycopg2
 from django.shortcuts import render
-
 import json
 import requests
 from django.http import FileResponse
@@ -323,41 +322,38 @@ def add_cloud_uri_view(request):
 #         if not userid:
 #             return HttpResponseBadRequest("User not authenticated")
 
-#         company_name = request.POST.get('company')
-#         project_name = request.POST.get('project')
+#         # company_name = request.POST.get('company')
+#         # project_name = request.POST.get('project')
+
+#         company_id = request.POST.get('company')
+#         project_id = request.POST.get('project')
+
 #         location = request.POST.get('location')
 #         camera_angle = request.POST.get('cameraAngle')
 #         video_start_time = request.POST.get('videoStartTime')
-#         print("***************************video_start_time", video_start_time)
-#         print("*")
-#         # Build the filter dictionary
+
 #         filtercolumn = {'userid': userid}
 
-#         if company_name:
-#             filtercolumn['company_name'] = company_name
-#         if project_name:
-#             filtercolumn['project_name'] = project_name
+#         if company_id:
+#             filtercolumn['company_id'] = company_id
+#         if project_id:
+#             filtercolumn['project_id'] = project_id
 #         if location:
 #             filtercolumn['location_name'] = location
 #         if camera_angle:
 #             filtercolumn['camera_angle'] = camera_angle
 
-#         # Filter the CloudURI objects based on the filter dictionary
-#         filtered_data = CloudURI.objects.filter(**filtercolumn)
+#         filtered_data = NewCloudURI.objects.filter(**filtercolumn)
+        
+#         if video_start_time == "ALL":       
+#            filtered_data = NewCloudURI.objects.filter(userid=userid, location_name=location)
 
-
-#         if video_start_time == "ALL":
-#            filtered_data = CloudURI.objects.all()
             
 #         else:
 #             filtered_data = filtered_data.annotate(
 #                 video_start_date=TruncDate('video_start_time')
 #             ).filter(video_start_date=video_start_time)
 
-#         # if video_start_time:
-#         #     filtered_data = filtered_data.annotate(
-#         #         video_start_date=TruncDate('video_start_time')
-#         #     ).filter(video_start_date=video_start_time)
 
 #         # Convert the filtered data to a list of dictionaries
 #         filtered_data_json = list(filtered_data.values(
@@ -375,142 +371,114 @@ def add_cloud_uri_view(request):
 def filter_cloud_uri(request):
     if request.method == 'POST':
         print("*******************request post method data is :", request.POST)
-        userid = request.session.get('user_id')
-        if not userid:
-            return HttpResponseBadRequest("User not authenticated")
-
-        # company_name = request.POST.get('company')
-        # project_name = request.POST.get('project')
-
-        company_id = request.POST.get('company')
-        project_id = request.POST.get('project')
-
-        location = request.POST.get('location')
-        camera_angle = request.POST.get('cameraAngle')
-        video_start_time = request.POST.get('videoStartTime')
-
-        filtercolumn = {'userid': userid}
-
-        if company_id:
-            filtercolumn['company_id'] = company_id
-        if project_id:
-            filtercolumn['project_id'] = project_id
-        if location:
-            filtercolumn['location_name'] = location
-        if camera_angle:
-            filtercolumn['camera_angle'] = camera_angle
-
-        filtered_data = NewCloudURI.objects.filter(**filtercolumn)
         
-        if video_start_time == "ALL":       
-           filtered_data = NewCloudURI.objects.filter(userid=userid, location_name=location)
+        check_filter_data = {}
+        video_start_time = None
+        video_end_time = None
+        
+        # Process POST data to extract and format filters
+        for key in request.POST:
+            if key != 'csrfmiddlewaretoken':
+                value = request.POST.get(key)
+                print(f"{key}: {value}")
+                if value:
+                    if key in ['video_start_time', 'video_end_time']:
+                        try:
+                            datetime_obj = datetime.strptime(value, '%m/%d/%Y %I:%M %p')
+                            datetime_obj = datetime_obj.replace(second=0, microsecond=0)
+                            if key == 'video_start_time':
+                                video_start_time = datetime_obj
+                                print("(***) video_start_time", datetime_obj)
+                            else:
+                                video_end_time = datetime_obj
+                                print("(***) video_end_time", datetime_obj)
+                        except ValueError:
+                            print(f"Error converting {key} value: {value}")
+                    else:
+                        check_filter_data[key] = value
 
-            
-        else:
-            filtered_data = filtered_data.annotate(
-                video_start_date=TruncDate('video_start_time')
-            ).filter(video_start_date=video_start_time)
+        # Filter queryset based on datetime range if both start and end times are provided
+        filtered_data = NewCloudURI.objects.all()
+        
+        if video_start_time and video_end_time:
+            filtered_data = filtered_data.filter(video_start_time__range=(video_start_time, video_end_time))
+        
+        # Filter queryset based on other criteria
+        if check_filter_data:
+            filtered_data = filtered_data.filter(**check_filter_data)
 
-
-        # Convert the filtered data to a list of dictionaries
+        # Serialize filtered data to JSON
         filtered_data_json = list(filtered_data.values(
             'company_name', 'project_name', 'location_name',
             'camera_angle', 'video_start_time', 'video_end_time', 'onedrive_url'
         ))
 
-        print("row data . . . . . . . . . .", filtered_data_json)
+        # Return filtered data as JSON response
         return JsonResponse(filtered_data_json, safe=False)
+    
     else:
         return HttpResponseBadRequest("Invalid request")
 
 
 
-# def fetch_cloud_uri(request):
-#     if request.method == 'GET':
+# def filter_cloud_uri(request):
+#     if request.method == 'POST':
+#         print("*******************request post method data is :", request.POST)
+        
+#         # Initialize an empty dictionary to store filter criteria
+#         check_filter_data = {}
+        
+#         # Iterate over POST data to populate check_filter_data
+#         for key in request.POST:
+#             if key != 'csrfmiddlewaretoken':  # Exclude CSRF token
+#                 value = request.POST.get(key)
+#                 print(f"{key}: {value}")
+#                 # Only add key-value pair if value is not empty
+#                 if value:
+#                     if key in ['video_start_time', 'video_end_time']:
+#                         # Manually convert MM/DD/YYYY HH:MM AM/PM to Python datetime object
+#                         try:
+#                             datetime_obj = datetime.strptime(value, '%m/%d/%Y %I:%M %p')
+#                             datetime_obj = datetime_obj.replace(second=0, microsecond=0)
+#                             check_filter_data[key] = datetime_obj
+#                         except ValueError as e:
+#                             print(f"Error converting {key} value: {value}. Error: {e}")
+#                     else:
+#                         check_filter_data[key] = value
+
+#         # Check if user is authenticated
 #         userid = request.session.get('user_id')
-#         company_name = request.GET.get('company_name')
-#         project_name = request.GET.get('project_name')
-#         location = request.GET.get('location')
-#         camera_angle = request.GET.get('cameraangle')
-#         video_start_time = request.GET.get('video_start_time')
+#         if not userid:
+#             return HttpResponseBadRequest("User not authenticated")
 
-#         response_data = {}
-#         if company_name:
-#             projects_list = Project.objects.filter( userid=userid,company_name=company_name).values_list('name', flat=True)
-#             response_data['projects'] = list(projects_list)
+#         # Filter NewCloudURI queryset based on check_filter_data
+#         filtered_data = NewCloudURI.objects.all()
+        
+#         try:
+#             # Filter based on video_start_time and video_end_time range
+#             if 'video_start_time' in check_filter_data:
+#                 filtered_data = filtered_data.filter(
+#                     video_start_time__lte=check_filter_data['video_start_time']
+#                 )
+#             if 'video_end_time' in check_filter_data:
+#                 filtered_data = filtered_data.filter(
+#                     video_end_time__gte=check_filter_data['video_end_time']
+#                 )
+#         except Exception as e:
+#             print(f"Error filtering queryset: {e}")
 
-#         if project_name:
-#             locations_list = CloudURI.objects.filter( userid=userid,project_name=project_name).values_list('location_name', flat=True)
-#             response_data['locations'] = list(locations_list)
+#         # Create a list of dictionaries from filtered queryset
+#         filtered_data_json = list(filtered_data.values(
+#             'company_name', 'project_name', 'location_name',
+#             'camera_angle', 'video_start_time', 'video_end_time', 'onedrive_url'
+#         ))
 
-#         if location:
-#             camera_angles_list = CloudURI.objects.filter( userid=userid,location_name=location).values_list('camera_angle', flat=True)
-#             response_data['cameraangle'] = list(camera_angles_list)
-
-#         if camera_angle:
-#             video_start_time = CloudURI.objects.filter( userid=userid,camera_angle=camera_angle).values_list('video_start_time', flat=True)
-#             print("**********************",video_start_time)
-#             response_data['video_start_time'] = list(video_start_time)
-
-#         return JsonResponse(response_data)
+#         # Return filtered data as JSON response
+#         return JsonResponse(filtered_data_json, safe=False)
 #     else:
 #         return HttpResponseBadRequest("Invalid request")
 
 
-# def view_cloud_uri(request):  
-#   user_id = request.session.get('user_id')
-#   data = CloudURI.objects.filter(userid=user_id).order_by('-id')[:10]
-#   company_list = Company.objects.filter(userid=user_id)   
-#   return render(request, 'templates/dms/view_cloud_uri.html' ,{'data' : data,'company_list':company_list})
-
-
-
-# def fetch_cloud_uri(request):
-#     if request.method == 'GET':
-#         userid = request.session.get('user_id')
-#         company_name = request.GET.get('company_name')
-#         project_name = request.GET.get('project_name')
-#         location = request.GET.get('location')
-#         camera_angle = request.GET.get('cameraangle')
-#         video_start_time = request.GET.get('video_start_time')
-#         print("***************************video_start_time(for all check)",video_start_time)
-#         response_data = {}
-#         if company_name:
-#             projects_list = Project.objects.filter( userid=userid,company_name=company_name).values_list('name', flat=True)
-#             response_data['projects'] = list(projects_list)
-
-#         if project_name:
-#             # locations_list = CloudURI.objects.filter( userid=userid,project_name=project_name).values_list('location_name', flat=True)
-#             locations_list = NewCloudURI.objects.filter( userid=userid,project_name=project_name).values_list('location_name', flat=True)
-#             response_data['locations'] = list(locations_list)
-
-#         if location:
-#             camera_angles_list = NewCloudURI.objects.filter( userid=userid,location_name=location).values_list('camera_angle', flat=True)
-#             # camera_angles_list = CloudURI.objects.filter( userid=userid,location_name=location).values_list('camera_angle', flat=True)
-#             response_data['cameraangle'] = list(camera_angles_list)
-#         # if camera_angle:
-#         #     video_start_time_query = CloudURI.objects.filter(userid=userid, camera_angle=camera_angle)
-
-#         #     if location:
-#         #         video_start_time_query = video_start_time_query.filter(location_name=location)
-
-#         #     if project_name:
-#         #         video_start_time_query = video_start_time_query.filter(project_name=project_name)
-
-#         #     video_start_times = video_start_time_query.values_list('video_start_time', flat=True)
-#         #     print("**********************", video_start_times)
-#         #     response_data['video_start_time'] = list(video_start_times)
-            
-            
-#         if camera_angle:
-#             video_start_time = NewCloudURI.objects.filter( userid=userid,camera_angle=camera_angle).values_list('video_start_time', flat=True)
-#             # video_start_time = CloudURI.objects.filter( userid=userid,camera_angle=camera_angle).values_list('video_start_time', flat=True)
-#             print("**********************",video_start_time)
-#             response_data['video_start_time'] = list(video_start_time)
-
-#         return JsonResponse(response_data)
-#     else:
-#         return HttpResponseBadRequest("Invalid request")
 
 
 
@@ -518,16 +486,13 @@ def filter_cloud_uri(request):
 data_store = {}  
 def fetch_cloud_uri(request):
     if request.method == 'GET':
-
-        print("**********",request.GET)
-
         company_id = request.GET.get('company_id')
         project_id = request.GET.get('project_id')
         
         userid = request.session.get('user_id')
+        data_store['userid'] = userid         
+
         company_name = request.GET.get('company_name')
-
-
         project_name = request.GET.get('project_name')
         location = request.GET.get('location')
         camera_angle = request.GET.get('cameraangle')
@@ -543,12 +508,6 @@ def fetch_cloud_uri(request):
 
 
 
-        # if company_name:
-        #     data_store['company_name'] = company_name
-        #     projects_list = Project.objects.filter(userid=userid, company_name=company_name).values_list('name', flat=True)
-        #     response_data['projects'] = list(projects_list)
-
-
         if project_id:   
             data_store['project_id'] = project_id         
             locations_list = NewCloudURI.objects.filter(userid=userid,
@@ -557,25 +516,8 @@ def fetch_cloud_uri(request):
                                                          ).values_list('location_name', flat=True)
             response_data['locations'] = list(locations_list)
 
-        # if project_name:
-        #     data_store['project_name'] = project_name
-        #     locations_list = NewCloudURI.objects.filter(userid=userid,
-        #                                                  company_name=data_store['company_name'],
-        #                                                  project_name=project_name,
-        #                                                  ).values_list('location_name', flat=True)
-        #     response_data['locations'] = list(locations_list)
-
-        # if location:
-        #     data_store['location'] = location
-        #     camera_angles_list = NewCloudURI.objects.filter(userid=userid, 
-        #                                                     company_name=data_store['company_name'],
-        #                                                      project_name=data_store['project_name'],
-        #                                                      location_name=location,
-        #                                                     ).values_list('camera_angle', flat=True)
-        #     response_data['cameraangle'] = list(camera_angles_list)
-
         if location:
-            data_store['location'] = location
+            data_store['location_name'] = location
             camera_angles_list = NewCloudURI.objects.filter(userid=userid, 
                                                             company_id=data_store['company_id'],
                                                              project_id=data_store['project_id'],
@@ -585,46 +527,35 @@ def fetch_cloud_uri(request):
 
         if camera_angle:
             data_store['camera_angle'] = camera_angle
-            if 'location' in data_store and 'project_id' in data_store and 'company_id' in data_store:
+            if 'location_name' in data_store and 'project_id' in data_store and 'company_id' in data_store:
                 video_start_time = NewCloudURI.objects.filter(userid=userid, 
                                                               camera_angle=camera_angle,
-                                                              location_name=data_store['location'],
+                                                              location_name=data_store['location_name'],
                                                               project_id=data_store['project_id'],
                                                               company_id=data_store['company_id']
                                                               ).values_list('video_start_time', flat=True)
                 response_data['video_start_time'] = list(video_start_time)
 
-        # if camera_angle:
-        #     data_store['camera_angle'] = camera_angle
-        #     if 'location' in data_store and 'project_name' in data_store and 'company_name' in data_store:
-        #         video_start_time = NewCloudURI.objects.filter(userid=userid, 
-        #                                                       camera_angle=camera_angle,
-        #                                                       location_name=data_store['location'],
-        #                                                       project_name=data_store['project_name'],
-        #                                                       company_name=data_store['company_name']
-        #                                                       ).values_list('video_start_time', flat=True)
-        #         response_data['video_start_time'] = list(video_start_time)
-                
-                
-                
-            print("***********************************************************")
-            print("***********************************************************")
-            print("***********************************************************")
-            print("Selected location as video_start_time are",list(video_start_time))
-            print("***********************************************************")
-            print("***********************************************************")
-            print("***********************************************************")
-            print("Selected location as video_start_time are",video_start_time.count())
-            print("***********************************************************")
-            print("***********************************************************")
-            print("***********************************************************")
-            
-        print("Data store after filtering:", data_store)
-        
+
         return JsonResponse(response_data)
     
     else:
         return HttpResponseBadRequest("Invalid request")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 import os
@@ -707,56 +638,6 @@ def export_database_postgresql(request):
 
 
 
-# @csrf_exempt
-# def export_database_postgresql(request):
-#     # db_name = settings.DATABASES['default']['NAME']
-#     # db_user = settings.DATABASES['default']['USER']
-#     # db_host = settings.DATABASES['default']['HOST']
-
-#     db_name ="vms_db"
-#     db_user = "postgres"
-#     db_host = "localhost"
-
-#     # Command to dump the database to an SQL file
-#     command = f'pg_dump -h {db_host} -U {db_user} {db_name}'
-
-#     try:
-#         # Execute the command
-#         process = subprocess.Popen(command, stdout=subprocess.PIPE, shell=True)
-#         sql_dump = process.communicate()[0]
-
-#         # Prepare HTTP response with the SQL dump as a downloadable file
-#         response = HttpResponse(sql_dump, content_type='application/force-download')
-#         response['Content-Disposition'] = 'attachment; filename="export_vms_db.sql"'
-
-#         return response
-
-#     except Exception as e:
-#         # If an error occurs during the dump process, return an error response
-#         return JsonResponse({'error': str(e)}, status=500)
-
-
-
-# def export_database_postgresql(request):
-#     # db_name = settings.DATABASES['default']['NAME']
-#     # db_user = settings.DATABASES['default']['USER']
-#     # db_host = settings.DATABASES['default']['HOST']
-
-#     db_name ="vms_db"
-#     db_user = "postgres"
-#     db_host = "localhost"
-
-
-#     command = f'pg_dump -h {db_host} -U {db_user} {db_name}'
-
-#     process = subprocess.Popen(command, stdout=subprocess.PIPE, shell=True)
-#     sql_dump = process.communicate()[0]
-
-#     response = HttpResponse(sql_dump, content_type='application/force-download')
-#     response['Content-Disposition'] = 'attachment; filename="export_vms_db.sql"'
-#     return response
-
-
 
 def desired_download_excel(request):
     file_path = os.path.join('static', 'assets', 'excel_format', 'cloud_data.xlsx')
@@ -834,54 +715,6 @@ def view_cloud_uri(request):
   company_list = Company.objects.filter(userid=user_id) 
   return render(request, 'templates/dms/view_cloud_uri.html' ,{'data' : data,'company_list':company_list,'user_account':user_account})
 
-# class Add_project(View):
-#     def get(self, request, *args, **kwargs):
-#         user_id = request.session.get('user_id')
-#         print("GET method - user_id:", user_id)
-#         company_list = Company.objects.filter(userid=user_id)
-#         form = ProjForm()
-#         return render(request, 'templates/dms/AddProject.html', {'userid': user_id, 'company_list': company_list, 'form': form})
-
-#     def post(self, request, *args, **kwargs):
-#         user_id = request.session.get('user_id')
-#         print("POST method - user_id:", user_id)
-#         form = ProjForm(request.POST)
-#         if form.is_valid():
-#             project = form.save(commit=False)
-#             project.userid = user_id  # Assign the user_id to the project
-#             project.save()
-#             messages.success(request, 'Project added successfully.')
-#             return redirect('add_project')  # Redirect to prevent form resubmission
-
-#         # Form is invalid, re-render the page with the form errors
-#         company_list = Company.objects.filter(userid=user_id)
-#         return render(request, 'templates/dms/AddProject.html', {'userid': user_id, 'company_list': company_list, 'form': form})
-
-# class Add_project(View):
-  
-#     def get(self, request, *args, **kwargs):
-#         user_id = request.session.get('user_id')
-#         print("GET method - user_id:", user_id)
-#         company_list = Company.objects.filter(userid=user_id)
-#         return render(request, 'templates/dms/AddProject.html', {'userid': user_id, 'company_list': company_list})
-
-#     def post(self, request, *args, **kwargs):
-#         if request.method == "POST":
-#             user_id = request.session.get('user_id')
-#             print("POST method - user_id:", user_id)
-#             company_name = request.POST.get('company')
-#             project_name = request.POST.get('project_name')
-#             print(company_name, project_name)
-
-#             # Retrieve UserAccount instance
-#             user_account = UserAccount.objects.get(id=user_id)
-
-#             # Create Project with UserAccount instance and company_name
-#             project = Project.objects.create(user_id=user_account, name=project_name, company_name=company_name)
-
-#             messages.success(request, 'Project added successfully.')
-#             company_list = Company.objects.filter(userid=user_id)
-#             return render(request, 'templates/dms/AddProject.html', {'userid': user_id, 'company_list': company_list})
 
 
 class AddProject(View):
@@ -910,34 +743,6 @@ class AddProject(View):
         return render(request, 'templates/dms/AddProject.html', {'userid':user_id,'company_list':company_list})
 
 
-# class AddProject(View):
-
-#   def get(self,request,*args,**kwargs):
-#       user_id = request.session.get('user_id')
-#       print("get method ....................................................user_id",user_id)
-#       company_list = Company.objects.filter(userid=user_id)  
-
-#       return render(request, 'templates/dms/AddProject.html', {'userid':user_id,'company_list':company_list})
-
-#   def post(self,request,*args,**kwargs):
-#       if request.method == "POST":
-#         userid = request.session.get('user_id')
-#         company_id = request.POST.get('company')
-#         name = request.POST.get('project_name')
-#         messages.success(request, 'Project Added successfully.')
-#         project = Project.objects.create(user_id=user_id, name=project_name, company_name=company_name)       
-#         company_list = Company.objects.filter(userid=user_id)      
-#         return render(request, 'templates/dms/AddProject.html', {'userid':user_id,'company_list':company_list})
-
-
-
-# class ListProject(View):
-#     def get(self,request,*args,**kwargs):
-#         user_id = request.session.get('user_id')
-#         all_projects=Project.objects.filter(userid=user_id)
-#         context={'all_projects':all_projects}
-#         print("**********",context)
-#         return render (request,'templates/dms/ListProject.html',context=context)
 
 class ListProject(View):
     def get(self, request, *args, **kwargs):
@@ -986,11 +791,15 @@ class ProjectUpdate(UpdateView):
 
 
 
+
+
+
 ## to add new company information entered by user
 def my_form(request):
   userid = request.session.get('user_id')
   if request.method == "POST":
     form = MyForm(request.POST)
+
     if form.is_valid():      
       form.save()
       messages.success(request, 'Company Added successfully.')  
@@ -1134,21 +943,6 @@ def edit_form(request):
 
 
 
-###### Project relevant classes########
-
-
-
-
-
-
-
-# to update specific project information edited by user
-
-
-
-
-########## Station/Location class ##############
-## station List
 
 class ListStation(View):
     def get(self,request,*args,**kwargs):

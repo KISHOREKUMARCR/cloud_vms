@@ -930,7 +930,9 @@ def update_auth_form(request, pk):
     context = {'form': form}
     return render(request, 'accounts1/update_auth_form.html', context)
 
-   
+
+
+     
 def validate_username(request):
     print("Inside Validate username")
     is_is_status=""
